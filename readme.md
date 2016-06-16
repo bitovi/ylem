@@ -52,7 +52,7 @@ connect( props => {
 
 # @bigab/can-react
 
-[![Build Status](https://travis-ci.org/bigab/can-react.png?branch=master)](https://travis-ci.org/bigab/can-react)
+[![Build Status](https://travis-ci.org/BigAB/can-react.png?branch=master)](https://travis-ci.org/bigab/can-react)
 
 
 ## Usage
