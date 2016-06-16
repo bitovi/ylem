@@ -1,6 +1,6 @@
 {
   "name": "@bigab/can-react",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "React bindings to use CanJS observables",
   "homepage": "",
   "author": {
