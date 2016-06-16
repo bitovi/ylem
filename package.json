@@ -1,0 +1,75 @@
+{
+  "name": "@bigab/can-react",
+  "version": "0.0.0",
+  "description": "React bindings to use CanJS observables",
+  "homepage": "",
+  "author": {
+    "name": "Adam L Barrett",
+    "email": "bigab@live.ca",
+    "url": "adamlbarrett.ca"
+  },
+  "scripts": {
+    "preversion": "npm test && npm run build",
+    "version": "git commit -am \"Update dist for release\" && git checkout -b release && git add -f dist/",
+    "postversion": "git push --tags && git checkout master && git branch -D release && git push",
+    "testee": "testee src/test/test.html --browsers firefox",
+    "test": "npm run eslint && npm run testee",
+    "eslint": "eslint src/*.js",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish",
+    "build": "node build.js",
+    "document": "documentjs",
+    "develop": "done-serve --static --develop --port 8000"
+  },
+  "main": "dist/cjs/can-react",
+  "browser": {
+    "transform": [
+      "cssify"
+    ]
+  },
+  "browserify": {
+    "transform": [
+      "cssify"
+    ]
+  },
+  "keywords": [],
+  "system": {
+    "main": "can-react",
+    "directories": {
+      "lib": "src"
+    },
+    "configDependencies": [
+      "live-reload"
+    ],
+    "npmIgnore": [
+      "documentjs",
+      "generator-donejs",
+      "donejs-cli",
+      "steal-tools",
+      "testee"
+    ]
+  },
+  "dependencies": {
+    "can": "^2.3.24",
+    "react": "^15.1.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "cssify": "^1.0.2",
+    "documentjs": "^0.4.2",
+    "done-serve": "^0.2.4",
+    "donejs-cli": "^0.9.5",
+    "eslint": "^2.8.0",
+    "eslint-plugin-react": "^5.0.0",
+    "generator-donejs": "^0.9.0",
+    "jquery": "^2.2.4",
+    "react-addons-test-utils": "^15.1.0",
+    "steal": "^0.16.21",
+    "steal-builtins": "^1.0.0",
+    "steal-jsx": "0.0.2",
+    "steal-mocha": "0.0.3",
+    "steal-tools": "^0.16.4",
+    "testee": "^0.2.4"
+  }
+}
