@@ -27,21 +27,23 @@ Currently the only API needed, and only one exported in the POC (proof of concep
 connect( mapToProps {function}, Component {React Component} )
 ```
 
-`connect()` takes 2 arguments. The first is **mapToProps**, a function that will return an object that the component instance will receive as `props`, and the second argument is a Presentational Component constructor function (a.k.a. a class or just component in React). The mapToProps function/compute has one parameter, **ownProps**, which are the props that would have normally been passed into this component instance, as defined by the owner template (JSX).
+`connect()` takes 2 arguments. The first is **mapToProps**, a function that will return an object that the component instance will receive as `props`, and the second argument is a **Presentational Component** constructor function (a.k.a. a class or just component in React). The `connect()` function returns a **Container Component** which can then be imported and used in any react component as usual.
 
-The return value of the **mapToProps** function will be an object, mapping the values to be used as props to the Presentational Components instance, and will be merged into the props the component would already be receiving from it’s owner in the template it is used in (MapToProps values will overwrite the props passed in through the template). Since React components should not really be expecting observables, it may be appropriate (though not required) to serialize any observables in the compute function (using `attr`, `serialize`, `.map` and `.reduce` ) when computing the value. Expecting observables in your react code will reduce re-usability).
+The **mapToProps** function has one parameter, `ownProps`, which are the props that would have normally been passed into this component instance, as defined by the owner template (JSX).
 
-Since the Container Component doesn't produce DOM artifacts of it’s own, you won’t end up with any wrapper divs or anything to worry about, but in react-device-tools you will see the component with the name `connected( MyComponent )` in the tree. The Container Component holds the “newly computed props” value as it’s `state`. That state will update whenever the component “receives new props” or the compute emits a “change” event, which will then pass props down into the connected component instance,possibly causing some parts to re-render.
+The return value of the **mapToProps** function will be an object, mapping the values to be used as props to the Presentational Components instance, and will be merged into the props the component would already be receiving from it’s owner in the template it is used in (MapToProps values will overwrite the props passed in through the template). Since React components should not really be expecting observables, it may be appropriate (though not required) to serialize any observables in the mapToProps function (using `attr`, `serialize`, `.map` and `.reduce` ) when computing the value. Expecting observables in your react code will reduce re-usability).
 
-Any user actions that should affect the state should be handled with callbacks on props (like `onClick` or `onSelectNewCountry`), and should be implemented in. The compute as methods in the value/return value that directly act on the observables.
+Since the Container Component doesn't produce DOM artifacts of it’s own, you won’t end up with any wrapper divs or anything to worry about, but in react-device-tools you will see the component with the name `connected( MyComponent )` in the tree. The Container Component holds the “newly computed props” value as its `state`. That state will update whenever the component “receives new props” or the compute emits a “change” event, which will then pass props down into the connected component instance, possibly causing some parts to re-render.
+
+Any user actions that should affect the state should be handled with callbacks on props (like `onClick` or `onSelectNewCountry`), and should be implemented in the MapToProps function as methods on the return value. The callback methods can be used to directly act on the observables.
 
 #### Example:
 ```javascript
 import Todo from 'models/todo';
 
-connect( props => {
+connect( ownProps => {
   return {
-    todos: Todo.getList( { completed: props.showOnlyCompleted } ),
+    todos: Todo.getList( { completed: ownProps.showOnlyCompleted } ),
     addTodo(formValues) {
       new Todo(formValues).save()
     }
