@@ -1,5 +1,7 @@
 language: node_js
 node_js: node
+addons:
+  firefox: latest
 script: npm test
 before_install:
   - "export DISPLAY=:99.0"
