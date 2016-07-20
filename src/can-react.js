@@ -17,8 +17,11 @@ export function connect(mapToProps, ComponentToConnect) {
         return mapToState( this.propsCompute() );
       });
       this.state = this.compute();
+      let batchNum;
       this.compute.bind("change", (ev, newVal) => {
-        this.setState(newVal);
+        if(!ev.batchNum || ev.batchNum !== batchNum) {
+          this.setState(newVal);
+        }
       });
     }
 
