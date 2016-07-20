@@ -52,24 +52,23 @@
   },
   "dependencies": {
     "can": "^2.3.24",
-    "react": "^15.1.0"
+    "react": "^15.2.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "cssify": "^1.0.2",
-    "documentjs": "^0.4.2",
+    "documentjs": "^0.4.4",
     "done-serve": "^0.2.4",
     "donejs-cli": "^0.9.5",
-    "eslint": "^2.8.0",
-    "eslint-plugin-react": "^5.0.0",
-    "generator-donejs": "^0.9.0",
-    "jquery": "^2.2.4",
-    "react-addons-test-utils": "^15.1.0",
-    "steal": "^0.16.21",
+    "eslint": "^3.1.1",
+    "eslint-plugin-react": "^5.2.2",
+    "generator-donejs": "^0.9.4",
+    "react-addons-test-utils": "^15.2.1",
+    "steal": "^0.16.27",
     "steal-builtins": "^1.0.0",
     "steal-jsx": "0.0.2",
     "steal-mocha": "0.0.3",
-    "steal-tools": "^0.16.4",
-    "testee": "^0.2.4"
+    "steal-tools": "^0.16.5",
+    "testee": "^0.2.5"
   }
 }
