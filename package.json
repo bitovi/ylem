@@ -8,6 +8,7 @@
     "email": "bigab@live.ca",
     "url": "adamlbarrett.ca"
   },
+  "license": "MIT",
   "scripts": {
     "preversion": "npm test && npm run build",
     "version": "git commit -am \"Update dist for release\" && git checkout -b release && git add -f dist/",
@@ -51,7 +52,8 @@
     ]
   },
   "dependencies": {
-    "can": "^2.3.24",
+    "can-compute": "^3.0.0-pre.10",
+    "can-define": "^0.7.24",
     "react": "^15.2.1"
   },
   "devDependencies": {
