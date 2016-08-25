@@ -14,7 +14,7 @@ export function connect( MapToProps, ComponentToConnect ) {
         this.viewModel = new MapToProps( this.propsCompute() );
         this.mapToState = this.createMapToStateWithViewModel( this.viewModel );
       } else {
-        this.mapToState = this.createMapToStateWithFunction( MapToProps )
+        this.mapToState = this.createMapToStateWithFunction( MapToProps );
       }
 
       this.state = { propsForChild: this.mapToState() };

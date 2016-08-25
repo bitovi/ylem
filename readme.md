@@ -133,7 +133,7 @@ The `mapToProps` function will get converted to a compute, so when any observabl
 By following the patterns established by react-redux, but avoiding the complexity of pure-functional programing, reducer composition, immutability, and the single store paradigm, we hope to offer a familiar, powerful, but far simpler solution to creating great backing data stores for your react app.
 
 ## License
-[License](./LICENSE)
+[MIT](./LICENSE)
 
 [1]: https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8
 [2]: https://canjs.github.io/canjs/doc/can-define/map/map.html
