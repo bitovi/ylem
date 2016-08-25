@@ -9,6 +9,10 @@
     "url": "adamlbarrett.ca"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BigAB/can-react.git"
+  },
   "scripts": {
     "preversion": "npm test && npm run build",
     "version": "git commit -am \"Update dist for release\" && git checkout -b release && git add -f dist/",
