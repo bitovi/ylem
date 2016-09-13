@@ -47,7 +47,7 @@ export default connect( ViewModel, Button );
 
 ## API
 #### `connect( {ViewModel|mapToProps}, Component ) `
-Connect a view-model class or mapToPros function to React [presentational components][1]
+Connect a view-model class or mapToProps function to React [presentational components][1]
 
 `connect()` takes 2 arguments. The first is either a **mapToProps** function, a function that will return an object that the component instance will receive as `props`, or a **ViewModel** constructor function, which is an extended [can-define/map][2]. The second argument is a **Presentational Component** constructor function (a.k.a. a class or just component in React). The `connect()` function returns a **Container Component** which can then be imported and used in any react component or render function as usual.
 
