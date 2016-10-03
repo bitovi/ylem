@@ -8,12 +8,12 @@ export function connect( MapToProps, ComponentToConnect ) {
 
     constructor(props) {
       super(props);
-      this.propsCompute = compute(props);
 
       if ( MapToProps.prototype instanceof DefineMap ) {
-        this.viewModel = new MapToProps( this.propsCompute() );
+        this.viewModel = new MapToProps( props );
         this.mapToState = this.createMapToStateWithViewModel( this.viewModel );
       } else {
+        this.propsCompute = compute(props);
         this.mapToState = this.createMapToStateWithFunction( MapToProps );
       }
 
@@ -21,6 +21,7 @@ export function connect( MapToProps, ComponentToConnect ) {
       let batchNum;
       this.mapToState.bind("change", (ev, newVal) => {
         if(!ev.batchNum || ev.batchNum !== batchNum) {
+          batchNum = ev.batchNum;
           this.setState({ propsForChild: newVal });
         }
       });
@@ -28,7 +29,6 @@ export function connect( MapToProps, ComponentToConnect ) {
 
     createMapToStateWithViewModel( vm ) {
       return compute(() => {
-        vm.set( this.propsCompute() );
         const props = vm.serialize();
         getMethodNames( vm ).forEach( methodName => {
           props[methodName] = vm[methodName].bind(vm);
@@ -45,7 +45,11 @@ export function connect( MapToProps, ComponentToConnect ) {
     }
 
     componentWillReceiveProps(nextProps) {
-      this.propsCompute(nextProps);
+      if (this.viewModel) {
+        this.viewModel.set( nextProps );
+      } else {
+        this.propsCompute( nextProps );
+      }
     }
 
     render() {

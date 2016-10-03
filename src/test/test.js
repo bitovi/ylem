@@ -7,7 +7,7 @@ import DefineMap from "can-define/map/";
 import 'steal-mocha';
 const assert = chai.assert;
 
-describe('can-react', function(){
+describe('can-react', () => {
 
   describe('connect()', () => {
     let TestComponent;
@@ -37,12 +37,12 @@ describe('can-react', function(){
 
       });
 
-      it('should update the component whenever an observable read inside the mapToProps function emits a change event', function() {
+      it('should update the component whenever an observable read inside the mapToProps function emits a change event', () => {
         const observable = compute('Inital Value');
         const ConnectedComponent = connect( () => ({ value: observable() }), TestComponent );
 
-        const result = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
-        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(result, TestComponent)[0];
+        const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(connectedInstance, TestComponent)[0];
 
         assert.equal(childComponent.props.value, 'Inital Value');
         observable('new value');
@@ -50,7 +50,7 @@ describe('can-react', function(){
 
       });
 
-      it('should update the component when new props are recieved', function() {
+      it('should update the component when new props are received', () => {
         const observable = compute('Inital Observable Value');
         const ConnectedComponent = connect( ({ propValue }) => ({ value: observable(), propValue }), TestComponent );
         const WrappingComponent = React.createClass({
@@ -65,17 +65,17 @@ describe('can-react', function(){
           }
         });
 
-        const result = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
-        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(result, TestComponent)[0];
+        const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
 
         assert.equal(childComponent.props.propValue, 'Initial Prop Value');
-        result.changeState();
+        wrappingInstance.changeState();
         assert.equal(childComponent.props.propValue, 'New Prop Value');
       });
 
     });
 
-    describe('with can-define constructor function', () => {
+    describe('with can-define constructor function (viewModel)', () => {
 
       const DefinedViewModel = DefineMap.extend({
         foo: {
@@ -89,58 +89,143 @@ describe('can-react', function(){
           },
           serialize: true
         },
+        zzz: {
+          set( newVal ) {
+            return newVal.toUpperCase();
+          }
+        },
         callback() {
           return this;
+        },
+        interceptedCallbackCalled: 'boolean',
+        interceptedCallback: {
+          type: 'function',
+          get( lastSetValue ) {
+            return (...args) => {
+              this.interceptedCallbackCalled = true;
+              if ( lastSetValue ) {
+                return lastSetValue(...args);
+              }
+            };
+          },
+          serialize: true
         }
       });
 
       it('should assign a property to the component called `viewModel` with an instance of ViewModel as the value', () => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
-        const result = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
-        assert.ok( result.viewModel instanceof DefinedViewModel );
+        const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
+        assert.ok( connectedInstance.viewModel instanceof DefinedViewModel );
       });
 
       it('should pass a props object with copied methods, that have the correct context (the viewmodel) to be used as callbacks', () => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
-        const result = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
-        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(result, TestComponent)[0];
-        assert.equal(childComponent.props.callback(), result.viewModel);
+        const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(connectedInstance, TestComponent)[0];
+        assert.equal(childComponent.props.callback(), connectedInstance.viewModel);
       });
 
-      it('should update whenever any observable property on the viewModel instance changes', function() {
-
+      it('should update whenever any observable property on the viewModel instance changes', () => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
-
-        const result = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent, { bar: 'bar', baz: 'bam' } ) );
-        const childComponent = ReactTestUtils.scryRenderedComponentsWithType( result, TestComponent )[0];
+        const el = React.createElement( ConnectedComponent, { bar: 'bar', baz: 'bam' } );
+        const connectedInstance = ReactTestUtils.renderIntoDocument( el );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType( connectedInstance, TestComponent )[0];
 
         assert.equal(childComponent.props.foobar, 'foobar');
-        result.viewModel.foo = 'MMM';
+        connectedInstance.viewModel.foo = 'MMM';
         assert.equal(childComponent.props.foobar, 'MMMbar');
-
       });
 
-      it('should update the component when new props are recieved', function() {
-        const observable = compute('Inital Observable Value');
+      it('should update the component when new props are received', () => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const WrappingComponent = React.createClass({
           getInitialState() {
-            return { propValue: 'Initial Prop Value' };
+            return { barValue: 'Initial Prop Value' };
           },
           changeState() {
-            this.setState( { propValue: 'New Prop Value' } );
+            this.setState( { barValue: 'New Prop Value' } );
           },
           render() {
-            return <ConnectedComponent propValue={ this.state.propValue } />;
+            return <ConnectedComponent bar={ this.state.barValue } />;
           }
         });
 
-        const result = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
-        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(result, TestComponent)[0];
+        const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
 
-        assert.equal(childComponent.props.propValue, 'Initial Prop Value');
-        result.changeState();
-        assert.equal(childComponent.props.propValue, 'New Prop Value');
+        assert.equal(childComponent.props.bar, 'Initial Prop Value');
+        wrappingInstance.changeState();
+        assert.equal(childComponent.props.bar, 'New Prop Value');
+      });
+
+      it('should update the viewModel when new props are received', () => {
+        const ConnectedComponent = connect( DefinedViewModel, TestComponent );
+        const WrappingComponent = React.createClass({
+          getInitialState() {
+            return { bar: 'bar' };
+          },
+          changeState() {
+            this.setState( { bar: 'BAZ' } );
+          },
+          render() {
+            return <ConnectedComponent bar={ this.state.bar } />;
+          }
+        });
+
+        const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, ConnectedComponent)[0];
+
+        assert.equal(childComponent.viewModel.foobar, 'foobar');
+        wrappingInstance.changeState();
+        assert.equal(childComponent.viewModel.foobar, 'fooBAZ');
+      });
+
+      it('should use the viewModels props value, if the viewModel changes, and no new props are received', () => {
+        const ConnectedComponent = connect( DefinedViewModel, TestComponent );
+        const WrappingComponent = React.createClass({
+          getInitialState() {
+            return { bar: 'bar' };
+          },
+          render() {
+            return <ConnectedComponent bar={ this.state.bar } />;
+          }
+        });
+
+        const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, ConnectedComponent)[0];
+
+        assert.equal(childComponent.viewModel.foobar, 'foobar');
+        childComponent.viewModel.bar = 'BAZ';
+        assert.equal(childComponent.viewModel.foobar, 'fooBAZ');
+      });
+
+      it('should be able to call the props.callback function received from parent component', () => {
+        const expectedValue = [];
+        const ConnectedComponent = connect( DefinedViewModel, TestComponent );
+        const WrappingComponent = React.createClass({
+          parentCallBack() { return expectedValue; },
+          render() {
+            return <ConnectedComponent interceptedCallback={ this.parentCallBack } />;
+          }
+        });
+
+        const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
+        const connectedInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, ConnectedComponent)[0];
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType(connectedInstance, TestComponent)[0];
+
+        const actual = childComponent.props.interceptedCallback();
+
+        assert.equal(actual, expectedValue, 'Value returned from wrapping components callback successfully');
+        assert.equal(connectedInstance.viewModel.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
+      });
+
+      it('should be able to have the viewModel transform props before passing to child component', () => {
+        const ConnectedComponent = connect( DefinedViewModel, TestComponent );
+        const el = React.createElement( ConnectedComponent, { zzz: 'zzz' } );
+        const connectedInstance = ReactTestUtils.renderIntoDocument( el );
+        const childComponent = ReactTestUtils.scryRenderedComponentsWithType( connectedInstance, TestComponent )[0];
+
+        assert.equal(childComponent.props.zzz, 'ZZZ');
       });
 
     });

@@ -72,7 +72,7 @@ const ViewModel = DefineMap.extend({
   todos: {
     value: Todo.getList( { completed: this.showOnlyCompleted } ),
     serialize: true
-  }
+  },
   addTodo(formValues) {
     new Todo(formValues).save()
   }
@@ -108,6 +108,60 @@ connect( ownProps => {
 
 ##### Component `{react component}`
 Any react component, usually a [presentational component][1]
+
+## Common use cases when using a view model
+Here are some examples that may come up when using a view-model that may not be obvious at first:
+
+#### Transforming a prop before passing it down to a child component
+
+Sometimes you want a prop that is set on your connected component to be set to the exact same prop key on the child component, but modified slightly before passing it down. Here's an example of that:
+
+```javascript
+const ViewModel = DefineMap.extend({
+  someProp: {
+    set( newVal ) {
+      return newVal.toUpperCase();
+    }
+  }
+});
+```
+
+#### Not passing through all props to the child component by default
+By default, any props passed into the connected component will be passed down into the child component, unless otherwise tampered with. You control which props get passed down by setting a serialize param on each property, a using the `'*'` key to set the default to false.
+
+
+```javascript
+const ViewModel = DefineMap.extend({
+  '*': {
+    serialize: false
+  },
+  somePropToBePassedThrough: {
+    type: 'any',
+    serialize: true
+  }
+});
+```
+
+#### Calling a parents callback, while also doing something special in your view models callback
+Sometimes, you still want to notify the connected components owner component that the state changed (by calling a callback), but only after or while doing something different within the view-model. In this case, you'll want to define the callback prop as a observable attribute with a getter, rather than a method, and use the `lastSetVal` argument to call the parent components callback.
+
+```javascript
+const ViewModel = DefineMap.extend({
+  onChange: {
+    type: 'function',
+    get( lastSetValue ) {
+      return (ev) => {
+        this.changeTheThing(ev.target);
+        if ( lastSetValue ) {
+          return lastSetValue(ev);
+        }
+      };
+    },
+    serialize: true
+  }
+});
+```
+> _This can be one of the tricker conceits of the current API, suggestions are welcome._
 
 ## Contributing
 [Contributing](./contributing.md)
