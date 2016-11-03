@@ -2,7 +2,7 @@
   "sites": {
     "docs": {
       "dest": "docs",
-      "parent": "bigab-can-react",
+      "parent": "bigab-react-view-models",
       "pageConfig": {
         "page": "docs"
       },

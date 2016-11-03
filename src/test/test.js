@@ -1,5 +1,5 @@
 import chai from 'chai';
-import { connect } from '../can-react';
+import { connect } from '../react-view-models';
 import React from 'react';
 import compute from 'can-compute';
 import ReactTestUtils from 'react-addons-test-utils';
@@ -7,7 +7,7 @@ import DefineMap from "can-define/map/";
 import 'steal-mocha';
 const assert = chai.assert;
 
-describe('can-react', () => {
+describe('react-view-models', () => {
 
   describe('connect()', () => {
     let TestComponent;
