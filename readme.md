@@ -1,8 +1,9 @@
-# Can-React
+# React-View-Models
 
-### @bigab/can-react
+### @bigab/react-view-models
+_recently renamed from @bigab/can-react_
 
-[![Build Status](https://travis-ci.org/BigAB/can-react.png?branch=master)](https://travis-ci.org/BigAB/can-react)
+[![Build Status](https://travis-ci.org/BigAB/react-view-models.png?branch=master)](https://travis-ci.org/BigAB/react-view-models)
 
 
 Connect observable view-models to React [presentational components][1] to create auto rendering [container components][1].
@@ -12,19 +13,19 @@ Connect observable view-models to React [presentational components][1] to create
 #### ES6
 
 ```js
-import { connect } from '@bigab/can-react';
+import { connect } from '@bigab/react-view-models';
 ```
 
 #### CommonJS
 
 ```js
-var connect = require("@bigab/can-react").connect;
+var connect = require("@bigab/react-view-models").connect;
 ```
 
 ## Usage
 `save-button.js`
 ```js
-import { connect } from '@bigab/can-react';
+import { connect } from '@bigab/react-view-models';
 import Button from './button.jsx';
 import DefineMap from 'can-define/map/';
 import Item from '../models/items';
@@ -62,7 +63,7 @@ Methods on the view model, and copied onto the serialized props object and bound
 
 #### Example:
 ```javascript
-import { connect } from '@bigab/can-react';
+import { connect } from '@bigab/react-view-models';
 import DefineMap from 'can-define/map/map';
 import TodoComponent from 'components/todo.jsx';
 import Todo from 'models/todo';
@@ -176,9 +177,9 @@ Automated tests that run the tests from the command line in Firefox can be run w
 npm test
 ```
 
-## Why Can-React?
+## Why React-View-Models?
 
-Can-React follows the pattern popularized by [react-redux][4], and provide users with a `connect()` function for extending React Presentational Components into Container Components, by providing `connect` with either a `mapToProps` function or more commonly a `ViewModel`  constructor function, which is an extended [DefineMap][2] class, along with a presentational component, just like react-redux does.
+React-View-Models follows the pattern popularized by [react-redux][4], and provide users with a `connect()` function for extending React Presentational Components into Container Components, by providing `connect` with either a `mapToProps` function or more commonly a `ViewModel`  constructor function, which is an extended [DefineMap][2] class, along with a presentational component, just like react-redux does.
 
 The `ViewModel` is an observable, and when any observable change happens to one of it's properties, or if new props get set on the Container Component, it will be serialized and sent into the connected component as props, forcing an update/render.
 

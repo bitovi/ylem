@@ -1,5 +1,5 @@
 {
-  "name": "@bigab/can-react",
+  "name": "@bigab/react-view-models",
   "version": "0.0.3",
   "description": "React bindings to use CanJS observables",
   "homepage": "",
@@ -11,9 +11,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BigAB/can-react.git"
+    "url": "https://github.com/BigAB/react-view-models.git"
   },
-  "bugs": "https://github.com/BigAB/can-react/issues",
+  "bugs": "https://github.com/BigAB/react-view-models/issues",
   "scripts": {
     "preversion": "npm test && npm run build",
     "version": "git commit -am \"Update dist for release\" && git checkout -b release && git add -f dist/",
@@ -28,12 +28,8 @@
     "document": "documentjs",
     "develop": "done-serve --static --develop --port 8000"
   },
-  "main": "dist/cjs/can-react",
-  "browser": {
-    "transform": [
-      "cssify"
-    ]
-  },
+  "main": "dist/cjs/react-view-models",
+  "browser": "dist/global/@bigab/react-view-models",
   "browserify": {
     "transform": [
       "cssify"
@@ -41,7 +37,7 @@
   },
   "keywords": [],
   "system": {
-    "main": "can-react",
+    "main": "react-view-models",
     "directories": {
       "lib": "src"
     },
@@ -71,11 +67,11 @@
     "eslint-plugin-react": "^5.2.2",
     "generator-donejs": "^0.9.4",
     "react-addons-test-utils": "^15.2.1",
-    "steal": "^0.16.27",
+    "steal": "^1.0.0-rc.5",
     "steal-builtins": "^1.0.0",
     "steal-jsx": "0.0.2",
     "steal-mocha": "0.0.3",
-    "steal-tools": "^0.16.5",
+    "steal-tools": "^1.0.0-rc.3",
     "testee": "^0.2.5"
   }
 }
