@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "can-compute": "^3.0.0-pre.10",
-    "can-define": "^0.7.24",
+    "can-define": "^1.0.3",
     "react": "^15.2.1"
   },
   "devDependencies": {
@@ -64,7 +64,7 @@
     "done-serve": "^0.2.4",
     "donejs-cli": "^0.9.5",
     "eslint": "^3.1.1",
-    "eslint-plugin-react": "^5.2.2",
+    "eslint-plugin-react": "^6.5.0",
     "generator-donejs": "^0.9.4",
     "react-addons-test-utils": "^15.2.1",
     "steal": "^1.0.0-rc.5",
@@ -72,6 +72,6 @@
     "steal-jsx": "0.0.2",
     "steal-mocha": "0.0.3",
     "steal-tools": "^1.0.0-rc.3",
-    "testee": "^0.2.5"
+    "testee": "^0.3.0-pre.2"
   }
 }
