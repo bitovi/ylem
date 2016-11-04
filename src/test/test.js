@@ -94,7 +94,7 @@ describe('react-view-models', () => {
             return newVal.toUpperCase();
           }
         },
-        callback() {
+        returnContext() {
           return this;
         },
         interceptedCallbackCalled: 'boolean',
@@ -118,11 +118,11 @@ describe('react-view-models', () => {
         assert.ok( connectedInstance.viewModel instanceof DefinedViewModel );
       });
 
-      it('should pass a props object with copied methods, that have the correct context (the viewmodel) to be used as callbacks', () => {
+      it('should pass a props object with copied methods, that have the correct context (the viewmodel) for callbacks', () => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
         const childComponent = ReactTestUtils.scryRenderedComponentsWithType(connectedInstance, TestComponent)[0];
-        assert.equal(childComponent.props.callback(), connectedInstance.viewModel);
+        assert.equal(childComponent.props.returnContext(), connectedInstance.viewModel);
       });
 
       it('should update whenever any observable property on the viewModel instance changes', () => {
@@ -199,7 +199,7 @@ describe('react-view-models', () => {
         assert.equal(childComponent.viewModel.foobar, 'fooBAZ');
       });
 
-      it('should be able to call the props.callback function received from parent component', () => {
+      it('should be able to call the props.interceptedCallback function received from parent component', () => {
         const expectedValue = [];
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const WrappingComponent = React.createClass({

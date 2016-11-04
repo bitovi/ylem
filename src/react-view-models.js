@@ -1,8 +1,13 @@
+/* eslint react/prop-types: 0 */
 import React from 'react';
 import compute from 'can-compute';
 import DefineMap from "can-define/map/";
 
 export function connect( MapToProps, ComponentToConnect ) {
+
+  if ( typeof MapToProps !== 'function' ) {
+    throw new Error('Setting the viewmodel to an instance or value is not supported');
+  }
 
   class ConnectedComponent extends React.Component {
 
@@ -11,24 +16,19 @@ export function connect( MapToProps, ComponentToConnect ) {
 
       if ( MapToProps.prototype instanceof DefineMap ) {
         this.viewModel = new MapToProps( props );
-        this.mapToState = this.createMapToStateWithViewModel( this.viewModel );
+        this.computedState = this.computedStateFromViewModel();
       } else {
         this.propsCompute = compute(props);
-        this.mapToState = this.createMapToStateWithFunction( MapToProps );
+        this.computedState = this.computedStateFromFunction( MapToProps );
       }
 
-      this.state = { propsForChild: this.mapToState() };
-      let batchNum;
-      this.mapToState.bind("change", (ev, newVal) => {
-        if(!ev.batchNum || ev.batchNum !== batchNum) {
-          batchNum = ev.batchNum;
-          this.setState({ propsForChild: newVal });
-        }
-      });
+      this.state = { propsForChild: this.computedState() };
+      this.bindToComputedState();
     }
 
-    createMapToStateWithViewModel( vm ) {
+    computedStateFromViewModel() {
       return compute(() => {
+        const vm = this.viewModel;
         const props = vm.serialize();
         getMethodNames( vm ).forEach( methodName => {
           props[methodName] = vm[methodName].bind(vm);
@@ -37,10 +37,20 @@ export function connect( MapToProps, ComponentToConnect ) {
       });
     }
 
-    createMapToStateWithFunction( func ) {
+    computedStateFromFunction( MapToPropsFunc ) {
       return compute(() => {
         const props = this.propsCompute();
-        return Object.assign( {}, props, func(props) );
+        return Object.assign( {}, props, MapToPropsFunc(props) );
+      });
+    }
+
+    bindToComputedState() {
+      let batchNum;
+      this.computedState.bind("change", (ev, newVal) => {
+        if(!ev.batchNum || ev.batchNum !== batchNum) {
+          batchNum = ev.batchNum;
+          this.setState({ propsForChild: newVal });
+        }
       });
     }
 
@@ -53,7 +63,7 @@ export function connect( MapToProps, ComponentToConnect ) {
     }
 
     render() {
-      return React.createElement(ComponentToConnect, this.state.propsForChild);
+      return React.createElement(ComponentToConnect, this.state.propsForChild, this.props.children);
     }
 
   }
@@ -63,7 +73,7 @@ export function connect( MapToProps, ComponentToConnect ) {
   return ConnectedComponent;
 }
 
-function getDisplayName(ComponentToConnect) {
+function getDisplayName( ComponentToConnect ) {
   return ComponentToConnect.displayName || ComponentToConnect.name || 'Component';
 }
 
