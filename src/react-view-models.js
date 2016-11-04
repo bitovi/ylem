@@ -16,6 +16,7 @@ export function connect( MapToProps, ComponentToConnect ) {
 
       if ( MapToProps.prototype instanceof DefineMap ) {
         this.viewModel = new MapToProps( props );
+        this.createMethodMixin();
         this.computedState = this.computedStateFromViewModel();
       } else {
         this.propsCompute = compute(props);
@@ -30,10 +31,7 @@ export function connect( MapToProps, ComponentToConnect ) {
       return compute(() => {
         const vm = this.viewModel;
         const props = vm.serialize();
-        getMethodNames( vm ).forEach( methodName => {
-          props[methodName] = vm[methodName].bind(vm);
-        });
-        return props;
+        return Object.assign({}, this.methodMixin, props);
       });
     }
 
@@ -62,6 +60,15 @@ export function connect( MapToProps, ComponentToConnect ) {
       }
     }
 
+    createMethodMixin() {
+      const vm = this.viewModel;
+      const methodMixin = {};
+      getMethodNames( vm ).forEach( methodName => {
+        methodMixin[methodName] = vm[methodName].bind(vm);
+      });
+      this.methodMixin = methodMixin;
+    }
+
     render() {
       return React.createElement(ComponentToConnect, this.state.propsForChild, this.props.children);
     }
@@ -81,7 +88,7 @@ function getMethodNames( obj ) {
   const result = [];
   for (var key in obj) {
     try {
-      if (typeof( obj[key] ) == "function") {
+      if (typeof obj[key] === "function") {
         result.push( key );
       }
     } catch (err) {
