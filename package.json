@@ -26,7 +26,7 @@
     "release:major": "npm version major && npm publish",
     "build": "node build.js",
     "document": "documentjs",
-    "develop": "done-serve --static --develop --port 8000"
+    "develop": "lite-server"
   },
   "main": "dist/cjs/react-view-models",
   "browser": "dist/global/@bigab/react-view-models",
@@ -61,17 +61,17 @@
     "chai": "^3.5.0",
     "cssify": "^1.0.2",
     "documentjs": "^0.4.4",
-    "done-serve": "^0.2.4",
     "donejs-cli": "^0.9.5",
     "eslint": "^3.1.1",
     "eslint-plugin-react": "^6.5.0",
     "generator-donejs": "^0.9.4",
+    "lite-server": "^2.2.2",
     "react-addons-test-utils": "^15.2.1",
-    "steal": "^1.0.0-rc.5",
+    "steal": "^1.0.0-rc.8",
     "steal-builtins": "^1.0.0",
     "steal-jsx": "0.0.2",
     "steal-mocha": "0.0.3",
-    "steal-tools": "^1.0.0-rc.3",
+    "steal-tools": "^1.0.0-rc.5",
     "testee": "^0.3.0-pre.2"
   }
 }
