@@ -1,5 +1,5 @@
 {
-  "name": "@bigab/react-view-models",
+  "name": "react-view-models",
   "version": "0.0.4",
   "description": "React bindings to use CanJS observables",
   "homepage": "",
@@ -29,7 +29,7 @@
     "develop": "lite-server"
   },
   "main": "dist/cjs/react-view-models",
-  "browser": "dist/global/@bigab/react-view-models",
+  "browser": "dist/global/react-view-models",
   "browserify": {
     "transform": [
       "cssify"
