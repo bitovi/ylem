@@ -1,3 +1,3 @@
-@page @bigab/react-view-models
+@page react-view-models
 
 # react-view-models

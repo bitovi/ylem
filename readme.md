@@ -1,6 +1,6 @@
 # React-View-Models
 
-### @bigab/react-view-models
+### react-view-models
 _formerly known as @bigab/can-react_
 
 [![Build Status](https://travis-ci.org/BigAB/react-view-models.png?branch=master)](https://travis-ci.org/BigAB/react-view-models)
@@ -13,19 +13,19 @@ Connect observable view-models to React [presentational components][1] to create
 #### ES6
 
 ```js
-import { connect } from '@bigab/react-view-models';
+import { connect } from 'react-view-models';
 ```
 
 #### CommonJS
 
 ```js
-var connect = require("@bigab/react-view-models").connect;
+var connect = require("react-view-models").connect;
 ```
 
 ## Usage
 `save-button.js`
 ```js
-import { connect } from '@bigab/react-view-models';
+import { connect } from 'react-view-models';
 import Button from './button.jsx';
 import DefineMap from 'can-define/map/';
 import Item from '../models/items';
@@ -63,7 +63,7 @@ Methods on the view model, and copied onto the serialized props object and bound
 
 #### Example:
 ```javascript
-import { connect } from '@bigab/react-view-models';
+import { connect } from 'react-view-models';
 import DefineMap from 'can-define/map/map';
 import TodoComponent from 'components/todo.jsx';
 import Todo from 'models/todo';
