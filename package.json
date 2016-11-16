@@ -1,6 +1,6 @@
 {
   "name": "react-view-models",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React bindings to use CanJS observables",
   "homepage": "",
   "author": {
