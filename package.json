@@ -53,9 +53,10 @@
     ]
   },
   "dependencies": {
-    "can-compute": "^3.0.0-pre.10",
-    "can-define": "^1.0.3",
-    "react": "^15.2.1"
+    "can-compute": "^3.0.3",
+    "can-define": "^1.0.4",
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -67,11 +68,12 @@
     "generator-donejs": "^0.9.4",
     "lite-server": "^2.2.2",
     "react-addons-test-utils": "^15.2.1",
-    "steal": "^1.0.0-rc.8",
+    "steal": "^1.0.0-rc.10",
     "steal-builtins": "^1.0.0",
+    "steal-css": "^1.0.0-rc.0",
     "steal-jsx": "0.0.2",
     "steal-mocha": "0.0.3",
-    "steal-tools": "^1.0.0-rc.5",
+    "steal-tools": "^1.0.0-rc.8",
     "testee": "^0.3.0-pre.2"
   }
 }
