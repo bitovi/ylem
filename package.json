@@ -1,7 +1,7 @@
 {
   "name": "react-view-models",
   "version": "0.0.7",
-  "description": "React bindings to use CanJS observables",
+  "description": "A library for adding Observable Objects as View Models to React components",
   "homepage": "",
   "author": {
     "name": "Adam L Barrett",
