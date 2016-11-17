@@ -67,6 +67,7 @@
     "generator-donejs": "^0.9.4",
     "lite-server": "^2.2.2",
     "react-addons-test-utils": "^15.4.0",
+    "react-dom": "^15.4.0",
     "steal": "^1.0.0-rc.10",
     "steal-builtins": "^1.0.0",
     "steal-css": "^1.0.0-rc.0",
