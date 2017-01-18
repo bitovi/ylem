@@ -72,7 +72,7 @@
     "steal-builtins": "^1.0.0",
     "steal-css": "^1.0.0-rc.0",
     "steal-jsx": "0.0.2",
-    "steal-mocha": "0.0.3",
+    "steal-mocha": "1.0.0",
     "steal-tools": "^1.0.0-rc.8",
     "testee": "^0.3.0-pre.2"
   }
