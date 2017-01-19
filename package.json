@@ -1,19 +1,19 @@
 {
   "name": "react-view-models",
   "version": "0.0.7",
-  "description": "A library for adding Observable Objects as View Models to React components",
+  "description": "Add Observable View-Models to React components",
   "homepage": "",
   "author": {
     "name": "Adam L Barrett",
-    "email": "bigab@live.ca",
-    "url": "adamlbarrett.ca"
+    "email": "adam@bitovi.com",
+    "url": "bitovi.com"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BigAB/react-view-models.git"
+    "url": "https://github.com/canjs/react-view-models.git"
   },
-  "bugs": "https://github.com/BigAB/react-view-models/issues",
+  "bugs": "https://github.com/canjs/react-view-models/issues",
   "scripts": {
     "preversion": "npm test && npm run build",
     "version": "git commit -am \"Update dist for release\" && git checkout -b release && git add -f dist/",
@@ -35,7 +35,7 @@
       "cssify"
     ]
   },
-  "keywords": [],
+  "keywords": ["react", "viewmodel", "can", "canjs"],
   "system": {
     "main": "react-view-models",
     "directories": {

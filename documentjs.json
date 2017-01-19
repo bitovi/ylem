@@ -1,13 +1,13 @@
 {
   "sites": {
-    "docs": {
-      "dest": "docs",
-      "parent": "bigab-react-view-models",
+    "documentation": {
+      "dest": "documentation",
+      "parent": "react-view-models",
       "pageConfig": {
-        "page": "docs"
+        "page": "documentation"
       },
       "glob": {
-        "pattern": "src/**/*.{js,md}"
+        "pattern": "docs/**/*.{js,md}"
       }
     }
   }

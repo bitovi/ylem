@@ -1,7 +1,6 @@
-# React-View-Models
+# React View-Models
 
 ### react-view-models
-_formerly known as @bigab/can-react_
 
 [![Build Status](https://travis-ci.org/BigAB/react-view-models.png?branch=master)](https://travis-ci.org/BigAB/react-view-models)
 
