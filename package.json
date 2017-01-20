@@ -35,7 +35,12 @@
       "cssify"
     ]
   },
-  "keywords": ["react", "viewmodel", "can", "canjs"],
+  "keywords": [
+    "react",
+    "viewmodel",
+    "can",
+    "canjs"
+  ],
   "system": {
     "main": "react-view-models",
     "directories": {
@@ -50,6 +55,10 @@
       "donejs-cli",
       "steal-tools",
       "testee"
+    ],
+    "plugins": [
+      "steal-css",
+      "steal-jsx"
     ]
   },
   "dependencies": {
@@ -58,7 +67,6 @@
     "react": "^15.4.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
     "cssify": "^1.0.2",
     "documentjs": "^0.4.4",
     "donejs-cli": "^0.9.5",
@@ -68,12 +76,12 @@
     "lite-server": "^2.2.2",
     "react-addons-test-utils": "^15.4.0",
     "react-dom": "^15.4.0",
-    "steal": "^1.0.0-rc.10",
+    "steal": "^1.0.11",
     "steal-builtins": "^1.0.0",
-    "steal-css": "^1.0.0-rc.0",
+    "steal-css": "^1.2.0",
     "steal-jsx": "0.0.2",
-    "steal-mocha": "0.0.3",
-    "steal-tools": "^1.0.0-rc.8",
+    "steal-qunit": "^1.0.0",
+    "steal-tools": "^1.0.3",
     "testee": "^0.3.0-pre.2"
   }
 }
