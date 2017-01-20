@@ -169,7 +169,7 @@ const ViewModel = DefineMap.extend({
 
 ### Running the tests
 
-Tests can run in the browser by opening a webserver and visiting the `src/test/test.html` page.
+Tests can run in the browser by opening a webserver and visiting the `test/test.html` page.
 Automated tests that run the tests from the command line in Firefox can be run with
 
 ```

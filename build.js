@@ -13,7 +13,7 @@ stealTools.export( {
   .then(function() {
     return stealTools.export( {
         steal: {
-          main: 'src/test/canjs-test',
+          main: 'test/test',
           config: __dirname + "/package.json!npm"
         },
         options: {
@@ -23,9 +23,9 @@ stealTools.export( {
         },
         outputs: {
           "test": {
-            modules: ['src/test/canjs-test'],
+            modules: ['test/test'],
             dest: function(){
-              return __dirname + 'dist/test/test.js';
+              return __dirname + '/dist/test/test.js';
             },
             format: 'cjs'
           }
