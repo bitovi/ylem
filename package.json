@@ -24,6 +24,7 @@
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
+    "prepublish": "npm run build",
     "build": "node build.js",
     "document": "documentjs",
     "develop": "lite-server"
@@ -61,7 +62,8 @@
   "dependencies": {
     "can-compute": "^3.0.3",
     "can-define": "^1.0.4",
-    "react": "^15.4.0"
+    "react": "^15.4.0",
+    "react-addons-test-utils": "^15.4.0"
   },
   "devDependencies": {
     "cssify": "^1.0.2",
