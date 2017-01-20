@@ -1,19 +1,17 @@
-import chai from 'chai';
+import QUnit from 'steal-qunit';
 import { connect } from '../react-view-models';
 import React from 'react';
 import compute from 'can-compute';
 import ReactTestUtils from 'react-addons-test-utils';
-import DefineMap from "can-define/map/";
-import 'steal-mocha';
-const assert = chai.assert;
+import DefineMap from 'can-define/map/';
 
-describe('react-view-models', () => {
+QUnit.module('react-view-models', () => {
 
-  describe('connect()', () => {
+  QUnit.module('connect()', function(hooks) {
     let TestComponent;
     let shallowRenderer;
 
-    beforeEach(() => {
+    hooks.beforeEach(() => {
       TestComponent = React.createClass({
         render() {
           return React.createElement('div', { className: 'test' });
@@ -22,9 +20,9 @@ describe('react-view-models', () => {
       shallowRenderer = ReactTestUtils.createRenderer();
     });
 
-    describe('with a map to props function', () => {
+    QUnit.module('with a map to props function', () => {
 
-      it('should not (by default) render additional dom nodes that the ones from the extended Presentational Component', () => {
+      QUnit.test('should not (by default) render additional dom nodes that the ones from the extended Presentational Component', (assert) => {
 
         const ConnectedComponent = connect( () => ({ value: 'bar' }), TestComponent );
 
@@ -37,7 +35,7 @@ describe('react-view-models', () => {
 
       });
 
-      it('should update the component whenever an observable read inside the mapToProps function emits a change event', () => {
+      QUnit.test('should update the component whenever an observable read inside the mapToProps function emits a change event', (assert) => {
         const observable = compute('Inital Value');
         const ConnectedComponent = connect( () => ({ value: observable() }), TestComponent );
 
@@ -50,7 +48,7 @@ describe('react-view-models', () => {
 
       });
 
-      it('should update the component when new props are received', () => {
+      QUnit.test('should update the component when new props are received', (assert) => {
         const observable = compute('Inital Observable Value');
         const ConnectedComponent = connect( ({ propValue }) => ({ value: observable(), propValue }), TestComponent );
         const WrappingComponent = React.createClass({
@@ -75,7 +73,7 @@ describe('react-view-models', () => {
 
     });
 
-    describe('with can-define constructor function (viewModel)', () => {
+    QUnit.module('with can-define constructor function (viewModel)', () => {
 
       const DefinedViewModel = DefineMap.extend({
         foo: {
@@ -112,20 +110,20 @@ describe('react-view-models', () => {
         }
       });
 
-      it('should assign a property to the component called `viewModel` with an instance of ViewModel as the value', () => {
+      QUnit.test('should assign a property to the component called `viewModel` with an instance of ViewModel as the value', (assert) => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
         assert.ok( connectedInstance.viewModel instanceof DefinedViewModel );
       });
 
-      it('should pass a props object with copied methods, that have the correct context (the viewmodel) for callbacks', () => {
+      QUnit.test('should pass a props object with copied methods, that have the correct context (the viewmodel) for callbacks', (assert) => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent ) );
         const childComponent = ReactTestUtils.scryRenderedComponentsWithType(connectedInstance, TestComponent)[0];
         assert.equal(childComponent.props.returnContext(), connectedInstance.viewModel);
       });
 
-      it('should update whenever any observable property on the viewModel instance changes', () => {
+      QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const el = React.createElement( ConnectedComponent, { bar: 'bar', baz: 'bam' } );
         const connectedInstance = ReactTestUtils.renderIntoDocument( el );
@@ -136,7 +134,7 @@ describe('react-view-models', () => {
         assert.equal(childComponent.props.foobar, 'MMMbar');
       });
 
-      it('should update the component when new props are received', () => {
+      QUnit.test('should update the component when new props are received', (assert) => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const WrappingComponent = React.createClass({
           getInitialState() {
@@ -158,7 +156,7 @@ describe('react-view-models', () => {
         assert.equal(childComponent.props.bar, 'New Prop Value');
       });
 
-      it('should update the viewModel when new props are received', () => {
+      QUnit.test('should update the viewModel when new props are received', (assert) => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const WrappingComponent = React.createClass({
           getInitialState() {
@@ -180,7 +178,7 @@ describe('react-view-models', () => {
         assert.equal(childComponent.viewModel.foobar, 'fooBAZ');
       });
 
-      it('should use the viewModels props value, if the viewModel changes, and no new props are received', () => {
+      QUnit.test('should use the viewModels props value, if the viewModel changes, and no new props are received', (assert) => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const WrappingComponent = React.createClass({
           getInitialState() {
@@ -199,7 +197,7 @@ describe('react-view-models', () => {
         assert.equal(childComponent.viewModel.foobar, 'fooBAZ');
       });
 
-      it('should be able to call the props.interceptedCallback function received from parent component', () => {
+      QUnit.test('should be able to call the props.interceptedCallback function received from parent component', (assert) => {
         const expectedValue = [];
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const WrappingComponent = React.createClass({
@@ -219,7 +217,7 @@ describe('react-view-models', () => {
         assert.equal(connectedInstance.viewModel.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
       });
 
-      it('should be able to have the viewModel transform props before passing to child component', () => {
+      QUnit.test('should be able to have the viewModel transform props before passing to child component', (assert) => {
         const ConnectedComponent = connect( DefinedViewModel, TestComponent );
         const el = React.createElement( ConnectedComponent, { zzz: 'zzz' } );
         const connectedInstance = ReactTestUtils.renderIntoDocument( el );
