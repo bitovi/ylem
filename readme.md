@@ -2,7 +2,7 @@
 
 ### react-view-models
 
-[![Build Status](https://travis-ci.org/BigAB/react-view-models.png?branch=master)](https://travis-ci.org/BigAB/react-view-models)
+[![Build Status](https://travis-ci.org/canjs/react-view-models.png?branch=master)](https://travis-ci.org/canjs/react-view-models)
 
 
 Connect observable view-models to React [presentational components][1] to create auto rendering [container components][1].
