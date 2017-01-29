@@ -1,11 +1,19 @@
 /* eslint react/prop-types: 0 */
 import React from 'react';
 import compute from 'can-compute';
-import DefineMap from "can-define/map/";
+import { isConstructor } from 'can-types';
+import { makeArray } from 'can-util';
 
-export function connect( MapToProps, ComponentToConnect ) {
+export const nobind = 'nobind';
+export const asArray = 'asArray';
 
-  if ( typeof MapToProps !== 'function' ) {
+export function connect( ViewModel, ComponentToConnect, {
+  properties = {},
+  displayName,
+  deepObserve = false
+} = {} ) {
+
+  if ( typeof ViewModel !== 'function' ) {
     throw new Error('Setting the viewmodel to an instance or value is not supported');
   }
 
@@ -14,42 +22,36 @@ export function connect( MapToProps, ComponentToConnect ) {
     constructor(props) {
       super(props);
 
-      if ( MapToProps.prototype instanceof DefineMap ) {
-        this.viewModel = new MapToProps( props );
-        this.createMethodMixin();
-        this.computedState = this.computedStateFromViewModel();
+      if ( isConstructor( ViewModel ) ) {
+        this.viewModel = new ViewModel( props );
+        this._render = compute(this.observedRender, this);
+        this.state = { viewModel: this.viewModel };
       } else {
+        this.mapToProps = ViewModel;
         this.propsCompute = compute(props);
-        this.computedState = this.computedStateFromFunction( MapToProps );
+        this._render = compute(function(){
+          const props = this.mapToProps( this.propsCompute() );
+          return React.createElement( ComponentToConnect, props, this.props.children );
+        }, this);
       }
 
-      this.state = { propsForChild: this.computedState() };
-      this.bindToComputedState();
-    }
-
-    computedStateFromViewModel() {
-      return compute(() => {
-        const vm = this.viewModel;
-        const props = vm.serialize();
-        return Object.assign({}, this.methodMixin, props);
-      });
-    }
-
-    computedStateFromFunction( MapToPropsFunc ) {
-      return compute(() => {
-        const props = this.propsCompute();
-        return Object.assign( {}, props, MapToPropsFunc(props) );
-      });
-    }
-
-    bindToComputedState() {
       let batchNum;
-      this.computedState.bind("change", (ev, newVal) => {
+      this._render.bind("change", (ev, newVal) => {
         if(!ev.batchNum || ev.batchNum !== batchNum) {
           batchNum = ev.batchNum;
           this.setState({ propsForChild: newVal });
         }
       });
+    }
+
+    observedRender() {
+      const vm = this.viewModel;
+      // this deepObserve could be improved if DefineMap has a deep observe option
+      if (deepObserve) {
+        vm.get();
+      }
+      const props = extractProps( vm, properties );
+      return React.createElement( ComponentToConnect, props, this.props.children );
     }
 
     componentWillReceiveProps(nextProps) {
@@ -60,40 +62,38 @@ export function connect( MapToProps, ComponentToConnect ) {
       }
     }
 
-    createMethodMixin() {
-      const vm = this.viewModel;
-      const methodMixin = {};
-      getMethodNames( vm ).forEach( methodName => {
-        methodMixin[methodName] = vm[methodName].bind(vm);
-      });
-      this.methodMixin = methodMixin;
-    }
-
     render() {
-      return React.createElement(ComponentToConnect, this.state.propsForChild, this.props.children);
+      return this._render();
     }
 
   }
 
-  ConnectedComponent.displayName = `Connected(${ getDisplayName(ComponentToConnect) })`;
+  ConnectedComponent.displayName = displayName || getDisplayName( ComponentToConnect );
 
   return ConnectedComponent;
+
+}
+
+// export connect as the default module
+export default connect;
+
+// exported for testing only
+export function extractProps( vm, properties ) {
+  const props = {};
+  Object.keys(properties).forEach(key => {
+    const propertyVal = properties[key];
+    if ( propertyVal ) {
+      const bindFunction = typeof vm[key] === 'function' && propertyVal !== nobind;
+      props[key] = bindFunction ? vm[key].bind(vm) : vm[key];
+      if ( propertyVal === asArray ) {
+        props[key] = makeArray( props[key] );
+      }
+    }
+  });
+  return props;
 }
 
 function getDisplayName( ComponentToConnect ) {
-  return ComponentToConnect.displayName || ComponentToConnect.name || 'Component';
-}
-
-function getMethodNames( obj ) {
-  const result = [];
-  for (var key in obj) {
-    try {
-      if (typeof obj[key] === "function") {
-        result.push( key );
-      }
-    } catch (err) {
-      // do nothing
-    }
-  }
-  return result;
+  const componentName = ComponentToConnect.displayName || ComponentToConnect.name || 'Component';
+  return `Connected(${ componentName })`;
 }

@@ -61,10 +61,12 @@
   },
   "dependencies": {
     "can-compute": "^3.0.5",
-    "can-define": "^1.0.15",
+    "can-types": "^1.0.2",
+    "can-util": "^3.2.2",
     "react": "^15.4.2"
   },
   "devDependencies": {
+    "can-define": "^1.0.15",
     "cssify": "^1.0.2",
     "documentjs": "^0.4.4",
     "donejs-cli": "^0.9.5",
