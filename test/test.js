@@ -283,6 +283,44 @@ QUnit.module('react-view-models', () => {
           assert.equal(Object.getPrototypeOf( childComponent.props.list ), Array.prototype);
         });
 
+        QUnit.test(`should pass all remaining ownProps to the child component if
+                    the special key '...' is truthy`, (assert) => {
+          const ownProps = {
+            someProp: 'Here is something',
+            anotherProp: 3,
+            bar: 'bar',
+            foobar: 'This should get overwritten by view-models foo'
+          };
+          const properties = {
+            '...': true,
+            'foobar': true
+          };
+          const ConnectedComponent = connect( DefinedViewModel, TestComponent, { properties } );
+          const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent, ownProps ) );
+          const childComponent = ReactTestUtils.scryRenderedComponentsWithType(connectedInstance, TestComponent)[0];
+          assert.equal(childComponent.props.someProp, ownProps.someProp);
+          assert.equal(childComponent.props.anotherProp, ownProps.anotherProp);
+          assert.equal(childComponent.props.foobar, 'foobar');
+        });
+
+
+        QUnit.test(`should not pass certain ownProps to the child component if
+                    the special key '...' is truthy, but the properties key is false`, (assert) => {
+          const ownProps = {
+            someProp: 'Here is something',
+            anotherProp: 3
+          };
+          const properties = {
+            '...': true,
+            'anotherProp': false
+          };
+          const ConnectedComponent = connect( DefinedViewModel, TestComponent, { properties } );
+          const connectedInstance = ReactTestUtils.renderIntoDocument( React.createElement( ConnectedComponent, ownProps ) );
+          const childComponent = ReactTestUtils.scryRenderedComponentsWithType(connectedInstance, TestComponent)[0];
+          assert.equal(childComponent.props.someProp, ownProps.someProp);
+          assert.equal(childComponent.props.anotherProp, undefined);
+        });
+
       });
 
       QUnit.module(`OPTIONS 'deepObserve'`, () => {

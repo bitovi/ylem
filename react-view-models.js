@@ -50,7 +50,7 @@ export function connect( ViewModel, ComponentToConnect, {
       if (deepObserve) {
         vm.get();
       }
-      const props = extractProps( vm, properties );
+      let props = extractProps( vm, properties, this.props );
       return React.createElement( ComponentToConnect, props, this.props.children );
     }
 
@@ -78,9 +78,18 @@ export function connect( ViewModel, ComponentToConnect, {
 export default connect;
 
 // exported for testing only
-export function extractProps( vm, properties ) {
+// NOTE: this is the most complicated part, maybe refactor so it's easier to read?
+export function extractProps( vm, properties, ownProps ) {
   const props = {};
+  if ( properties['...'] ) {
+    Object.keys(ownProps).forEach(key => {
+      if ( properties[key] !== false ) {
+        props[key] = ownProps[key];
+      }
+    });
+  }
   Object.keys(properties).forEach(key => {
+    if (key === '...') return; // ignore special spread key
     const propertyVal = properties[key];
     if ( propertyVal ) {
       const bindFunction = typeof vm[key] === 'function' && propertyVal !== nobind;
