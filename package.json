@@ -1,46 +1,48 @@
 {
   "name": "react-view-models",
-  "version": "0.0.7",
-  "description": "A library for adding Observable Objects as View Models to React components",
+  "version": "0.0.8",
+  "description": "Add Observable View-Models to React components",
   "homepage": "",
   "author": {
     "name": "Adam L Barrett",
-    "email": "bigab@live.ca",
-    "url": "adamlbarrett.ca"
+    "email": "adam@bitovi.com",
+    "url": "bitovi.com"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BigAB/react-view-models.git"
+    "url": "https://github.com/canjs/react-view-models.git"
   },
-  "bugs": "https://github.com/BigAB/react-view-models/issues",
+  "bugs": "https://github.com/canjs/react-view-models/issues",
   "scripts": {
     "preversion": "npm test && npm run build",
     "version": "git commit -am \"Update dist for release\" && git checkout -b release && git add -f dist/",
     "postversion": "git push --tags && git checkout master && git branch -D release && git push",
-    "testee": "testee src/test/test.html --browsers firefox",
+    "testee": "testee test/test.html --browsers firefox",
     "test": "npm run eslint && npm run testee",
-    "eslint": "eslint src/*.js",
+    "eslint": "eslint \"**/*.js\" --ignore-pattern \"dist\" --ignore-pattern \"node_modules\"",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
+    "prepublish": "npm run build",
     "build": "node build.js",
     "document": "documentjs",
     "develop": "lite-server"
   },
   "main": "dist/cjs/react-view-models",
-  "browser": "dist/global/react-view-models",
   "browserify": {
     "transform": [
       "cssify"
     ]
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "viewmodel",
+    "can",
+    "canjs"
+  ],
   "system": {
     "main": "react-view-models",
-    "directories": {
-      "lib": "src"
-    },
     "configDependencies": [
       "live-reload"
     ],
@@ -50,30 +52,35 @@
       "donejs-cli",
       "steal-tools",
       "testee"
+    ],
+    "plugins": [
+      "steal-css",
+      "steal-jsx"
     ]
   },
   "dependencies": {
-    "can-compute": "^3.0.3",
-    "can-define": "^1.0.4",
-    "react": "^15.4.0"
+    "can-compute": "^3.0.5",
+    "can-types": "^1.0.2",
+    "can-util": "^3.2.2",
+    "react": "^15.4.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "can-define": "^1.0.15",
     "cssify": "^1.0.2",
     "documentjs": "^0.4.4",
     "donejs-cli": "^0.9.5",
-    "eslint": "^3.1.1",
+    "eslint": "^3.14.1",
     "eslint-plugin-react": "^6.5.0",
     "generator-donejs": "^0.9.4",
     "lite-server": "^2.2.2",
-    "react-addons-test-utils": "^15.4.0",
-    "react-dom": "^15.4.0",
-    "steal": "^1.0.0-rc.10",
+    "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "steal": "^1.1.0",
     "steal-builtins": "^1.0.0",
-    "steal-css": "^1.0.0-rc.0",
+    "steal-css": "^1.2.0",
     "steal-jsx": "0.0.2",
-    "steal-mocha": "1.0.0",
-    "steal-tools": "^1.0.0-rc.8",
-    "testee": "^0.3.0-pre.2"
+    "steal-qunit": "^1.0.0",
+    "steal-tools": "^1.1.1",
+    "testee": "^0.3.0"
   }
 }
