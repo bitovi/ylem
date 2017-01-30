@@ -54,6 +54,11 @@ export function connect( ViewModel, ComponentToConnect, {
       return React.createElement( ComponentToConnect, props, this.props.children );
     }
 
+    componentWillUnmount() {
+      this._render.off('change');
+      this.viewModel = null;
+    }
+
     componentWillReceiveProps(nextProps) {
       if (this.viewModel) {
         this.viewModel.set( nextProps );
