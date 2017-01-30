@@ -30,7 +30,6 @@
     "develop": "lite-server"
   },
   "main": "dist/cjs/react-view-models",
-  "browser": "dist/global/react-view-models",
   "browserify": {
     "transform": [
       "cssify"
@@ -60,26 +59,28 @@
     ]
   },
   "dependencies": {
-    "can-compute": "^3.0.3",
-    "can-define": "^1.0.4",
-    "react": "^15.4.2",
-    "react-addons-test-utils": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "can-compute": "^3.0.5",
+    "can-types": "^1.0.2",
+    "can-util": "^3.2.2",
+    "react": "^15.4.2"
   },
   "devDependencies": {
+    "can-define": "^1.0.15",
     "cssify": "^1.0.2",
     "documentjs": "^0.4.4",
     "donejs-cli": "^0.9.5",
-    "eslint": "^3.1.1",
+    "eslint": "^3.14.1",
     "eslint-plugin-react": "^6.5.0",
     "generator-donejs": "^0.9.4",
     "lite-server": "^2.2.2",
-    "steal": "^1.0.11",
+    "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "steal": "^1.1.0",
     "steal-builtins": "^1.0.0",
     "steal-css": "^1.2.0",
     "steal-jsx": "0.0.2",
     "steal-qunit": "^1.0.0",
-    "steal-tools": "^1.0.3",
-    "testee": "^0.3.0-pre.2"
+    "steal-tools": "^1.1.1",
+    "testee": "^0.3.0"
   }
 }
