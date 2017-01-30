@@ -30,7 +30,6 @@
     "develop": "lite-server"
   },
   "main": "dist/cjs/react-view-models",
-  "browser": "dist/global/react-view-models",
   "browserify": {
     "transform": [
       "cssify"
