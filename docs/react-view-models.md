@@ -14,7 +14,7 @@
 
 React-View-Models follows the pattern popularized by [react-redux](https://github.com/reactjs/react-redux), and provide users with a [react-view-models.connect connect] function for extending [React](https://facebook.github.io/react/) Presentational Components into Container Components, by providing `connect` with either a `mapToProps` function or more commonly a `ViewModel` constructor function, which is an extended [DefineMap](./can-define/map/map.html) class, along with a presentational component, just like react-redux does.
 
-The `ViewModel` is an observable, and when any observable change happens to one of it's properties, or if new props get set on the Container Component, some of the view-models properties will be sent into the connected component as props, forcing an update/render.
+The `ViewModel` is an observable, and when any observable change happens to one of it's properties, or if new props get set on the Container Component, some of the view-model's properties will be sent into the connected component as props, forcing an update/render.
 
 The `mapToProps` function will get converted to a compute, so when any observable read inside the compute emits a change (or if new props get set on the Container Component), it will update the wrapped/connected presentational component instance with new derived props.
 
