@@ -68,7 +68,7 @@
     "can-define": "^1.0.15",
     "cssify": "^1.0.2",
     "documentjs": "^0.4.4",
-    "donejs-cli": "^0.9.5",
+    "donejs-cli": "^1.0.0",
     "eslint": "^3.14.1",
     "eslint-plugin-react": "^6.5.0",
     "generator-donejs": "^0.9.4",
