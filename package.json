@@ -71,7 +71,7 @@
     "donejs-cli": "^0.9.5",
     "eslint": "^3.14.1",
     "eslint-plugin-react": "^6.5.0",
-    "generator-donejs": "^0.9.4",
+    "generator-donejs": "^1.0.0",
     "lite-server": "^2.2.2",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
