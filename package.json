@@ -81,6 +81,6 @@
     "steal-jsx": "0.0.2",
     "steal-qunit": "^1.0.0",
     "steal-tools": "^1.1.1",
-    "testee": "^0.3.0"
+    "testee": "^0.4.0"
   }
 }
