@@ -43,24 +43,21 @@ QUnit.module('react-view-models', () => {
 
       QUnit.test('should assign a property to the component called `viewModel` with an instance of ViewModel as the value', (assert) => {
         class TestComponent extends CanReactComponent {
-            componentWillMount() {
-                super.componentWillMount();
-            }
-
             render() {
-                return <div>{this.viewModel.foobar}</div>;
+                return <div>{this.props.foobar}</div>;
             }
         }
         TestComponent.ViewModel = DefinedViewModel;
 
         const testInstance = ReactTestUtils.renderIntoDocument( React.createElement( TestComponent ) );
         assert.ok( testInstance.viewModel instanceof DefinedViewModel );
+        assert.ok( testInstance.props === testInstance.viewModel );
       });
 
       QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
         class TestComponent extends CanReactComponent {
             render() {
-                return <div>{this.viewModel.foobar}</div>;
+                return <div>{this.props.foobar}</div>;
             }
         }
         TestComponent.ViewModel = DefinedViewModel;
@@ -73,10 +70,10 @@ QUnit.module('react-view-models', () => {
         assert.equal(divComponent.innerText, 'MMMbar');
       });
 
-      QUnit.test('should update the component and viewModel when new props are received', (assert) => {
+      QUnit.test('should update the component when new props are received', (assert) => {
         class TestComponent extends CanReactComponent {
             render() {
-                return <div>{this.viewModel.foo}</div>;
+                return <div>{this.props.foo}</div>;
             }
         }
         TestComponent.ViewModel = DefinedViewModel;
@@ -104,51 +101,16 @@ QUnit.module('react-view-models', () => {
         const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
         assert.equal(testInstance.props.foo, 'Initial Prop Value');
-        assert.equal(testInstance.viewModel.foo, 'Initial Prop Value');
         assert.equal(divComponent.innerText, 'Initial Prop Value');
         wrappingInstance.changeState();
         assert.equal(testInstance.props.foo, 'New Prop Value');
-        assert.equal(testInstance.viewModel.foo, 'New Prop Value');
         assert.equal(divComponent.innerText, 'New Prop Value');
-      });
-
-      QUnit.test('should use the viewModels props value, if the viewModel changes, and no new props are received', (assert) => {
-        class TestComponent extends CanReactComponent {
-            render() {
-                return <div>{this.viewModel.foobar}</div>;
-            }
-        }
-        TestComponent.ViewModel = DefinedViewModel;
-
-        class WrappingComponent extends React.Component {
-            constructor() {
-                super();
-
-                this.state = {
-                    bar: 'bar'
-                };
-            }
-
-            render() {
-                return <TestComponent bar={ this.state.bar } />;
-            }
-        }
-
-        const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
-        const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
-        const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-        assert.equal(testInstance.viewModel.foobar, 'foobar');
-        assert.equal(divComponent.innerText, 'foobar');
-        testInstance.viewModel.bar = 'BAZ';
-        assert.equal(testInstance.viewModel.foobar, 'fooBAZ');
-        assert.equal(divComponent.innerText, 'fooBAZ');
       });
 
       QUnit.test('should be able to have the viewModel transform props before passing to child component', (assert) => {
         class TestComponent extends CanReactComponent {
             render() {
-                return <div>{this.viewModel.zzz}</div>;
+                return <div>{this.props.zzz}</div>;
             }
         }
         TestComponent.ViewModel = DefinedViewModel;
@@ -156,14 +118,14 @@ QUnit.module('react-view-models', () => {
         const testInstance = ReactTestUtils.renderIntoDocument( React.createElement( TestComponent, { zzz: 'zzz' } ) );
         const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
-        assert.equal(testInstance.viewModel.zzz, 'ZZZ');
+        assert.equal(testInstance.props.zzz, 'ZZZ');
         assert.equal(divComponent.innerText, 'ZZZ');
       });
 
       QUnit.test('should be able to call the props.interceptedCallback function received from parent component', (assert) => {
           class TestComponent extends CanReactComponent {
               render() {
-                  return <div>{this.viewModel.foobar}</div>;
+                  return <div>{this.props.foobar}</div>;
               }
           }
           TestComponent.ViewModel = DefinedViewModel;
@@ -182,11 +144,11 @@ QUnit.module('react-view-models', () => {
           const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
           const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
 
-          const actual = testInstance.viewModel.interceptedCallback();
+          const actual = testInstance.props.interceptedCallback();
 
           assert.equal(actual, expectedValue, 'Value returned from wrapping components callback successfully');
-          assert.equal(testInstance.viewModel.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
-          delete testInstance.viewModel.interceptedCallbackCalled;
+          assert.equal(testInstance.props.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
+          delete testInstance.props.interceptedCallbackCalled;
       });
 
   });

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import compute from 'can-compute';
 
 export default class CanReactComponent extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this._render = this.render;
@@ -12,8 +12,16 @@ export default class CanReactComponent extends React.Component {
     }, this);
   }
 
+  get props() {
+      return this.viewModel;
+  }
+
+  set props(value) {
+      this._props = value;
+  }
+
   componentWillMount() {
-    this.viewModel = this._vm || new this.constructor.ViewModel( this.props );
+    this.viewModel = this._vm || new this.constructor.ViewModel( this._props );
 
     let batchNum;
     this.render.bind("change", (ev, newVal) => {
