@@ -3,7 +3,21 @@ import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
 
-import CanReactComponent from '../react-view-models';
+import CanReactComponent, { makeRenderer } from '../react-view-models';
+
+function getTextFromFrag(node){
+    var txt = "";
+    node = node.firstChild;
+    while(node) {
+        if(node.nodeType === 3) {
+            txt += node.nodeValue;
+        } else {
+            txt += getTextFromFrag(node);
+        }
+        node = node.nextSibling;
+    }
+    return txt;
+}
 
 QUnit.module('react-view-models', () => {
 
@@ -49,7 +63,7 @@ QUnit.module('react-view-models', () => {
         }
         TestComponent.ViewModel = DefinedViewModel;
 
-        const testInstance = ReactTestUtils.renderIntoDocument( React.createElement( TestComponent ) );
+        const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent /> );
         assert.ok( testInstance.viewModel instanceof DefinedViewModel );
         assert.ok( testInstance.props === testInstance.viewModel );
       });
@@ -62,7 +76,7 @@ QUnit.module('react-view-models', () => {
         }
         TestComponent.ViewModel = DefinedViewModel;
 
-        const testInstance = ReactTestUtils.renderIntoDocument( React.createElement( TestComponent, { bar: 'bar', baz: 'bam' } ) );
+        const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" baz="bam" /> );
         const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
         assert.equal(divComponent.innerText, 'foobar');
@@ -96,7 +110,7 @@ QUnit.module('react-view-models', () => {
             }
         }
 
-        const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
+        const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
         const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, TestComponent )[0];
         const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
@@ -115,7 +129,7 @@ QUnit.module('react-view-models', () => {
         }
         TestComponent.ViewModel = DefinedViewModel;
 
-        const testInstance = ReactTestUtils.renderIntoDocument( React.createElement( TestComponent, { zzz: 'zzz' } ) );
+        const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent zzz="zzz" /> );
         const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
         assert.equal(testInstance.props.zzz, 'ZZZ');
@@ -141,7 +155,7 @@ QUnit.module('react-view-models', () => {
               }
           }
 
-          const wrappingInstance = ReactTestUtils.renderIntoDocument( React.createElement( WrappingComponent ) );
+          const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
           const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
 
           const actual = testInstance.props.interceptedCallback();
@@ -151,6 +165,77 @@ QUnit.module('react-view-models', () => {
           delete testInstance.props.interceptedCallbackCalled;
       });
 
-  });
+    });
+
+    QUnit.module('when using makeRenderer', () => {
+
+      QUnit.test('should work with render function', (assert) => {
+          let ViewModel = DefineMap.extend({
+            foo: {
+              type: 'string',
+              value: 'foo'
+            },
+            bar: 'string',
+            foobar: {
+              get() {
+                return this.foo + this.bar;
+              }
+            }
+          });
+
+          let first = true;
+          var renderer = makeRenderer(ViewModel, (props) => {
+            if (first) {
+                first = false;
+                assert.ok(props instanceof ViewModel);
+            }
+
+            return <div>{ props.foobar }</div>;
+          });
+
+          var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
+          var frag = renderer(viewModel);
+
+          assert.equal(getTextFromFrag(frag), 'foo1bar1');
+          viewModel.foo = 'bar';
+          assert.equal(getTextFromFrag(frag), 'barbar1');
+      });
+
+      QUnit.test('should work with component class', (assert) => {
+          let first = true;
+          class TestComponent extends CanReactComponent {
+              render() {
+                  if (first) {
+                      first = false;
+                      assert.ok(this.props instanceof TestComponent.ViewModel);
+                  }
+
+                  return <div>{this.props.foobar}</div>;
+              }
+          }
+          TestComponent.ViewModel = DefineMap.extend({
+            foo: {
+              type: 'string',
+              value: 'foo'
+            },
+            bar: 'string',
+            foobar: {
+              get() {
+                return this.foo + this.bar;
+              }
+            }
+          });
+
+          var renderer = makeRenderer(TestComponent);
+
+          var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
+          var frag = renderer(viewModel);
+
+          assert.equal(getTextFromFrag(frag), 'foo1bar1');
+          viewModel.foo = 'bar';
+          assert.equal(getTextFromFrag(frag), 'barbar1');
+      });
+
+    });
 
 });
