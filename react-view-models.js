@@ -15,6 +15,11 @@ export default class CanReactComponent extends React.Component {
       return this._render();
     }, this);
 
+    if (typeof this.shouldComponentUpdate === 'function') {
+      this._shouldComponentUpdate = this.shouldComponentUpdate;
+    }
+    this.shouldComponentUpdate = () => false;
+
     { // TODO: Remove in PROD
       let methodAsString = null;
 
@@ -41,14 +46,6 @@ export default class CanReactComponent extends React.Component {
       ) {
         throw new Error(`super.componentWillReceiveProps() must be called on ${ this.constructor.name }.`);
       }
-
-      methodAsString = this.shouldComponentUpdate.toString();
-      if (
-        this.shouldComponentUpdate !== CanReactComponent.prototype.shouldComponentUpdate
-        && !methodAsString.includes('shouldComponentUpdate', methodAsString.indexOf(') {'))
-      ) {
-        throw new Error(`super.shouldComponentUpdate() must be called on ${ this.constructor.name }.`);
-      }
     }
   }
 
@@ -67,7 +64,10 @@ export default class CanReactComponent extends React.Component {
     this.render.bind("change", (ev, newVal) => {
       if(!ev.batchNum || ev.batchNum !== batchNum) {
         batchNum = ev.batchNum;
-        this.forceUpdate();
+
+        if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
+          this.forceUpdate();
+        }
       }
     });
   }
@@ -79,10 +79,6 @@ export default class CanReactComponent extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.viewModel.set( nextProps );
-  }
-
-  shouldComponentUpdate() {
-    return false;
   }
 }
 
