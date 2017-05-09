@@ -1,14 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import compute from 'can-compute';
+import DefineMap from 'can-define/map/map';
 
 export default class CanReactComponent extends React.Component {
   constructor() {
     super();
-
-    if (!this.constructor.ViewModel) {
-      throw new Error(`static ViewModel must be specified on ${ this.constructor.name }.`);
-    }
 
     this._render = this.render;
     this.render = compute(function() {
@@ -58,7 +55,8 @@ export default class CanReactComponent extends React.Component {
   }
 
   componentWillMount() {
-    this.viewModel = new this.constructor.ViewModel( this._props );
+    const ViewModel = this.constructor.ViewModel || DefineMap;
+    this.viewModel = new ViewModel( this._props );
 
     let batchNum;
     this.render.bind("change", (ev, newVal) => {
