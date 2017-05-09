@@ -7,7 +7,7 @@ export default class CanReactComponent extends React.Component {
     super();
 
     if (!this.constructor.ViewModel) {
-        throw new Error(`static ViewModel must be specified on ${ this.constructor.name }.`);
+      throw new Error(`static ViewModel must be specified on ${ this.constructor.name }.`);
     }
 
     this._render = this.render;
@@ -17,11 +17,11 @@ export default class CanReactComponent extends React.Component {
   }
 
   get props() {
-      return this.viewModel;
+    return this.viewModel;
   }
 
   set props(value) {
-      this._props = value;
+    this._props = value;
   }
 
   componentWillMount() {
@@ -46,45 +46,45 @@ export default class CanReactComponent extends React.Component {
   }
 
   shouldComponentUpdate() {
-      return false;
+    return false;
   }
 }
 
 export function makeRenderer(ViewModel, App) {
-    if (!App) {
-        App = ViewModel;
-        ViewModel = null;
-    }
+  if (!App) {
+    App = ViewModel;
+    ViewModel = null;
+  }
 
-    if (!(App.prototype instanceof React.Component)) {
-        let render = App;
-        class Wrapper extends CanReactComponent {
-            render() {
-                return render(this.props);
-            }
+  if (!(App.prototype instanceof React.Component)) {
+    let render = App;
+    class Wrapper extends CanReactComponent {
+      render() {
+        return render(this.props);
+      }
         }
-        Wrapper.ViewModel = ViewModel;
+    Wrapper.ViewModel = ViewModel;
 
-        App = Wrapper;
-    }
+    App = Wrapper;
+  }
 
-	return function(viewModel) {
-        var props = compute(function() {
-			let props = {};
-            viewModel.each(function (val, name) {
-                props[name] = val;
-            });
+  return function(viewModel) {
+    var props = compute(function() {
+      let props = {};
+      viewModel.each(function (val, name) {
+        props[name] = val;
+      });
 
-			return props;
-		});
+      return props;
+    });
 
-		const frag = document.createDocumentFragment();
-        ReactDOM.render( <App {...props()} />, frag);
+    const frag = document.createDocumentFragment();
+    ReactDOM.render( <App {...props()} />, frag);
 
-		props.on('change', function(ev, newValue) {
-			ReactDOM.render( <App {...newValue} />, frag);
-		});
+    props.on('change', function(ev, newValue) {
+      ReactDOM.render( <App {...newValue} />, frag);
+    });
 
-		return frag;
-	};
+    return frag;
+  };
 }
