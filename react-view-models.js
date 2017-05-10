@@ -54,7 +54,7 @@ export default class CanReactComponent extends React.Component {
     this.viewModel = new ViewModel( this._props );
 
     let batchNum;
-    this._compute.bind("change", (ev, newVal) => {
+    this._compute.bind("change", (ev) => {
       if(!ev.batchNum || ev.batchNum !== batchNum) {
         batchNum = ev.batchNum;
 

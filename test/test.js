@@ -172,6 +172,13 @@ QUnit.module('react-view-models', () => {
             return <div>{this.props.bar.bam.quux}</div>;
           }
         }
+        InnerComponent.propTypes = {
+          bar: React.PropTypes.shape({
+            bam: React.PropTypes.shape({
+              quux: React.PropTypes.string.isRequired,
+            }).isRequired,
+          }).isRequired,
+        };
 
         class OutterComponent extends CanReactComponent {
           render() {
