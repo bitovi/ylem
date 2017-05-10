@@ -165,6 +165,38 @@ QUnit.module('react-view-models', () => {
       delete testInstance.props.interceptedCallbackCalled;
     });
 
+    QUnit.module('when extending CanReactComponent', () => {
+      QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
+        class InnerComponent extends React.Component {
+          render() {
+            return <div>{this.props.bar.bam.quux}</div>;
+          }
+        }
+
+        class OutterComponent extends CanReactComponent {
+          render() {
+            return <InnerComponent bar={ this.props.foo.bar } />;
+          }
+        }
+        OutterComponent.ViewModel = DefineMap.extend({
+          foo: DefineMap.extend({
+            bar: DefineMap.extend({
+              bam: DefineMap.extend({
+                quux: 'string',
+              }),
+            }),
+          }),
+        });
+
+        const testInstance = ReactTestUtils.renderIntoDocument( <OutterComponent foo={{ bar: { bam: { quux: 'hello' } } }} /> );
+        const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+
+        assert.equal(divComponent.innerText, 'hello');
+        testInstance.viewModel.foo.bar.bam.quux = 'world';
+        assert.equal(divComponent.innerText, 'world');
+      });
+    });
+
   });
 
   QUnit.module('when using makeRenderer', () => {

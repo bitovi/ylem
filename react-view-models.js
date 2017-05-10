@@ -7,10 +7,8 @@ export default class CanReactComponent extends React.Component {
   constructor() {
     super();
 
-    this._render = this.render;
-    this.render = compute(function() {
-      return this._render();
-    }, this);
+    this._compute = compute(() => null);
+    this._compute.computeInstance.observation._async = true;
 
     if (typeof this.shouldComponentUpdate === 'function') {
       this._shouldComponentUpdate = this.shouldComponentUpdate;
@@ -18,31 +16,24 @@ export default class CanReactComponent extends React.Component {
     this.shouldComponentUpdate = () => false;
 
     { // TODO: Remove in PROD
-      let methodAsString = null;
+      let methods = [
+        'componentWillReceiveProps',
+        'componentWillMount',
+        'componentDidMount',
+        'componentWillUpdate',
+        'componentDidUpdate',
+        'componentWillUnmount',
+      ];
 
-      methodAsString = this.componentWillMount.toString();
-      if (
-        this.componentWillMount !== CanReactComponent.prototype.componentWillMount
-        && !methodAsString.includes('componentWillMount', methodAsString.indexOf(') {'))
-      ) {
-        throw new Error(`super.componentWillMount() must be called on ${ this.constructor.name }.`);
-      }
-
-      methodAsString = this.componentWillUnmount.toString();
-      if (
-        this.componentWillUnmount !== CanReactComponent.prototype.componentWillUnmount
-        && !methodAsString.includes('componentWillUnmount', methodAsString.indexOf(') {'))
-      ) {
-        throw new Error(`super.componentWillUnmount() must be called on ${ this.constructor.name }.`);
-      }
-
-      methodAsString = this.componentWillReceiveProps.toString();
-      if (
-        this.componentWillReceiveProps !== CanReactComponent.prototype.componentWillReceiveProps
-        && !methodAsString.includes('componentWillReceiveProps', methodAsString.indexOf(') {'))
-      ) {
-        throw new Error(`super.componentWillReceiveProps() must be called on ${ this.constructor.name }.`);
-      }
+      methods.forEach((method) => {
+        let methodAsString = this[method].toString();
+        if (
+          this[method] !== CanReactComponent.prototype[method]
+          && !methodAsString.includes(method, methodAsString.indexOf(') {'))
+        ) {
+          throw new Error(`super.${ method }() must be called on ${ this.constructor.name }.`);
+        }
+      });
     }
   }
 
@@ -54,12 +45,16 @@ export default class CanReactComponent extends React.Component {
     this._props = value;
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.viewModel.set( nextProps );
+  }
+
   componentWillMount() {
     const ViewModel = this.constructor.ViewModel || DefineMap;
     this.viewModel = new ViewModel( this._props );
 
     let batchNum;
-    this.render.bind("change", (ev, newVal) => {
+    this._compute.bind("change", (ev, newVal) => {
       if(!ev.batchNum || ev.batchNum !== batchNum) {
         batchNum = ev.batchNum;
 
@@ -68,15 +63,25 @@ export default class CanReactComponent extends React.Component {
         }
       }
     });
+
+    this._compute.computeInstance.observation.asyncStart();
+  }
+
+  componentDidMount() {
+    this._compute.computeInstance.observation.asyncEnd();
+  }
+
+  componentWillUpdate() {
+    this._compute.computeInstance.observation.asyncStart();
+  }
+
+  componentDidUpdate() {
+    this._compute.computeInstance.observation.asyncEnd();
   }
 
   componentWillUnmount() {
-    this._render.off('change');
+    this._compute.off('change');
     this.viewModel = null;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.viewModel.set( nextProps );
   }
 }
 
