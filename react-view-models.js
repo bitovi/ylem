@@ -7,8 +7,7 @@ export default class CanReactComponent extends React.Component {
   constructor() {
     super();
 
-    this._compute = compute(() => null);
-    this._compute.computeInstance.observation._async = true;
+    this._compute = compute.deferred();
 
     if (typeof this.shouldComponentUpdate === 'function') {
       this._shouldComponentUpdate = this.shouldComponentUpdate;
@@ -64,19 +63,19 @@ export default class CanReactComponent extends React.Component {
       }
     });
 
-    this._compute.computeInstance.observation.asyncStart();
+    this._compute.startDeferred();
   }
 
   componentDidMount() {
-    this._compute.computeInstance.observation.asyncEnd();
+    this._compute.stopDeferred();
   }
 
   componentWillUpdate() {
-    this._compute.computeInstance.observation.asyncStart();
+    this._compute.startDeferred();
   }
 
   componentDidUpdate() {
-    this._compute.computeInstance.observation.asyncEnd();
+    this._compute.stopDeferred();
   }
 
   componentWillUnmount() {
@@ -97,7 +96,7 @@ export function makeRenderer(ViewModel, App) {
       render() {
         return render(this.props);
       }
-        }
+    }
     Wrapper.ViewModel = ViewModel;
 
     App = Wrapper;

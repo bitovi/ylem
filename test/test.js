@@ -1,5 +1,6 @@
 import QUnit from 'steal-qunit';
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
 
@@ -166,6 +167,7 @@ QUnit.module('react-view-models', () => {
     });
 
     QUnit.module('when extending CanReactComponent', () => {
+
       QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
         class InnerComponent extends React.Component {
           render() {
@@ -173,9 +175,9 @@ QUnit.module('react-view-models', () => {
           }
         }
         InnerComponent.propTypes = {
-          bar: React.PropTypes.shape({
-            bam: React.PropTypes.shape({
-              quux: React.PropTypes.string.isRequired,
+          bar: PropTypes.shape({
+            bam: PropTypes.shape({
+              quux: PropTypes.string.isRequired,
             }).isRequired,
           }).isRequired,
         };
@@ -202,6 +204,7 @@ QUnit.module('react-view-models', () => {
         testInstance.viewModel.foo.bar.bam.quux = 'world';
         assert.equal(divComponent.innerText, 'world');
       });
+
     });
 
   });
