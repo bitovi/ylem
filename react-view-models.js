@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import compute from 'can-compute';
 import DefineMap from 'can-define/map/map';
+import Scope from 'can-view-scope';
 
 export default class CanReactComponent extends React.Component {
   constructor() {
@@ -50,7 +51,7 @@ export default class CanReactComponent extends React.Component {
 
   componentWillMount() {
     const ViewModel = this.constructor.ViewModel || DefineMap;
-    this.viewModel = new ViewModel( this._props );
+    this.viewModel = new ViewModel( this._props ); // TODO: don't seal
 
     let batchNum;
     this._compute.bind("change", (ev) => {
@@ -102,10 +103,17 @@ export function makeRenderer(ViewModel, App) {
     App = Wrapper;
   }
 
-  return function(viewModel) {
+  return function(scope, options, nodeList) {
+    if ( !(scope instanceof Scope) ) {
+      scope = Scope.refsScope().add(scope || {});
+    }
+    if ( !(options instanceof Scope.Options) ) {
+      options = new Scope.Options(options || {});
+    }
+
     var props = compute(function() {
       let props = {};
-      viewModel.each(function (val, name) {
+      scope._context.each(function (val, name) {
         props[name] = val;
       });
 

@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
+import Component from 'can-component';
+import stache from 'can-stache';
 
 import CanReactComponent, { makeRenderer } from '../react-view-models';
 
@@ -276,6 +278,43 @@ QUnit.module('react-view-models', () => {
       assert.equal(getTextFromFrag(frag), 'foo1bar1');
       viewModel.foo = 'bar';
       assert.equal(getTextFromFrag(frag), 'barbar1');
+    });
+
+  });
+
+  QUnit.module('inside CanComponent', () => {
+
+    QUnit.test('should work with render function', (assert) => {
+
+      let ViewModel = DefineMap.extend({
+        foo: {
+          type: 'string',
+          value: 'foo'
+        },
+        bar: 'string',
+        foobar: {
+          get() {
+            return this.foo + this.bar;
+          }
+        }
+      });
+
+      Component.extend({
+        tag: "test-component",
+        ViewModel: ViewModel,
+        view: makeRenderer(ViewModel, (props) => {
+          return (
+            <div className="test-component">
+              <div>{props.foobar}</div>
+            </div>
+          );
+        })
+      });
+
+      var frag = stache('<test-component bar="barrr" />')();
+
+      assert.equal(getTextFromFrag(frag), 'foobarrr');
+
     });
 
   });
