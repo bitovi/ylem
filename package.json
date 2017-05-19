@@ -30,11 +30,6 @@
     "develop": "lite-server"
   },
   "main": "dist/cjs/react-view-models",
-  "browserify": {
-    "transform": [
-      "cssify"
-    ]
-  },
   "keywords": [
     "react",
     "viewmodel",
@@ -66,7 +61,6 @@
   },
   "devDependencies": {
     "can-define": "^1.0.15",
-    "cssify": "^1.0.2",
     "documentjs": "^0.4.4",
     "donejs-cli": "^0.9.5",
     "eslint": "^3.14.1",
