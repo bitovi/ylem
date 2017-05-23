@@ -66,7 +66,7 @@
     "can-component": "^3.0.7",
     "can-stache": "^3.0.24",
     "documentjs": "^0.4.4",
-    "donejs-cli": "^0.9.5",
+    "donejs-cli": "^1.0.0",
     "eslint": "^3.14.1",
     "eslint-config-jquery": "^1.0.1",
     "eslint-plugin-react": "^6.5.0",
