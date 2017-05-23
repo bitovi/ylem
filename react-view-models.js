@@ -1,113 +1,132 @@
-/* eslint react/prop-types: 0 */
 import React from 'react';
+import ReactDOM from 'react-dom';
 import compute from 'can-compute';
-import { isConstructor } from 'can-types';
-import { makeArray } from 'can-util';
+import DefineMap from 'can-define/map/map';
+import Scope from 'can-view-scope';
 
-export const nobind = 'nobind';
-export const asArray = 'asArray';
+export default class CanReactComponent extends React.Component {
+  constructor() {
+    super();
 
-export function connect( ViewModel, ComponentToConnect, {
-  properties = {},
-  displayName,
-  deepObserve = false
-} = {} ) {
+    this._compute = compute.deferred();
 
-  if ( typeof ViewModel !== 'function' ) {
-    throw new Error('Setting the viewmodel to an instance or value is not supported');
-  }
+    if (typeof this.shouldComponentUpdate === 'function') {
+      this._shouldComponentUpdate = this.shouldComponentUpdate;
+    }
+    this.shouldComponentUpdate = () => false;
 
-  class ConnectedComponent extends React.Component {
+    { // TODO: Remove in PROD
+      let methods = [
+        'componentWillReceiveProps',
+        'componentWillMount',
+        'componentDidMount',
+        'componentWillUpdate',
+        'componentDidUpdate',
+        'componentWillUnmount',
+      ];
 
-    constructor(props) {
-      super(props);
-
-      if ( isConstructor( ViewModel ) ) {
-        this.viewModel = new ViewModel( props );
-        this._render = compute(this.observedRender, this);
-        this.state = { viewModel: this.viewModel };
-      } else {
-        this.mapToProps = ViewModel;
-        this.propsCompute = compute(props);
-        this._render = compute(function(){
-          const props = this.mapToProps( this.propsCompute() );
-          return React.createElement( ComponentToConnect, props, this.props.children );
-        }, this);
-      }
-
-      let batchNum;
-      this._render.bind("change", (ev, newVal) => {
-        if(!ev.batchNum || ev.batchNum !== batchNum) {
-          batchNum = ev.batchNum;
-          this.setState({ propsForChild: newVal });
+      methods.forEach((method) => {
+        let methodAsString = this[method].toString();
+        if (
+          this[method] !== CanReactComponent.prototype[method]
+          && !methodAsString.includes(method, methodAsString.indexOf(') {'))
+        ) {
+          throw new Error(`super.${ method }() must be called on ${ this.constructor.name }.`);
         }
       });
     }
-
-    observedRender() {
-      const vm = this.viewModel;
-      // this deepObserve could be improved if DefineMap has a deep observe option
-      if (deepObserve) {
-        vm.get();
-      }
-      let props = extractProps( vm, properties, this.props );
-      return React.createElement( ComponentToConnect, props, this.props.children );
-    }
-
-    componentWillUnmount() {
-      this._render.off('change');
-      this.viewModel = null;
-    }
-
-    componentWillReceiveProps(nextProps) {
-      if (this.viewModel) {
-        this.viewModel.set( nextProps );
-      } else {
-        this.propsCompute( nextProps );
-      }
-    }
-
-    render() {
-      return this._render();
-    }
-
   }
 
-  ConnectedComponent.displayName = displayName || getDisplayName( ComponentToConnect );
+  get props() {
+    return this.viewModel;
+  }
 
-  return ConnectedComponent;
+  set props(value) {
+    this._props = value;
+  }
 
-}
+  componentWillReceiveProps(nextProps) {
+    this.viewModel.set( nextProps );
+  }
 
-// export connect as the default module
-export default connect;
+  componentWillMount() {
+    const ViewModel = this.constructor.ViewModel || DefineMap;
+    this.viewModel = new ViewModel( this._props ); // TODO: don't seal
 
-// exported for testing only
-// NOTE: this is the most complicated part, maybe refactor so it's easier to read?
-export function extractProps( vm, properties, ownProps ) {
-  const props = {};
-  if ( properties['...'] ) {
-    Object.keys(ownProps).forEach(key => {
-      if ( properties[key] !== false ) {
-        props[key] = ownProps[key];
+    let batchNum;
+    this._compute.bind("change", (ev) => {
+      if(!ev.batchNum || ev.batchNum !== batchNum) {
+        batchNum = ev.batchNum;
+
+        if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
+          this.forceUpdate();
+        }
       }
     });
+
+    this._compute.startDeferred();
   }
-  Object.keys(properties).forEach(key => {
-    if (key === '...') return; // ignore special spread key
-    const propertyVal = properties[key];
-    if ( propertyVal ) {
-      const bindFunction = typeof vm[key] === 'function' && propertyVal !== nobind;
-      props[key] = bindFunction ? vm[key].bind(vm) : vm[key];
-      if ( propertyVal === asArray ) {
-        props[key] = makeArray( props[key] );
-      }
-    }
-  });
-  return props;
+
+  componentDidMount() {
+    this._compute.stopDeferred();
+  }
+
+  componentWillUpdate() {
+    this._compute.startDeferred();
+  }
+
+  componentDidUpdate() {
+    this._compute.stopDeferred();
+  }
+
+  componentWillUnmount() {
+    this._compute.off('change');
+    this.viewModel = null;
+  }
 }
 
-function getDisplayName( ComponentToConnect ) {
-  const componentName = ComponentToConnect.displayName || ComponentToConnect.name || 'Component';
-  return `Connected(${ componentName })`;
+export function makeRenderer(ViewModel, App) {
+  if (!App) {
+    App = ViewModel;
+    ViewModel = null;
+  }
+
+  if (!(App.prototype instanceof React.Component)) {
+    let render = App;
+    class Wrapper extends CanReactComponent {
+      render() {
+        return render(this.props);
+      }
+    }
+    Wrapper.ViewModel = ViewModel;
+
+    App = Wrapper;
+  }
+
+  return function(scope, options, nodeList) {
+    if ( !(scope instanceof Scope) ) {
+      scope = Scope.refsScope().add(scope || {});
+    }
+    if ( !(options instanceof Scope.Options) ) {
+      options = new Scope.Options(options || {});
+    }
+
+    var props = compute(function() {
+      let props = {};
+      scope._context.each(function (val, name) {
+        props[name] = val;
+      });
+
+      return props;
+    });
+
+    const frag = document.createDocumentFragment();
+    ReactDOM.render( <App {...props()} />, frag);
+
+    props.on('change', function(ev, newValue) {
+      ReactDOM.render( <App {...newValue} />, frag);
+    });
+
+    return frag;
+  };
 }
