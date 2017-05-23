@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import compute from 'can-compute';
 import DefineMap from 'can-define/map/map';
 import Scope from 'can-view-scope';
+import Observer from './observer';
 
 export default class CanReactComponent extends React.Component {
   constructor() {
     super();
 
-    this._compute = compute.deferred();
+    this._observer = new Observer();
 
     if (typeof this.shouldComponentUpdate === 'function') {
       this._shouldComponentUpdate = this.shouldComponentUpdate;
@@ -54,33 +55,27 @@ export default class CanReactComponent extends React.Component {
     this.viewModel = new ViewModel( this._props ); // TODO: don't seal
 
     let batchNum;
-    this._compute.bind("change", (ev) => {
-      if(!ev.batchNum || ev.batchNum !== batchNum) {
-        batchNum = ev.batchNum;
-
-        if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
-          this.forceUpdate();
-        }
+    this._observer.startLisening(() => {
+      if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
+        this.forceUpdate();
       }
     });
-
-    this._compute.startDeferred();
   }
 
   componentDidMount() {
-    this._compute.stopDeferred();
+    this._observer.stopListening();
   }
 
   componentWillUpdate() {
-    this._compute.startDeferred();
+    this._observer.startLisening();
   }
 
   componentDidUpdate() {
-    this._compute.stopDeferred();
+    this._observer.stopListening();
   }
 
   componentWillUnmount() {
-    this._compute.off('change');
+    this._observer.stop();
     this.viewModel = null;
   }
 }

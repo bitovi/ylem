@@ -58,7 +58,7 @@ QUnit.module('react-view-models', () => {
       }
     });
 
-    QUnit.test('should assign a property to the component called `viewModel` with an instance of ViewModel as the value', (assert) => {
+    QUnit.test('should set props to be instance of ViewModel', (assert) => {
       class TestComponent extends CanReactComponent {
         render() {
           return <div>{this.props.foobar}</div>;
@@ -67,8 +67,7 @@ QUnit.module('react-view-models', () => {
       TestComponent.ViewModel = DefinedViewModel;
 
       const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent /> );
-      assert.ok( testInstance.viewModel instanceof DefinedViewModel );
-      assert.ok( testInstance.props === testInstance.viewModel );
+      assert.ok( testInstance.props instanceof DefinedViewModel );
     });
 
     QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
