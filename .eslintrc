@@ -13,7 +13,7 @@
   },
   "rules": {
       "semi": 1,
-      "indent": [ "error", 2 ]
+      "indent": [ "error", "tab" ]
   },
   "env": {
     "browser": true,
