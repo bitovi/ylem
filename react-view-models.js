@@ -1,113 +1,131 @@
-/* eslint react/prop-types: 0 */
 import React from 'react';
+import ReactDOM from 'react-dom';
 import compute from 'can-compute';
-import { isConstructor } from 'can-types';
-import { makeArray } from 'can-util';
+import DefineMap from 'can-define/map/map';
+import Scope from 'can-view-scope';
+import Observer from './observer';
+import makeEnumerable, { isEnumerable } from './make-enumerable';
 
-export const nobind = 'nobind';
-export const asArray = 'asArray';
+export default class CanReactComponent extends React.Component {
+	constructor() {
+		super();
 
-export function connect( ViewModel, ComponentToConnect, {
-  properties = {},
-  displayName,
-  deepObserve = false
-} = {} ) {
+		if (this.constructor.ViewModel && !isEnumerable(this.constructor.ViewModel)) {
+			makeEnumerable(this.constructor.ViewModel, true);
+		}
 
-  if ( typeof ViewModel !== 'function' ) {
-    throw new Error('Setting the viewmodel to an instance or value is not supported');
-  }
+		this._observer = new Observer();
 
-  class ConnectedComponent extends React.Component {
+		if (typeof this.shouldComponentUpdate === 'function') {
+			this._shouldComponentUpdate = this.shouldComponentUpdate;
+		}
+		this.shouldComponentUpdate = () => false;
 
-    constructor(props) {
-      super(props);
+		{ // TODO: Remove in PROD
+			let methods = [
+				'componentWillReceiveProps',
+				'componentWillMount',
+				'componentDidMount',
+				'componentWillUpdate',
+				'componentDidUpdate',
+				'componentWillUnmount',
+			];
 
-      if ( isConstructor( ViewModel ) ) {
-        this.viewModel = new ViewModel( props );
-        this._render = compute(this.observedRender, this);
-        this.state = { viewModel: this.viewModel };
-      } else {
-        this.mapToProps = ViewModel;
-        this.propsCompute = compute(props);
-        this._render = compute(function(){
-          const props = this.mapToProps( this.propsCompute() );
-          return React.createElement( ComponentToConnect, props, this.props.children );
-        }, this);
-      }
+			methods.forEach((method) => {
+				let methodAsString = this[method].toString();
+				if (
+					this[method] !== CanReactComponent.prototype[method]
+					&& !methodAsString.includes(method, methodAsString.indexOf(') {'))
+				) {
+					throw new Error(`super.${ method }() must be called on ${ this.constructor.name }.`);
+				}
+			});
+		}
+	}
 
-      let batchNum;
-      this._render.bind("change", (ev, newVal) => {
-        if(!ev.batchNum || ev.batchNum !== batchNum) {
-          batchNum = ev.batchNum;
-          this.setState({ propsForChild: newVal });
-        }
-      });
-    }
+	get props() {
+		return this.viewModel;
+	}
 
-    observedRender() {
-      const vm = this.viewModel;
-      // this deepObserve could be improved if DefineMap has a deep observe option
-      if (deepObserve) {
-        vm.get();
-      }
-      let props = extractProps( vm, properties, this.props );
-      return React.createElement( ComponentToConnect, props, this.props.children );
-    }
+	set props(value) {
+		this._props = value;
+	}
 
-    componentWillUnmount() {
-      this._render.off('change');
-      this.viewModel = null;
-    }
+	componentWillReceiveProps(nextProps) {
+		this.viewModel.set( nextProps );
+	}
 
-    componentWillReceiveProps(nextProps) {
-      if (this.viewModel) {
-        this.viewModel.set( nextProps );
-      } else {
-        this.propsCompute( nextProps );
-      }
-    }
+	componentWillMount() {
+		const ViewModel = this.constructor.ViewModel || DefineMap;
+		this.viewModel = new ViewModel( this._props ); // TODO: don't seal
 
-    render() {
-      return this._render();
-    }
+		this._observer.startLisening(() => {
+			if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
+				this.forceUpdate();
+			}
+		});
+	}
 
-  }
+	componentDidMount() {
+		this._observer.stopListening();
+	}
 
-  ConnectedComponent.displayName = displayName || getDisplayName( ComponentToConnect );
+	componentWillUpdate() {
+		this._observer.startLisening();
+	}
 
-  return ConnectedComponent;
+	componentDidUpdate() {
+		this._observer.stopListening();
+	}
 
+	componentWillUnmount() {
+		this._observer.stop();
+		this.viewModel = null;
+	}
 }
 
-// export connect as the default module
-export default connect;
+export function makeRenderer(ViewModel, App) {
+	if (!App) {
+		App = ViewModel;
+		ViewModel = null;
+	}
 
-// exported for testing only
-// NOTE: this is the most complicated part, maybe refactor so it's easier to read?
-export function extractProps( vm, properties, ownProps ) {
-  const props = {};
-  if ( properties['...'] ) {
-    Object.keys(ownProps).forEach(key => {
-      if ( properties[key] !== false ) {
-        props[key] = ownProps[key];
-      }
-    });
-  }
-  Object.keys(properties).forEach(key => {
-    if (key === '...') return; // ignore special spread key
-    const propertyVal = properties[key];
-    if ( propertyVal ) {
-      const bindFunction = typeof vm[key] === 'function' && propertyVal !== nobind;
-      props[key] = bindFunction ? vm[key].bind(vm) : vm[key];
-      if ( propertyVal === asArray ) {
-        props[key] = makeArray( props[key] );
-      }
-    }
-  });
-  return props;
-}
+	if (!(App.prototype instanceof React.Component)) {
+		let render = App;
+		class Wrapper extends CanReactComponent {
+			render() {
+				return render(this.props);
+			}
+		}
+		Wrapper.ViewModel = ViewModel;
 
-function getDisplayName( ComponentToConnect ) {
-  const componentName = ComponentToConnect.displayName || ComponentToConnect.name || 'Component';
-  return `Connected(${ componentName })`;
+		App = Wrapper;
+	}
+
+	return function(scope, options) {
+		if ( !(scope instanceof Scope) ) {
+			scope = Scope.refsScope().add(scope || {});
+		}
+		if ( !(options instanceof Scope.Options) ) {
+			options = new Scope.Options(options || {});
+		}
+
+		var props = compute(function() {
+			let props = {};
+			scope._context.each(function (val, name) {
+				props[name] = val;
+			});
+
+			return props;
+		});
+
+		const frag = document.createDocumentFragment();
+		ReactDOM.render( <App {...props()} />, frag);
+
+		props.on('change', function(ev, newValue) {
+			ReactDOM.render( <App {...newValue} />, frag);
+		});
+
+		return frag;
+	};
 }

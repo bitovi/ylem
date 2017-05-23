@@ -55,20 +55,23 @@
   },
   "dependencies": {
     "can-compute": "^3.0.5",
-    "can-types": "^1.0.2",
-    "can-util": "^3.2.2",
-    "react": "^15.4.2"
+    "can-define": "^1.0.15",
+    "can-view-scope": "^3.1.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "can-define": "^1.0.15",
+    "babel-eslint": "^7.2.3",
+    "can-component": "^3.0.7",
+    "can-stache": "^3.0.24",
     "documentjs": "^0.4.4",
     "donejs-cli": "^0.9.5",
     "eslint": "^3.14.1",
+    "eslint-config-jquery": "^1.0.1",
     "eslint-plugin-react": "^6.5.0",
     "generator-donejs": "^0.9.4",
     "lite-server": "^2.2.2",
-    "react-addons-test-utils": "^15.4.2",
-    "react-dom": "^15.4.2",
     "steal": "^1.1.0",
     "steal-builtins": "^1.0.0",
     "steal-css": "^1.2.0",
