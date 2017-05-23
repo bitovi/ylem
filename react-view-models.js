@@ -4,10 +4,15 @@ import compute from 'can-compute';
 import DefineMap from 'can-define/map/map';
 import Scope from 'can-view-scope';
 import Observer from './observer';
+import makeEnumerable, { isEnumerable } from './make-enumerable';
 
 export default class CanReactComponent extends React.Component {
 	constructor() {
 		super();
+
+		if (this.constructor.ViewModel && !isEnumerable(this.constructor.ViewModel)) {
+			makeEnumerable(this.constructor.ViewModel, true);
+		}
 
 		this._observer = new Observer();
 

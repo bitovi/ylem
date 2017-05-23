@@ -26,7 +26,7 @@ QUnit.module('react-view-models', () => {
 
 	QUnit.module('when extending CanReactComponent', () => {
 
-		const DefinedViewModel = DefineMap.extend({
+		const DefinedViewModel = DefineMap.extend('ViewModel', {
 			foo: {
 				type: 'string',
 				value: 'foo'
@@ -56,6 +56,25 @@ QUnit.module('react-view-models', () => {
 					};
 				}
 			}
+		});
+
+		QUnit.test('should work without a ViewModel', (assert) => {
+
+			Component.extend({
+				tag: "test-component",
+				view: makeRenderer((props) => {
+					return (
+						<div className="test-component">
+							<div>{props.bar}</div>
+						</div>
+					);
+				})
+			});
+
+			var frag = stache('<test-component bar="barrr" />')();
+
+			assert.equal(getTextFromFrag(frag), 'barrr');
+
 		});
 
 		QUnit.test('should set props to be instance of ViewModel', (assert) => {
@@ -105,10 +124,10 @@ QUnit.module('react-view-models', () => {
 					return <InnerComponent bar={ this.props.foo.bar } />;
 				}
 			}
-			OutterComponent.ViewModel = DefineMap.extend({
-				foo: DefineMap.extend({
-					bar: DefineMap.extend({
-						bam: DefineMap.extend({
+			OutterComponent.ViewModel = DefineMap.extend('ViewModel', {
+				foo: DefineMap.extend('Foo', {
+					bar: DefineMap.extend('Bar', {
+						bam: DefineMap.extend('Bam', {
 							quux: 'string',
 						}),
 					}),
@@ -201,7 +220,7 @@ QUnit.module('react-view-models', () => {
 
 			assert.equal(actual, expectedValue, 'Value returned from wrapping components callback successfully');
 			assert.equal(testInstance.props.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
-			delete testInstance.props.interceptedCallbackCalled;
+			testInstance.props.interceptedCallbackCalled = undefined;
 		});
 
 	});
@@ -209,7 +228,7 @@ QUnit.module('react-view-models', () => {
 	QUnit.module('when using makeRenderer', () => {
 
 		QUnit.test('should work with render function', (assert) => {
-			let ViewModel = DefineMap.extend({
+			let ViewModel = DefineMap.extend('ViewModel', {
 				foo: {
 					type: 'string',
 					value: 'foo'
@@ -252,7 +271,7 @@ QUnit.module('react-view-models', () => {
 					return <div>{this.props.foobar}</div>;
 				}
 			}
-			TestComponent.ViewModel = DefineMap.extend({
+			TestComponent.ViewModel = DefineMap.extend('ViewModel', {
 				foo: {
 					type: 'string',
 					value: 'foo'
@@ -277,11 +296,89 @@ QUnit.module('react-view-models', () => {
 
 	});
 
+	QUnit.module('when using React patterns', () => {
+
+		QUnit.test('should work with prop spread', (assert) => {
+
+			let ViewModel = DefineMap.extend('ViewModel', {
+				title: {
+					type: 'string',
+					value: 'Test Page',
+				},
+				href: {
+					get() {
+						return `/${this.title.toLowerCase().replace(/[^a-z]/g, '-').replace(/--+/g, '-')}`;
+					},
+				},
+			});
+
+			class TestComponent extends CanReactComponent {
+				render() {
+					let props = { target: '_blank' };
+					return <a {...this.props} {...props} />;
+				}
+			}
+			TestComponent.ViewModel = ViewModel;
+
+			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent /> );
+			const aComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'a' );
+
+			const props = {};
+			for (let { name, value } of aComponent.attributes) {
+				props[name] = value;
+			}
+
+			assert.equal(props.target, '_blank');
+			assert.equal(props.title, 'Test Page');
+			assert.equal(props.href, '/test-page');
+
+		});
+
+		QUnit.test('should work with prop spread (nested)', (assert) => {
+
+			let ViewModel = DefineMap.extend('ViewModel', {
+				inner: DefineMap.extend('Inner', {
+					title: {
+						type: 'string',
+						value: 'Test Page',
+					},
+					href: {
+						get() {
+							return `/${this.title.toLowerCase().replace(/[^a-z]/g, '-').replace(/--+/g, '-')}`;
+						},
+					},
+				}),
+			});
+
+			class TestComponent extends CanReactComponent {
+				render() {
+					let props = { target: '_blank' };
+					return <a {...this.props.inner} {...props} />;
+				}
+			}
+			TestComponent.ViewModel = ViewModel;
+
+			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent inner={{}} /> );
+			const aComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'a' );
+
+			const props = {};
+			for (let { name, value } of aComponent.attributes) {
+				props[name] = value;
+			}
+
+			assert.equal(props.target, '_blank');
+			assert.equal(props.title, 'Test Page');
+			assert.equal(props.href, '/test-page');
+
+		});
+
+	});
+
 	QUnit.module('with CanComponent', () => {
 
 		QUnit.test('should work with render function', (assert) => {
 
-			let ViewModel = DefineMap.extend({
+			let ViewModel = DefineMap.extend('ViewModel', {
 				foo: {
 					type: 'string',
 					value: 'foo'
