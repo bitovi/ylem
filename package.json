@@ -26,8 +26,8 @@
     "release:major": "npm version major && npm publish",
     "prepublish": "npm run build",
     "build": "node build.js",
-    "document": "documentjs",
-    "develop": "lite-server"
+    "document": "bit-docs",
+    "develop": "done-serve --static --develop --port 8080"
   },
   "main": "dist/cjs/react-view-models",
   "keywords": [
@@ -54,30 +54,40 @@
     ]
   },
   "dependencies": {
-    "can-compute": "^3.0.5",
-    "can-define": "^1.0.15",
+    "can-compute": "^3.0.9",
+    "can-define": "^1.0.25",
+    "can-observation": "^3.0.1",
+    "can-util": "^3.7.0",
     "can-view-scope": "^3.1.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
   "devDependencies": {
-    "can-define": "^1.0.15",
     "babel-eslint": "^7.2.3",
+    "bit-docs": "0.0.7",
     "can-component": "^3.0.7",
     "can-stache": "^3.0.24",
-    "documentjs": "^0.4.4",
-    "donejs-cli": "^1.0.0",
-    "eslint": "^3.14.1",
-    "eslint-config-jquery": "^1.0.1",
-    "eslint-plugin-react": "^6.5.0",
-    "generator-donejs": "^1.0.0",
-    "lite-server": "^2.2.2",
-    "steal": "^1.1.0",
+    "done-serve": "^0.2.5",
+    "eslint": "^3.18.0",
+    "eslint-plugin-react": "^6.10.3",
+    "steal": "^1.5.2",
     "steal-builtins": "^1.0.0",
     "steal-css": "^1.2.0",
     "steal-jsx": "0.0.2",
     "steal-qunit": "^1.0.0",
-    "steal-tools": "^1.1.1",
+    "steal-tools": "^1.3.5",
     "testee": "^0.4.0"
+  },
+  "bit-docs": {
+    "dependencies": {
+      "bit-docs-dev": "^0.0.3",
+      "bit-docs-generate-readme": "^0.0.8",
+      "bit-docs-glob-finder": "^0.0.5",
+      "bit-docs-js": "^0.0.3"
+    },
+    "glob": {
+      "pattern": "**/*.{js,md}",
+      "ignore": "node_modules/**/*"
+    }
   }
 }
