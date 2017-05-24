@@ -129,3 +129,50 @@ export function makeRenderer(ViewModel, App) {
 		return frag;
 	};
 }
+
+export function makeReactComponent(CanComponent) {
+	class Wrapper extends CanReactComponent {
+		constructor() {
+			super();
+
+			this.canComponent = null;
+			this.CanComponent = CanComponent;
+			this.canComponentUpdater = updateComponent.bind(this);
+		}
+
+		render() {
+			if (this.canComponent) {
+				this.viewModel.each((value, key) => {
+					this.canComponent._control.element.setAttribute(key, value);
+				});
+			}
+
+			return (
+				<div ref={ this.canComponentUpdater } />
+			);
+		}
+	}
+
+	return Wrapper;
+}
+
+function updateComponent(el) {
+	if (this.canComponent) {
+		// TODO: teardown?
+		this.canComponent = null;
+	}
+
+	if (el) {
+		this.viewModel.each((value, key) => {
+			el.setAttribute(key, value);
+		});
+
+		this.canComponent = new this.CanComponent(el, {
+			subtemplate: null,
+			templateType: 'react',
+			parentNodeList: undefined,
+			options: Scope.refsScope().add(this.props, { viewModel: true }),
+			scope: new Scope.Options({}),
+		});
+	}
+}
