@@ -60,20 +60,16 @@ QUnit.module('react-view-models', () => {
 
 		QUnit.test('should work without a ViewModel', (assert) => {
 
-			Component.extend({
-				tag: "test-component",
-				view: makeRenderer((props) => {
-					return (
-						<div className="test-component">
-							<div>{props.bar}</div>
-						</div>
-					);
-				})
-			});
+			class TestComponent extends CanReactComponent {
+				render() {
+					return <div>{this.props.foobar}</div>;
+				}
+			}
 
-			var frag = stache('<test-component bar="barrr" />')();
+			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent foobar="foobar" /> );
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
-			assert.equal(getTextFromFrag(frag), 'barrr');
+			assert.equal(divComponent.innerText, 'foobar');
 
 		});
 
@@ -242,7 +238,7 @@ QUnit.module('react-view-models', () => {
 			});
 
 			let first = true;
-			var renderer = makeRenderer(ViewModel, (props) => {
+			var renderer = makeRenderer('Foobar', ViewModel, (props) => {
 				if (first) {
 					first = false;
 					assert.ok(props instanceof ViewModel);
@@ -394,7 +390,7 @@ QUnit.module('react-view-models', () => {
 			Component.extend({
 				tag: "test-component",
 				ViewModel: ViewModel,
-				view: makeRenderer(ViewModel, (props) => {
+				view: makeRenderer('TestComponent', ViewModel, (props) => {
 					return (
 						<div className="test-component">
 							<div>{props.foobar}</div>

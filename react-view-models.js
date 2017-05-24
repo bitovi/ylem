@@ -84,20 +84,36 @@ export default class CanReactComponent extends React.Component {
 	}
 }
 
-export function makeRenderer(ViewModel, App) {
-	if (!App) {
-		App = ViewModel;
+export function makeRenderer(displayName, ViewModel, App) {
+	if (arguments.length === 1) {
+		App = arguments[0];
 		ViewModel = null;
+		displayName = 'CanReactComponentWrapper';
+	}
+	if (arguments.length === 2) {
+		App = arguments[1];
+
+		if (typeof arguments[0] === 'string') {
+			displayName = arguments[0];
+			ViewModel = null;
+		}
+		else {
+			ViewModel = arguments[0];
+			displayName = 'CanReactComponentWrapper';
+		}
 	}
 
 	if (!(App.prototype instanceof React.Component)) {
 		let render = App;
 		class Wrapper extends CanReactComponent {
+			static get name() { return displayName; }
+
 			render() {
 				return render(this.props);
 			}
 		}
 		Wrapper.ViewModel = ViewModel;
+		Wrapper.displayName = displayName;
 
 		App = Wrapper;
 	}
