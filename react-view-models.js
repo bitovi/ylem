@@ -136,7 +136,7 @@ export function makeReactComponent(displayName, CanComponent) {
 		displayName = 'CanReactComponentWrapper';
 	}
 
-	class Wrapper extends CanReactComponent {
+	class Wrapper extends React.Component {
 		static get name() { return displayName; }
 
 		constructor() {
@@ -147,16 +147,14 @@ export function makeReactComponent(displayName, CanComponent) {
 			this.canComponentUpdater = updateComponent.bind(this);
 		}
 
-		render() {
-			if (this.canComponent) {
-				this.viewModel.each((value, key) => {
-					this.canComponent._control.element.setAttribute(key, value);
-				});
-			}
+		componentWillUpdate(props) {
+			this.canComponent.viewModel.set(props);
+		}
 
-			return (
-				<div ref={ this.canComponentUpdater } />
-			);
+		render() {
+			return React.createElement(this.CanComponent.prototype.tag, {
+				ref: this.canComponentUpdater,
+			});
 		}
 	}
 	Wrapper.displayName = displayName;
@@ -166,21 +164,20 @@ export function makeReactComponent(displayName, CanComponent) {
 
 function updateComponent(el) {
 	if (this.canComponent) {
-		// TODO: teardown?
 		this.canComponent = null;
 	}
 
 	if (el) {
-		this.viewModel.each((value, key) => {
-			el.setAttribute(key, value);
-		});
-
 		this.canComponent = new this.CanComponent(el, {
 			subtemplate: null,
 			templateType: 'react',
 			parentNodeList: undefined,
-			options: Scope.refsScope().add(this.props, { viewModel: true }),
+			options: Scope.refsScope().add({}),
 			scope: new Scope.Options({}),
+			setupBindings: (el, makeViewModel, initialViewModelData) => {
+				Object.assign(initialViewModelData, this.props);
+				makeViewModel(initialViewModelData);
+			},
 		});
 	}
 }
