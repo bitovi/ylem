@@ -145,3 +145,55 @@ export function makeRenderer(displayName, ViewModel, App) {
 		return frag;
 	};
 }
+
+export function makeReactComponent(displayName, CanComponent) {
+	if (arguments.length === 1) {
+		CanComponent = arguments[0];
+		displayName = 'CanReactComponentWrapper';
+	}
+
+	class Wrapper extends React.Component {
+		static get name() { return displayName; }
+
+		constructor() {
+			super();
+
+			this.canComponent = null;
+			this.CanComponent = CanComponent;
+			this.canComponentUpdater = updateComponent.bind(this);
+		}
+
+		componentWillUpdate(props) {
+			this.canComponent.viewModel.set(props);
+		}
+
+		render() {
+			return React.createElement(this.CanComponent.prototype.tag, {
+				ref: this.canComponentUpdater,
+			});
+		}
+	}
+	Wrapper.displayName = displayName;
+
+	return Wrapper;
+}
+
+function updateComponent(el) {
+	if (this.canComponent) {
+		this.canComponent = null;
+	}
+
+	if (el) {
+		this.canComponent = new this.CanComponent(el, {
+			subtemplate: null,
+			templateType: 'react',
+			parentNodeList: undefined,
+			options: Scope.refsScope().add({}),
+			scope: new Scope.Options({}),
+			setupBindings: (el, makeViewModel, initialViewModelData) => {
+				Object.assign(initialViewModelData, this.props);
+				makeViewModel(initialViewModelData);
+			},
+		});
+	}
+}

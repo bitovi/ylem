@@ -6,7 +6,7 @@ import DefineMap from 'can-define/map/map';
 import Component from 'can-component';
 import stache from 'can-stache';
 
-import CanReactComponent, { makeRenderer } from '../react-view-models';
+import CanReactComponent, { makeRenderer, makeReactComponent } from '../react-view-models';
 
 function getTextFromFrag(node){
 	var txt = "";
@@ -372,7 +372,7 @@ QUnit.module('react-view-models', () => {
 
 	QUnit.module('with CanComponent', () => {
 
-		QUnit.test('should work with render function', (assert) => {
+		QUnit.test('should be able to create components', (assert) => {
 
 			let ViewModel = DefineMap.extend('ViewModel', {
 				foo: {
@@ -387,21 +387,56 @@ QUnit.module('react-view-models', () => {
 				}
 			});
 
-			Component.extend({
-				tag: "test-component",
+			Component.extend('CreatedComponent', {
+				tag: "created-component",
 				ViewModel: ViewModel,
 				view: makeRenderer('TestComponent', ViewModel, (props) => {
 					return (
-						<div className="test-component">
+						<div>
 							<div>{props.foobar}</div>
 						</div>
 					);
 				})
 			});
 
-			var frag = stache('<test-component bar="barrr" />')();
+			var frag = stache('<created-component bar="barrr" />')();
 
 			assert.equal(getTextFromFrag(frag), 'foobarrr');
+
+		});
+
+		QUnit.test('should be able to consume components', (assert) => {
+
+			const ConsumedComponent = makeReactComponent(
+				Component.extend('ConsumedComponent', {
+					tag: "consumed-component",
+					view: stache("<div class='inner'>{{foobar}}</div>")
+				})
+			);
+
+			let ViewModel = DefineMap.extend('ViewModel', {
+				foo: {
+					type: 'string',
+					value: 'foo'
+				},
+				bar: 'string',
+				foobar: {
+					get() {
+						return this.foo + this.bar;
+					}
+				},
+			});
+
+			var renderer = makeRenderer(ViewModel, (props) => {
+				return <ConsumedComponent foobar={props.foobar} />;
+			});
+
+			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
+			var frag = renderer(viewModel);
+
+			assert.equal(getTextFromFrag(frag), 'foo1bar1');
+			viewModel.foo = 'bar';
+			assert.equal(getTextFromFrag(frag), 'barbar1');
 
 		});
 
