@@ -88,7 +88,7 @@ export function makeRenderer(displayName, ViewModel, App) {
 	if (arguments.length === 1) {
 		App = arguments[0];
 		ViewModel = null;
-		displayName = 'CanReactComponentWrapper';
+		displayName = `${ App.displayName || App.name || 'CanReactComponent' }Wrapper`;
 	}
 	if (arguments.length === 2) {
 		App = arguments[1];
@@ -99,7 +99,7 @@ export function makeRenderer(displayName, ViewModel, App) {
 		}
 		else {
 			ViewModel = arguments[0];
-			displayName = 'CanReactComponentWrapper';
+			displayName = `${ App.displayName || App.name || ViewModel.name || 'CanReactComponent' }Wrapper`;
 		}
 	}
 
@@ -149,7 +149,7 @@ export function makeRenderer(displayName, ViewModel, App) {
 export function makeReactComponent(displayName, CanComponent) {
 	if (arguments.length === 1) {
 		CanComponent = arguments[0];
-		displayName = 'CanReactComponentWrapper';
+		displayName = `${CanComponent.name || 'CanComponent'}Wrapper`;
 	}
 
 	class Wrapper extends React.Component {

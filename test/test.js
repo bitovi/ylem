@@ -383,8 +383,8 @@ QUnit.module('react-view-models', () => {
 				foobar: {
 					get() {
 						return this.foo + this.bar;
-					}
-				}
+					},
+				},
 			});
 
 			Component.extend('CreatedComponent', {
