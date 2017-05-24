@@ -130,8 +130,15 @@ export function makeRenderer(ViewModel, App) {
 	};
 }
 
-export function makeReactComponent(CanComponent) {
+export function makeReactComponent(displayName, CanComponent) {
+	if (arguments.length === 1) {
+		CanComponent = arguments[0];
+		displayName = 'CanReactComponentWrapper';
+	}
+
 	class Wrapper extends CanReactComponent {
+		static get name() { return displayName; }
+
 		constructor() {
 			super();
 
@@ -152,6 +159,7 @@ export function makeReactComponent(CanComponent) {
 			);
 		}
 	}
+	Wrapper.displayName = displayName;
 
 	return Wrapper;
 }

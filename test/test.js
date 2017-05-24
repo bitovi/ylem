@@ -412,6 +412,7 @@ QUnit.module('react-view-models', () => {
 		QUnit.test('should be able to consume components', (assert) => {
 
 			const ConsumedComponent = makeReactComponent(
+				'ConsumedComponent',
 				Component.extend('ConsumedComponent', {
 					tag: "consumed-component",
 					view: stache("<div class='inner'>{{foobar}}</div>")
@@ -437,7 +438,7 @@ QUnit.module('react-view-models', () => {
 
 			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
 			var frag = renderer(viewModel);
-			console.log(frag)
+			// console.log(frag)
 
 			assert.equal(getTextFromFrag(frag), 'foo1bar1');
 			viewModel.foo = 'bar';
