@@ -1,17 +1,11 @@
 @module {Object} react-view-models
 @parent can-ecosystem
-@description Connect View-Models, which are CanJS observables, to React Components
+@description `react-view-models` is a library to connect observable view-models to [React](https://facebook.github.io/react/) [presentational components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) to create auto rendering [container components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
 @package ../package.json
-
-@type {Object}
-
-`react-view-models` is a library to connect observable view-models to [React](https://facebook.github.io/react/) [presentational components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) to create auto rendering [container components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
-
-- The [react-view-models.connect connect] method takes a [DefineMap](./can-define/map/map.html) class and a React component class, and returns a new React Component which will auto-render when observable changes happen on the view-model
 
 @body
 
-React-View-Models follows the pattern popularized by [react-redux](https://github.com/reactjs/react-redux), and provide users with a [react-view-models.component CanReactComponent] function for extending [React](https://facebook.github.io/react/) Presentational Components into Container Components, by providing a `ViewModel` constructor function, which is an extended [DefineMap](./can-define/map/map.html).
+React-View-Models follows the pattern popularized by [react-redux](https://github.com/reactjs/react-redux), and provides users with a [react-view-models.reactViewModel reactViewModel] function for extending [React](https://facebook.github.io/react/) Presentational Components into Container Components, by providing a `ViewModel` constructor function, which is an extended [DefineMap](./can-define/map/map.html).
 
 The `ViewModel` is an observable, and when any observable change happens to one of it's properties, or if new props get set on the Container Component, some of the view-model's properties will be sent into the connected component as props, forcing an update/render.
 
@@ -19,19 +13,14 @@ By following the patterns established by react-redux, but avoiding the complexit
 
 _note: If you extend any of the react lifecycle methods, you must call super so as not to break the view-model binding. This includes: `componentWillReceiveProps`, `componentWillMount`, `componentDidMount`, `componentWillUpdate`, `componentDidUpdate`, `componentWillUnmount`_
 
-## Use
+## Usage
 
 ```javascript
-import CanReactComponent from 'react-view-models';
-import DefineMap from 'can-define/map/';
+var CanComponent = require('can-component');
+var reactViewModel = require('react-view-models');
+var stache = require('can-stache');
 
-export default class AppComponent extends CanReactComponent {
-  render() {
-    return <div>{this.props.text}</div>;
-  }
-}
-
-AppComponent.ViewModel = DefineMap.extend('AppVM', {
+var ViewModel = DefineMap.extend('AppVM', {
   first: {
     type: 'string',
     value: 'foo'
@@ -45,6 +34,16 @@ AppComponent.ViewModel = DefineMap.extend('AppVM', {
       return this.first + this.last;
     },
   },
+});
+
+module.exports = CanComponent.extend({
+  tag: 'app-component',
+  ViewModel: ViewModel,
+  view: reactViewModel('AppComponent', ViewModel, (props) => {
+    return (
+      <div>{props.text}</div>
+    );
+  })
 });
 ```
 

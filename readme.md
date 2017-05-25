@@ -10,37 +10,78 @@ Connect observable view-models to React [presentational components][1] to create
 ### ES6
 
 ```js
-import CanReactComponent from 'react-view-models';
-import { makeRenderer } from 'react-view-models';
+import reactViewModel from 'react-view-models';
+import { Component } from 'react-view-models';
 import { makeReactComponent } from 'react-view-models';
 ```
 
 ### CommonJS
 
 ```js
-var CanReactComponent = require('react-view-models');
-var makeRenderer = require('react-view-models').makeRenderer;
+var reactViewModel = require('react-view-models');
+var Component = require('react-view-models').Component;
 var makeReactComponent = require('react-view-models').makeReactComponent;
 ```
 
 ## API
 
-### `CanReactComponent` class
+### `reactViewModel( displayName, ViewModel, Component )`
+Connect a ViewModel class to React [presentational components][1] and produce a renderer function (primarily for use in `CanComponent.extend()`).
+
+`reactViewModel()` takes 3 arguments. The first (optional) is the displayName of the resulting ReactComponent (only used for render functions). The second is a **ViewModel** constructor function, which is an extended [can-define/map][2]. The third argument is a **Presentational Component** constructor function or render function. If `Component` is a render function, a new React Component will be created, extending `CanReactComponent`, which uses the provided render function. The `reactViewModel()` function returns a renderer function, which can be used by `CanComponent.extend()` or manually to create a DOM Fragment.
+
+Since the **Container Component** doesn't produce DOM artifacts of it’s own, you won’t end up with any wrapper divs or anything to worry about, but in react-device-tools you will see the component with the `displayName` (or defaults to `CanReactComponentWrapper`) in the tree.
+
+#### Example
+
+```javascript
+var CanComponent = require('can-component');
+var reactViewModel = require('react-view-models');
+var stache = require('can-stache');
+
+var ViewModel = DefineMap.extend('AppVM', {
+  first: {
+    type: 'string',
+    value: 'foo'
+  },
+  last: {
+    type: 'string',
+    value: 'bar'
+  },
+  text: {
+    get() {
+      return this.first + this.last;
+    },
+  },
+});
+
+module.exports = CanComponent.extend({
+  tag: 'app-component',
+  ViewModel: ViewModel,
+  view: makeRenderer('AppComponent', ViewModel, (props) => {
+    return (
+      <div>{props.text}</div>
+    );
+  })
+});
+```
+
+### `Component` class
 Connect a ViewModel class to React [presentational components][1]
 
-To use the `CanReactComponent` class, your **Presentational Component** should extend `CanReactComponent` instead of `React.Component`, and you should provide a static `ViewModel` on your class.
+To use the `Component` class, your **Presentational Component** should extend `Component` instead of `React.Component`, and you should provide a static `ViewModel` on your class.
 
-The `ViewModel` instance will be initialized with the `props` passed into the Component, and be provided to your methods as `this.props`. Whenever the container component will receive new `props`, the `props` object is passed to the viewModels `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
+Every instance of the returned component will generate an instance of the ViewModel and provide it as props to the connected component. The `ViewModel` instance will be initialized with the `props` passed into the Container Component, and provided to your methods as `this.props`. Whenever the container component will receive new `props`, the new values are passed to the viewModels `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
 
 _note: If you extend any of the react lifecycle methods, you must call super so as not to break the view-model binding. This includes: `componentWillReceiveProps`, `componentWillMount`, `componentDidMount`, `componentWillUpdate`, `componentDidUpdate`, `componentWillUnmount`_
 
 #### Example
 
 ```javascript
-import CanReactComponent from 'react-view-models';
+import { Component } from 'react-view-models';
 import DefineMap from 'can-define/map/';
 
-export default class AppComponent extends CanReactComponent {
+export default class AppComponent extends Component {
   render() {
     return <div>{this.props.text}</div>;
   }
@@ -63,51 +104,6 @@ AppComponent.ViewModel = DefineMap.extend('AppVM', {
 });
 ```
 
-### `makeRenderer( displayName, ViewModel, Component )`
-Connect a ViewModel class to React [presentational components][1] and produce a renderer function (primarily for use in `CanComponent.extend()`).
-
-`makeRenderer()` takes 3 arguments. The first (optional) is the displayName of the ReactComponent (only used for render functions). The second is a **ViewModel** constructor function, which is an extended [can-define/map][2]. The third argument is a **Presentational Component** constructor function or render function. The `makeRenderer()` function returns a **Container Component** which can then be imported and used in any react component or render function as usual.
-
-If `Component` is a render function, a new React Component will be created, extending `CanReactComponent`, which uses the provided render function.
-
-Every instance of the returned component will generate an instance of the ViewModel and provide it as props to the connected component. The `ViewModel` instance will be initialized with the `props` passed into the Container Component. Whenever the container component will receive new `props`, the `props` object is passed to the viewModels `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
-
-Since the **Container Component** doesn't produce DOM artifacts of it’s own, you won’t end up with any wrapper divs or anything to worry about, but in react-device-tools you will see the component with the `displayName` (or defaults to `CanReactComponentWrapper`) in the tree.
-
-#### Example
-
-```javascript
-var Component = require('can-component');
-var makeRenderer = require('react-view-models').makeRenderer;
-var stache = require('can-stache');
-
-Component.extend({
-  tag: 'app-component',
-  ViewModel: DefineMap.extend('AppVM', {
-    first: {
-      type: 'string',
-      value: 'foo'
-    },
-    last: {
-      type: 'string',
-      value: 'bar'
-    },
-    text: {
-      get() {
-        return this.first + this.last;
-      },
-    },
-  }),
-  view: makeRenderer('AppComponent', ViewModel, (props) => {
-    return (
-      <div>{props.text}</div>
-    );
-  })
-});
-
-stache('<app-component last="barrr" />')();
-```
-
 ### `makeReactComponent( displayName, CanComponent )`
 Convert a CanComponent class into a React Component.
 
@@ -118,34 +114,23 @@ Since the Component doesn't produce DOM artifacts of it’s own, you won’t end
 #### Example
 
 ```javascript
-var makeReactComponent = require('react-view-models').makeReactComponent;
+import CanComponent from 'can-component';
+import { makeReactComponent } from 'react-view-models';
 
 const InnerComponent = makeReactComponent(
-    Component.extend('InnerComponent', {
-        tag: 'inner-component',
-        view: stache('<div class="inner">{{text}}</div>')
-    })
-);``
+  CanComponent.extend('InnerComponent', {
+    tag: 'inner-component',
+    view: stache('<div class="inner">{{text}}</div>')
+  })
+);
 
-let ViewModel = DefineMap.extend('AppVM', {
-  first: {
-    type: 'string',
-    value: 'foo'
-  },
-  last: {
-    type: 'string',
-    value: 'bar'
-  },
-  text: {
-    get() {
-      return this.first + this.last;
-    },
-  },
-});
-
-var renderer = makeRenderer(ViewModel, (props) => {
-    return <InnerComponent text={props.text} />;
-});
+export default class AppComponent extends Component {
+  render() {
+    return (
+      <InnerComponent text="inner text" />
+    );
+  }
+}
 ```
 
 ## Common use cases when using a view model
