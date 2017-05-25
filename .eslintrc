@@ -13,7 +13,8 @@
   },
   "rules": {
       "semi": 1,
-      "indent": [ "error", "tab" ]
+      "indent": [ "error", "tab" ],
+      "react/prop-types": 0
   },
   "env": {
     "browser": true,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component as ReactComponent } from 'react';
 import ReactDOM from 'react-dom';
 import compute from 'can-compute';
 import DefineMap from 'can-define/map/map';
@@ -6,7 +6,7 @@ import Scope from 'can-view-scope';
 import Observer from './observer';
 import makeEnumerable, { isEnumerable } from './make-enumerable';
 
-export default class CanReactComponent extends React.Component {
+export class Component extends ReactComponent {
 	constructor() {
 		super();
 
@@ -34,7 +34,7 @@ export default class CanReactComponent extends React.Component {
 			methods.forEach((method) => {
 				let methodAsString = this[method].toString();
 				if (
-					this[method] !== CanReactComponent.prototype[method]
+					this[method] !== Component.prototype[method]
 					&& !methodAsString.includes(method, methodAsString.indexOf(') {'))
 				) {
 					throw new Error(`super.${ method }() must be called on ${ this.constructor.name }.`);
@@ -84,11 +84,11 @@ export default class CanReactComponent extends React.Component {
 	}
 }
 
-export function makeRenderer(displayName, ViewModel, App) {
+export function reactViewModel(displayName, ViewModel, App) {
 	if (arguments.length === 1) {
 		App = arguments[0];
 		ViewModel = null;
-		displayName = `${ App.displayName || App.name || 'CanReactComponent' }Wrapper`;
+		displayName = `${ App.displayName || App.name || 'ReactVMComponent' }Wrapper`;
 	}
 	if (arguments.length === 2) {
 		App = arguments[1];
@@ -99,13 +99,13 @@ export function makeRenderer(displayName, ViewModel, App) {
 		}
 		else {
 			ViewModel = arguments[0];
-			displayName = `${ App.displayName || App.name || ViewModel.name || 'CanReactComponent' }Wrapper`;
+			displayName = `${ App.displayName || App.name || ViewModel.name || 'ReactVMComponent' }Wrapper`;
 		}
 	}
 
-	if (!(App.prototype instanceof React.Component)) {
+	if (!(App.prototype instanceof ReactComponent)) {
 		let render = App;
-		class Wrapper extends CanReactComponent {
+		class Wrapper extends Component {
 			static get name() { return displayName; }
 
 			render() {
@@ -152,15 +152,34 @@ export function makeReactComponent(displayName, CanComponent) {
 		displayName = `${CanComponent.name || 'CanComponent'}Wrapper`;
 	}
 
-	class Wrapper extends React.Component {
+	class Wrapper extends ReactComponent {
 		static get name() { return displayName; }
 
 		constructor() {
 			super();
 
 			this.canComponent = null;
-			this.CanComponent = CanComponent;
-			this.canComponentUpdater = updateComponent.bind(this);
+			this.createComponent = this.createComponent.bind(this);
+		}
+
+		createComponent(el) {
+			if (this.canComponent) {
+				this.canComponent = null;
+			}
+
+			if (el) {
+				this.canComponent = new CanComponent(el, {
+					subtemplate: null,
+					templateType: 'react',
+					parentNodeList: undefined,
+					options: Scope.refsScope().add({}),
+					scope: new Scope.Options({}),
+					setupBindings: (el, makeViewModel, initialViewModelData) => {
+						Object.assign(initialViewModelData, this.props);
+						makeViewModel(initialViewModelData);
+					},
+				});
+			}
 		}
 
 		componentWillUpdate(props) {
@@ -168,8 +187,8 @@ export function makeReactComponent(displayName, CanComponent) {
 		}
 
 		render() {
-			return React.createElement(this.CanComponent.prototype.tag, {
-				ref: this.canComponentUpdater,
+			return React.createElement(CanComponent.prototype.tag, {
+				ref: this.createComponent,
 			});
 		}
 	}
@@ -178,22 +197,4 @@ export function makeReactComponent(displayName, CanComponent) {
 	return Wrapper;
 }
 
-function updateComponent(el) {
-	if (this.canComponent) {
-		this.canComponent = null;
-	}
-
-	if (el) {
-		this.canComponent = new this.CanComponent(el, {
-			subtemplate: null,
-			templateType: 'react',
-			parentNodeList: undefined,
-			options: Scope.refsScope().add({}),
-			scope: new Scope.Options({}),
-			setupBindings: (el, makeViewModel, initialViewModelData) => {
-				Object.assign(initialViewModelData, this.props);
-				makeViewModel(initialViewModelData);
-			},
-		});
-	}
-}
+export default reactViewModel;
