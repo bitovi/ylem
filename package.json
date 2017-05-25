@@ -87,8 +87,11 @@
       "bit-docs-js": "^0.0.3"
     },
     "glob": {
-      "pattern": "**/*.{js,md}",
+      "pattern": "docs/**/*.{js,md}",
       "ignore": "node_modules/**/*"
+    },
+    "readme": {
+      "apis": "./docs/apis.json"
     }
   }
 }

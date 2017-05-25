@@ -1,8 +1,7 @@
-@function react-view-models.connect connect
-@parent react-view-models.exports
-@group react-view-models.connect.types types
+@function react-view-models.component CanReactComponent
+@parent react-view-models
 
-@description connects a [DefineMap](./can-define/map/map.html) class to a React component to create a new auto-rendering component with an observable view-model
+@description connects a [DefineMap](./can-define/map/map.html) class to a React component to create an auto-rendering component with an observable view-model
 
 @signature `connect( ViewModel, ReactComponent, options )`
 
