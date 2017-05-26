@@ -6,7 +6,6 @@ import { routeUrl } from "can-stache/helpers/route";
 import Messages from "./messages";
 
 const AppVM = DefineMap.extend({
-	route: "string",
 	page: "string",
 	message: {
 		type: "string",
