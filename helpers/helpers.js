@@ -1,5 +1,5 @@
-import promise from './promise';
+import PromiseViewModel from './promise';
 
 export {
-	promise,
+	PromiseViewModel,
 };

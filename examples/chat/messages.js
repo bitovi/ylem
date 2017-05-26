@@ -2,7 +2,7 @@ import React from "react";
 import route from "can-route";
 import DefineMap from "can-define/map/";
 import { Component } from "react-view-models";
-import { promise } from "react-view-models/helpers/";
+import { PromiseViewModel } from "react-view-models/helpers/";
 import Message from "./models/message";
 
 export default class Messages extends Component {
@@ -69,7 +69,10 @@ export default class Messages extends Component {
 }
 
 Messages.ViewModel = DefineMap.extend({
-	messagesPromise: promise(() => Message.getList({})),
+	messagesPromise: {
+		Type: PromiseViewModel,
+		value: Message.getList({}),
+	},
 	name: {
 		type: "string",
 		value: ""
