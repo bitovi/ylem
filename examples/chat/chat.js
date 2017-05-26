@@ -1,8 +1,7 @@
 import React from "react";
+import route from "can-route";
 import DefineMap from "can-define/map/";
 import reactViewModel from "react-view-models";
-import route from "can-route";
-import { routeUrl } from "can-stache/helpers/route";
 import Messages from "./messages";
 
 const AppVM = DefineMap.extend({
@@ -34,7 +33,7 @@ const template = reactViewModel(AppVM, (props) => (
 							onClick={ () => props.addExcitement() }
 						>{props.message}</h1>
 						<a
-							href={routeUrl({ page: "chat" })}
+							href={route.url({ page: "chat" })}
 							className="btn btn-primary btn-block btn-lg"
 						>Start chat</a>
 					</div>

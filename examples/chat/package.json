@@ -10,7 +10,6 @@
     "can-connect": "^1.3.11",
     "can-define": "^1.0.25",
     "can-route": "^3.0.11",
-    "can-stache": "^3.0.25",
     "react-view-models": "git+ssh://git@github.com/canjs/react-view-models.git",
     "steal": "^1.5.2"
   },

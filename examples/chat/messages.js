@@ -1,8 +1,8 @@
 import React from "react";
+import route from "can-route";
 import DefineMap from "can-define/map/";
 import { Component } from "react-view-models";
 import { promise } from "react-view-models/helpers/";
-import { routeUrl } from "can-stache/helpers/route";
 import Message from "./models/message";
 
 export default class Messages extends Component {
@@ -10,7 +10,7 @@ export default class Messages extends Component {
 		return (
 			<div>
 				<h1 className="page-header text-center">Chat Messages</h1>
-				<h5><a href={routeUrl({ page: "home" })}>Home</a></h5>
+				<h5><a href={route.url({ page: "home" })}>Home</a></h5>
 
 				{ this.props.messagesPromise.isPending ? (
 					<div className="list-group-item list-group-item-info">
