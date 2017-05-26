@@ -58,7 +58,7 @@ var ViewModel = DefineMap.extend('AppVM', {
 module.exports = CanComponent.extend({
   tag: 'app-component',
   ViewModel: ViewModel,
-  view: makeRenderer('AppComponent', ViewModel, (props) => {
+  view: reactViewModel('AppComponent', ViewModel, (props) => {
     return (
       <div>{props.text}</div>
     );
