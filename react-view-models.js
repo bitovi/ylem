@@ -135,14 +135,14 @@ export function reactViewModel(displayName, ViewModel, App) {
 			return props;
 		});
 
-		const frag = document.createDocumentFragment();
-		ReactDOM.render( <App {...props()} />, frag);
+		const el = document.createElement('div');
+		ReactDOM.render( <App {...props()} />, el);
 
 		props.on('change', function(ev, newValue) {
-			ReactDOM.render( <App {...newValue} />, frag);
+			ReactDOM.render( <App {...newValue} />, el);
 		});
 
-		return frag;
+		return el;
 	};
 }
 
