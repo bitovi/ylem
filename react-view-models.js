@@ -64,7 +64,7 @@ export class Component extends ReactComponent {
 
 	componentWillMount() {
 		const ViewModel = this.constructor.ViewModel || DefineMap;
-		this.viewModel = new ViewModel( this._props ); // TODO: don't seal
+		this.viewModel = new ViewModel( this._props );
 
 		this._observer.startLisening(() => {
 			if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
@@ -110,19 +110,35 @@ export function reactViewModel(displayName, ViewModel, App) {
 		}
 	}
 
-	if (!(App.prototype instanceof ReactComponent)) {
-		let render = App;
-		class Wrapper extends Component {
-			static get name() { return displayName; }
+	if (!(App.prototype instanceof Component)) {
+		if (App.prototype instanceof ReactComponent) {
+			let Child = App;
+			class Wrapper extends Component {
+				static get name() { return displayName; }
 
-			render() {
-				return render(this.props);
+				render() {
+					return React.createElement(Child, this.props);
+				}
 			}
-		}
-		Wrapper.ViewModel = ViewModel;
-		Wrapper.displayName = displayName;
+			Wrapper.ViewModel = ViewModel;
+			Wrapper.displayName = displayName;
 
-		App = Wrapper;
+			App = Wrapper;
+		}
+		else {
+			let render = App;
+			class Wrapper extends Component {
+				static get name() { return displayName; }
+
+				render() {
+					return render(this.props);
+				}
+			}
+			Wrapper.ViewModel = ViewModel;
+			Wrapper.displayName = displayName;
+
+			App = Wrapper;
+		}
 	}
 
 	return function(scope, options) {

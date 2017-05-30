@@ -255,7 +255,7 @@ QUnit.module('react-view-models', () => {
 			assert.equal(getTextFromFrag(frag), 'barbar1');
 		});
 
-		QUnit.test('should work with component class', (assert) => {
+		QUnit.test('should work with component class extending Component', (assert) => {
 			let first = true;
 			class TestComponent extends Component {
 				render() {
@@ -281,6 +281,36 @@ QUnit.module('react-view-models', () => {
 			});
 
 			var renderer = reactViewModel(TestComponent);
+
+			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
+			var frag = renderer(viewModel);
+
+			assert.equal(getTextFromFrag(frag), 'foo1bar1');
+			viewModel.foo = 'bar';
+			assert.equal(getTextFromFrag(frag), 'barbar1');
+		});
+
+		QUnit.test('should work with component class extending ReactComponent', (assert) => {
+			class TestComponent extends ReactComponent {
+				render() {
+					return <div>{this.props.foobar}</div>;
+				}
+			}
+
+			const ViewModel = DefineMap.extend('ViewModel', {
+				foo: {
+					type: 'string',
+					value: 'foo'
+				},
+				bar: 'string',
+				foobar: {
+					get() {
+						return this.foo + this.bar;
+					}
+				}
+			});
+
+			var renderer = reactViewModel(ViewModel, TestComponent);
 
 			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
 			var frag = renderer(viewModel);
