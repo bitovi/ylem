@@ -5,6 +5,7 @@ import DefineMap from 'can-define/map/map';
 import Scope from 'can-view-scope';
 import Observer from './observer';
 import makeEnumerable, { isEnumerable } from './make-enumerable';
+import dev from 'can-util/js/dev/dev';
 
 export class Component extends ReactComponent {
 	constructor() {
@@ -21,7 +22,12 @@ export class Component extends ReactComponent {
 		}
 		this.shouldComponentUpdate = () => false;
 
-		{ // TODO: Remove in PROD
+		//!steal-remove-start
+		if (process.env.NODE_ENV !== "production") {
+			if (!this.constructor.ViewModel) {
+				dev.warn(`The ReactViewModel Component ${ this.constructor.name } was created without a ViewModel.`);
+			}
+
 			let methods = [
 				'componentWillReceiveProps',
 				'componentWillMount',
@@ -41,6 +47,7 @@ export class Component extends ReactComponent {
 				}
 			});
 		}
+		//!steal-remove-end
 	}
 
 	get props() {
