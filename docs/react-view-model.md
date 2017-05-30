@@ -6,7 +6,7 @@
 
 @signature `reactViewModel( ViewModel, ReactComponent )`
 
-Create an auto rendering [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) by connecting an observable view-model to a React [presentational component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
+Create an auto-rendering [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) by connecting an observable view-model to a React [presentational component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
 
 ```javascript
 export default reactViewModel( ViewModel, AppComponent );
@@ -20,9 +20,9 @@ export default reactViewModel( ViewModel, AppComponent );
 
 @signature `reactViewModel( displayName, ViewModel, renderFunction )`
 
-Create an auto rendering [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) by connecting an observable view-model to a React Render function by first turning it into a React [presentational component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
+Create an auto-rendering [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) by connecting an observable view-model to a React Render function by first turning it into a React [presentational component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
 
-```javascript
+```jsx
 export default reactViewModel( 'AppComponent', ViewModel, (props) => (<div />) );
 ```
 
@@ -37,7 +37,7 @@ export default reactViewModel( 'AppComponent', ViewModel, (props) => (<div />) )
 
 ## Use
 
-```javascript
+```jsx
 var React = require('react');
 var CanComponent = require('can-component');
 var reactViewModel = require('react-view-models');
@@ -72,4 +72,4 @@ module.exports = CanComponent.extend({
 
 Every instance of the returned **container component** will generate an instance of `ViewModel` and provide it as `props` to the connected component.
 
-The **ViewModel** instance will be initialized with the `props` passed into the Container Component. Whenever the container component will receive new `props`, the `props` object is passed to the viewModels `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
+The **ViewModel** instance will be initialized with the `props` passed into the Container Component. Whenever the container component receives new `props`, the `props` object is passed to the viewModel’s `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
