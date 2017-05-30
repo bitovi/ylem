@@ -24,8 +24,15 @@ assign(Observer.prototype, {
 	},
 	stopListening: function() {
 		if (Observation.observationStack[Observation.observationStack.length - 1] !== this) {
-			throw new Error('Async observations stopped out of order.');
+			var index = Observation.observationStack.indexOf(this);
+			if (index === -1) {
+				throw new Error('Async observations stopped out of order.');
+			}
+
+			Observation.observationStack.splice(index, 1);
+			Observation.observationStack.push(this);
 		}
+
 		Observation.observationStack.pop();
 		this.updateBindings();
 	},
