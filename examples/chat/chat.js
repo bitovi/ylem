@@ -16,12 +16,6 @@ const AppVM = DefineMap.extend({
 	}
 });
 
-const appVM = new AppVM();
-
-route.data = appVM;
-route("{page}", { page: "home" });
-route.ready();
-
 const template = reactViewModel(AppVM, (props) => (
 	<div className="container">
 		<div className="row">
@@ -44,6 +38,12 @@ const template = reactViewModel(AppVM, (props) => (
 		</div>
 	</div>
 ));
+
+const appVM = new AppVM();
+
+route.data = appVM;
+route("{page}", { page: "home" });
+route.ready();
 
 const frag = template(appVM);
 document.body.appendChild(frag);
