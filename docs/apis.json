@@ -1,7 +1,9 @@
 [
 	{
 		"react-view-models": [
-			"react-view-models.component"
+			"react-view-models.reactViewModel",
+			"react-view-models.Component",
+			"react-view-models.makeReactComponent"
 		]
 	}
 ]

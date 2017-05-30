@@ -35,6 +35,7 @@ Since the **Container Component** doesn't produce DOM artifacts of it’s own, y
 #### Example
 
 ```javascript
+var React = require('react');
 var CanComponent = require('can-component');
 var reactViewModel = require('react-view-models');
 var stache = require('can-stache');
@@ -78,6 +79,7 @@ _note: If you extend any of the react lifecycle methods, you must call super so 
 #### Example
 
 ```javascript
+import React from 'react';
 import { Component } from 'react-view-models';
 import DefineMap from 'can-define/map/';
 
@@ -114,6 +116,7 @@ Since the Component doesn't produce DOM artifacts of it’s own, you won’t end
 #### Example
 
 ```javascript
+import React from 'react';
 import CanComponent from 'can-component';
 import { makeReactComponent } from 'react-view-models';
 

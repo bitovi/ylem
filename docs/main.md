@@ -1,9 +1,11 @@
-@module {Object} react-view-models
+@page react-view-models react-view-models
 @parent can-ecosystem
 @description `react-view-models` is a library to connect observable view-models to [React](https://facebook.github.io/react/) [presentational components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) to create auto rendering [container components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
 @package ../package.json
 
 @body
+
+## Description
 
 React-View-Models follows the pattern popularized by [react-redux](https://github.com/reactjs/react-redux), and provides users with a [react-view-models.reactViewModel reactViewModel] function for extending [React](https://facebook.github.io/react/) Presentational Components into Container Components, by providing a `ViewModel` constructor function, which is an extended [DefineMap](./can-define/map/map.html).
 
@@ -12,44 +14,6 @@ The `ViewModel` is an observable, and when any observable change happens to one 
 By following the patterns established by react-redux, but avoiding the complexity of pure-functional programing, reducer composition, immutability, and the single store paradigm, we hope to offer a familiar, powerful, but far simpler solution to creating great state management and data stores for your react app.
 
 _note: If you extend any of the react lifecycle methods, you must call super so as not to break the view-model binding. This includes: `componentWillReceiveProps`, `componentWillMount`, `componentDidMount`, `componentWillUpdate`, `componentDidUpdate`, `componentWillUnmount`_
-
-## Usage
-
-```javascript
-var CanComponent = require('can-component');
-var reactViewModel = require('react-view-models');
-var stache = require('can-stache');
-
-var ViewModel = DefineMap.extend('AppVM', {
-  first: {
-    type: 'string',
-    value: 'foo'
-  },
-  last: {
-    type: 'string',
-    value: 'bar'
-  },
-  text: {
-    get() {
-      return this.first + this.last;
-    },
-  },
-});
-
-module.exports = CanComponent.extend({
-  tag: 'app-component',
-  ViewModel: ViewModel,
-  view: reactViewModel('AppComponent', ViewModel, (props) => {
-    return (
-      <div>{props.text}</div>
-    );
-  })
-});
-```
-
-Every instance of the returned **container component** will generate an instance of `ViewModel` and provide it as `props` to the connected component.
-
-The **ViewModel** instance will be initialized with the `props` passed into the Container Component. Whenever the container component will receive new `props`, the `props` object is passed to the viewModels `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
 
 ## Common use cases when using a view model
 Here are some examples that may come up when using a view-model that may not be obvious at first:

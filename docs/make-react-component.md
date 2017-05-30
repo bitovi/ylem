@@ -20,3 +20,29 @@ export default makeReactComponent( 'AppComponent', CanComponent.extend({ ... }) 
 @param {CanComponent} CanComponent Any Can component
 
 @return {ReactComponent} A React component
+
+
+@body
+
+## Use
+
+```javascript
+import React from 'react';
+import CanComponent from 'can-component';
+import { makeReactComponent } from 'react-view-models';
+
+const InnerComponent = makeReactComponent(
+  CanComponent.extend('InnerComponent', {
+    tag: 'inner-component',
+    view: stache('<div class="inner">{{text}}</div>')
+  })
+);
+
+export default class AppComponent extends Component {
+  render() {
+    return (
+      <InnerComponent text="inner text" />
+    );
+  }
+}
+```
