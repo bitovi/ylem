@@ -1,4 +1,4 @@
-# React View-Models
+# React-View-Model
 
 [![Build Status](https://travis-ci.org/canjs/react-view-model.png?branch=master)](https://travis-ci.org/canjs/react-view-model)
 [![Greenkeeper badge](https://badges.greenkeeper.io/canjs/react-view-model.svg)](https://greenkeeper.io/)
