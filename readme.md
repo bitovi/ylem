@@ -23,125 +23,13 @@ var Component = require('react-view-model').Component;
 var makeReactComponent = require('react-view-model').makeReactComponent;
 ```
 
-## API
-
-### `reactViewModel( displayName, ViewModel, Component )`
-Connect a ViewModel class to React [presentational components][1] and produce a renderer function (primarily for use in `CanComponent.extend()`).
-
-`reactViewModel()` takes 3 arguments. The first (optional) is the displayName of the resulting ReactComponent (only used for render functions). The second is a **ViewModel** constructor function, which is an extended [can-define/map][2]. The third argument is a **Presentational Component** constructor function or render function. If `Component` is a render function, a new React Component will be created, extending `CanReactComponent`, which uses the provided render function. The `reactViewModel()` function returns a renderer function, which can be used by `CanComponent.extend()` or manually to create a DOM Fragment.
-
-Since the **Container Component** doesn't produce DOM artifacts of it’s own, you won’t end up with any wrapper divs or anything to worry about, but in react-device-tools you will see the component with the `displayName` (or defaults to `CanReactComponentWrapper`) in the tree.
-
-#### Example
-
-```javascript
-var React = require('react');
-var CanComponent = require('can-component');
-var reactViewModel = require('react-view-model');
-var stache = require('can-stache');
-
-var ViewModel = DefineMap.extend('AppVM', {
-  first: {
-    type: 'string',
-    value: 'foo'
-  },
-  last: {
-    type: 'string',
-    value: 'bar'
-  },
-  text: {
-    get() {
-      return this.first + this.last;
-    },
-  },
-});
-
-module.exports = CanComponent.extend({
-  tag: 'app-component',
-  ViewModel: ViewModel,
-  view: reactViewModel('AppComponent', ViewModel, (props) => {
-    return (
-      <div>{props.text}</div>
-    );
-  })
-});
-```
-
-### `Component` class
-Connect a ViewModel class to React [presentational components][1]
-
-To use the `Component` class, your **Presentational Component** should extend `Component` instead of `React.Component`, and you should provide a static `ViewModel` on your class.
-
-Every instance of the returned component will generate an instance of the ViewModel and provide it as props to the connected component. The `ViewModel` instance will be initialized with the `props` passed into the Container Component, and provided to your methods as `this.props`. Whenever the container component will receive new `props`, the new values are passed to the viewModels `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
-
-_note: If you extend any of the react lifecycle methods, you must call super so as not to break the view-model binding. This includes: `componentWillReceiveProps`, `componentWillMount`, `componentDidMount`, `componentWillUpdate`, `componentDidUpdate`, `componentWillUnmount`_
-
-#### Example
-
-```javascript
-import React from 'react';
-import { Component } from 'react-view-model';
-import DefineMap from 'can-define/map/';
-
-export default class AppComponent extends Component {
-  render() {
-    return <div>{this.props.text}</div>;
-  }
-}
-
-AppComponent.ViewModel = DefineMap.extend('AppVM', {
-  first: {
-    type: 'string',
-    value: 'foo'
-  },
-  last: {
-    type: 'string',
-    value: 'bar'
-  },
-  text: {
-    get() {
-      return this.first + this.last;
-    },
-  },
-});
-```
-
-### `makeReactComponent( displayName, CanComponent )`
-Convert a CanComponent class into a React Component.
-
-`makeReactComponent()` takes 2 arguments. The first (optional) is the displayName of the ReactComponent. The second argument is a CanComponent constructor function. The `makeReactComponent()` function returns a React Component which can then be imported and used in any react component or render function as usual.
-
-Since the Component doesn't produce DOM artifacts of it’s own, you won’t end up with any wrapper divs or anything to worry about, but in react-device-tools you will see the component with the `displayName` (or defaults to `CanComponentWrapper`) in the tree.
-
-#### Example
-
-```javascript
-import React from 'react';
-import CanComponent from 'can-component';
-import { makeReactComponent } from 'react-view-model';
-
-const InnerComponent = makeReactComponent(
-  CanComponent.extend('InnerComponent', {
-    tag: 'inner-component',
-    view: stache('<div class="inner">{{text}}</div>')
-  })
-);
-
-export default class AppComponent extends Component {
-  render() {
-    return (
-      <InnerComponent text="inner text" />
-    );
-  }
-}
-```
-
 ## Common use cases when using a view model
+
 Here are some examples that may come up when using a view-model that may not be obvious at first:
 
 ### Transforming a prop before passing it down to a child component
 
-Sometimes you want a prop that is set on your connected component to be set to the exact same prop key on the child component, but modified slightly before passing it down. Here's an example of that:
+Sometimes you want a prop that is set on your connected component to be set to the exact same prop key on the child component, but modified slightly before passing it down. Here’s an example of that:
 
 ```javascript
 const ViewModel = DefineMap.extend({
@@ -153,8 +41,9 @@ const ViewModel = DefineMap.extend({
 });
 ```
 
-### Calling a parents callback, while also doing something special in your view model's callback
-Sometimes, you still want to notify the connected components owner component that the state changed (by calling a callback), but only after or while doing something different within the view-model. In this case, you'll want to define the callback prop as a observable attribute with a getter, rather than a method, and use the `lastSetVal` argument to call the parent components callback.
+### Calling a parent’s callback while also doing something special in your view-model’s callback
+
+Sometimes you still want to notify the connected component’s owner component that the state changed (by calling a callback), but only after or while doing something different within the view-model. In this case, you’ll want to define the callback prop as a observable attribute with a getter, rather than a method, and use the `lastSetVal` argument to call the parent component’s callback.
 
 ```javascript
 const ViewModel = DefineMap.extend({

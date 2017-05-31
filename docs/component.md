@@ -1,12 +1,10 @@
 @function react-view-models.Component Component
-@parent react-view-models 1
-
-@description Connects a [can-define/map/map] constructor function to a React component to create an auto-rendering component with an observable view-model.
-
+@parent react-view-models 0
+@description Connect a [can-define/map/map] constructor function to a React component to create an auto-rendering component with an observable view-model.
 
 @signature `class App extends Component`
 
-Creates an auto-rendering [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) by connecting an observable view-model to React [presentational components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8):
+Create an auto-rendering [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) by connecting an observable view-model to a React [presentational component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
 
 ```javascript
 import { Component } from 'react-view-models';
@@ -20,9 +18,11 @@ AppComponent.ViewModel = DefineMap.extend({
 });
 ```
 
+The `ViewModel` is an observable, and when any observable change happens to one of its properties, or if new props get set on the container component, some of the view-model’s properties will be sent into the connected component as props, forcing an update/render.
+
 _Note: If you extend any of the [React lifecycle methods](https://facebook.github.io/react/docs/react-component.html#the-component-lifecycle), you must call `super` so as not to break the view-model binding. This includes: `componentWillReceiveProps`, `componentWillMount`, `componentDidMount`, `componentWillUpdate`, `componentDidUpdate`, and `componentWillUnmount`._
 
-@param {can-define/map/map} ViewModel A [can-define/map/map] constructor function
+@property {can-define/map/map} ViewModel A [can-define/map/map] constructor function
 
 
 @body
@@ -51,7 +51,7 @@ AppComponent.ViewModel = DefineMap.extend('AppVM', {
   },
   name: {
     get() {
-      return this.first + this.last;
+      return this.first + ' ' + this.last;
     },
   },
 });
