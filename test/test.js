@@ -3,19 +3,17 @@ import React, { Component as ReactComponent } from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
-import CanComponent from 'can-component';
-import stache from 'can-stache';
 
-import reactViewModel, { Component, makeReactComponent } from 'react-view-model';
+import reactViewModel, { Component } from 'react-view-model';
 
-function getTextFromFrag(node) {
+function getTextFromElement(node) {
 	var txt = "";
 	node = node.firstChild;
 	while(node) {
 		if(node.nodeType === 3) {
 			txt += node.nodeValue;
 		} else {
-			txt += getTextFromFrag(node);
+			txt += getTextFromElement(node);
 		}
 		node = node.nextSibling;
 	}
@@ -223,101 +221,90 @@ QUnit.module('react-view-model', () => {
 
 	QUnit.module('when using reactViewModel', () => {
 
-		QUnit.test('should work with render function', (assert) => {
+		QUnit.test('should work with displayName, ViewModel, and render function', (assert) => {
 			let ViewModel = DefineMap.extend('ViewModel', {
-				foo: {
+				first: {
 					type: 'string',
-					value: 'foo'
+					value: 'Christopher'
 				},
-				bar: 'string',
-				foobar: {
+				last: 'string',
+				name: {
 					get() {
-						return this.foo + this.bar;
+						return this.first + ' ' + this.last;
 					}
 				}
 			});
 
-			let first = true;
-			var renderer = reactViewModel('Foobar', ViewModel, (props) => {
-				if (first) {
-					first = false;
-					assert.ok(props instanceof ViewModel);
-				}
-
-				return <div>{ props.foobar }</div>;
+			var Person = reactViewModel('Person', ViewModel, (props) => {
+				return <div>{ props.name }</div>;
 			});
 
-			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
-			var frag = renderer(viewModel);
+			const testInstance = ReactTestUtils.renderIntoDocument( <Person last="Baker" /> );
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
-			assert.equal(getTextFromFrag(frag), 'foo1bar1');
-			viewModel.foo = 'bar';
-			assert.equal(getTextFromFrag(frag), 'barbar1');
+			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
+			assert.equal(Person.name, 'Person', 'returned component is properly named');
+			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
+			testInstance.viewModel.first = 'Yetti';
+			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
 		});
 
-		QUnit.test('should work with component class extending Component', (assert) => {
-			let first = true;
-			class TestComponent extends Component {
-				render() {
-					if (first) {
-						first = false;
-						assert.ok(this.props instanceof TestComponent.ViewModel);
-					}
-
-					return <div>{this.props.foobar}</div>;
-				}
-			}
-			TestComponent.ViewModel = DefineMap.extend('ViewModel', {
-				foo: {
-					type: 'string',
-					value: 'foo'
-				},
-				bar: 'string',
-				foobar: {
-					get() {
-						return this.foo + this.bar;
-					}
-				}
+		QUnit.test('should work with displayName and render function', (assert) => {
+			var Person = reactViewModel('Person', (props) => {
+				return <div>{ props.first } { props.last }</div>;
 			});
 
-			var renderer = reactViewModel(TestComponent);
+			const testInstance = ReactTestUtils.renderIntoDocument( <Person first="Christopher" last="Baker" /> );
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
-			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
-			var frag = renderer(viewModel);
-
-			assert.equal(getTextFromFrag(frag), 'foo1bar1');
-			viewModel.foo = 'bar';
-			assert.equal(getTextFromFrag(frag), 'barbar1');
+			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
+			assert.equal(Person.name, 'Person', 'returned component is properly named');
+			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
+			testInstance.viewModel.first = 'Yetti';
+			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
 		});
 
-		QUnit.test('should work with component class extending ReactComponent', (assert) => {
-			class TestComponent extends ReactComponent {
-				render() {
-					return <div>{this.props.foobar}</div>;
-				}
-			}
-
-			const ViewModel = DefineMap.extend('ViewModel', {
-				foo: {
+		QUnit.test('should work with ViewModel and render function', (assert) => {
+			let ViewModel = DefineMap.extend('ViewModel', {
+				first: {
 					type: 'string',
-					value: 'foo'
+					value: 'Christopher'
 				},
-				bar: 'string',
-				foobar: {
+				last: 'string',
+				name: {
 					get() {
-						return this.foo + this.bar;
+						return this.first + ' ' + this.last;
 					}
 				}
 			});
 
-			var renderer = reactViewModel(ViewModel, TestComponent);
+			var Person = reactViewModel(ViewModel, function Person(props) {
+				return <div>{ props.name }</div>;
+			});
 
-			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
-			var frag = renderer(viewModel);
+			const testInstance = ReactTestUtils.renderIntoDocument( <Person last="Baker" /> );
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
-			assert.equal(getTextFromFrag(frag), 'foo1bar1');
-			viewModel.foo = 'bar';
-			assert.equal(getTextFromFrag(frag), 'barbar1');
+			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
+			assert.equal(Person.name, 'PersonWrapper', 'returned component is properly named');
+			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
+			testInstance.viewModel.first = 'Yetti';
+			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
+		});
+
+		QUnit.test('should work with render function', (assert) => {
+			var Person = reactViewModel((props) => {
+				return <div>{ props.first } { props.last }</div>;
+			});
+
+			const testInstance = ReactTestUtils.renderIntoDocument( <Person first="Christopher" last="Baker" /> );
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+
+			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
+			assert.equal(Person.name, 'ReactVMComponentWrapper', 'returned component is properly named');
+			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
+			testInstance.viewModel.first = 'Yetti';
+			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
 		});
 
 	});
@@ -395,78 +382,6 @@ QUnit.module('react-view-model', () => {
 			assert.equal(props.target, '_blank');
 			assert.equal(props.title, 'Test Page');
 			assert.equal(props.href, '/test-page');
-
-		});
-
-	});
-
-	QUnit.module('with CanComponent', () => {
-
-		QUnit.test('should be able to create components', (assert) => {
-
-			let ViewModel = DefineMap.extend('ViewModel', {
-				foo: {
-					type: 'string',
-					value: 'foo'
-				},
-				bar: 'string',
-				foobar: {
-					get() {
-						return this.foo + this.bar;
-					},
-				},
-			});
-
-			CanComponent.extend('CreatedComponent', {
-				tag: "created-component",
-				ViewModel: ViewModel,
-				view: reactViewModel('TestComponent', ViewModel, (props) => {
-					return (
-						<div>
-							<div>{props.foobar}</div>
-						</div>
-					);
-				})
-			});
-
-			var frag = stache('<created-component bar="barrr" />')();
-
-			assert.equal(getTextFromFrag(frag), 'foobarrr');
-
-		});
-
-		QUnit.test('should be able to consume components', (assert) => {
-
-			const ConsumedComponent = makeReactComponent(
-				CanComponent.extend('ConsumedComponent', {
-					tag: "consumed-component",
-					view: stache("<div class='inner'>{{foobar}}</div>")
-				})
-			);
-
-			let ViewModel = DefineMap.extend('ViewModel', {
-				foo: {
-					type: 'string',
-					value: 'foo'
-				},
-				bar: 'string',
-				foobar: {
-					get() {
-						return this.foo + this.bar;
-					}
-				},
-			});
-
-			var renderer = reactViewModel(ViewModel, (props) => {
-				return <ConsumedComponent foobar={props.foobar} />;
-			});
-
-			var viewModel = new DefineMap({ foo: 'foo1', bar: 'bar1' });
-			var frag = renderer(viewModel);
-
-			assert.equal(getTextFromFrag(frag), 'foo1bar1');
-			viewModel.foo = 'bar';
-			assert.equal(getTextFromFrag(frag), 'barbar1');
 
 		});
 
