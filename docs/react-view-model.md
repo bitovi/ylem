@@ -1,7 +1,7 @@
 @function react-view-models.reactViewModel reactViewModel
 @parent react-view-models 0
 
-@description Connect a [DefineMap](./can-define/map/map.html) class to a React component to create an auto-rendering component with an observable view-model
+@description Connect a [DefineMap](./can-define/map/map.html) constructor function to a React component to create an auto-rendering component with an observable view-model
 
 
 @signature `reactViewModel( ViewModel, ReactComponent )`
@@ -12,7 +12,7 @@ Create an auto-rendering [container component](https://medium.com/@dan_abramov/s
 export default reactViewModel( ViewModel, AppComponent );
 ```
 
-@param {can-define/map/map} ViewModel A [DefineMap](./can-define/map/map.html) class / constructor function
+@param {can-define/map/map} ViewModel A [DefineMap](./can-define/map/map.html) constructor function
 @param {ReactComponent} ReactComponent Any React component
 
 @return {Function} A renderer function.
@@ -27,7 +27,7 @@ export default reactViewModel( 'AppComponent', ViewModel, (props) => (<div />) )
 ```
 
 @param {String} displayName The name of the created [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8)
-@param {can-define/map/map} ViewModel A [DefineMap](./can-define/map/map.html) class / constructor function
+@param {can-define/map/map} ViewModel A [DefineMap](./can-define/map/map.html) constructor function
 @param {ReactComponent} ReactComponent Any React component
 
 @return {Function} A renderer function.
@@ -46,13 +46,13 @@ var stache = require('can-stache');
 var ViewModel = DefineMap.extend('AppVM', {
   first: {
     type: 'string',
-    value: 'foo'
+    value: 'Christopher'
   },
   last: {
     type: 'string',
-    value: 'bar'
+    value: 'Baker'
   },
-  text: {
+  name: {
     get() {
       return this.first + this.last;
     },
@@ -64,7 +64,7 @@ module.exports = CanComponent.extend({
   ViewModel: ViewModel,
   view: reactViewModel('AppComponent', ViewModel, (props) => {
     return (
-      <div>{props.text}</div>
+      <div>{props.name}</div>
     );
   })
 });
@@ -72,4 +72,4 @@ module.exports = CanComponent.extend({
 
 Every instance of the returned **container component** will generate an instance of `ViewModel` and provide it as `props` to the connected component.
 
-The **ViewModel** instance will be initialized with the `props` passed into the Container Component. Whenever the container component receives new `props`, the `props` object is passed to the viewModel’s `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.
+The **ViewModel** instance will be initialized with the `props` passed into the container component. Whenever the container component receives new `props`, the `props` object is passed to the viewModel’s `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process and provide the child component new props, which may cause a new render.

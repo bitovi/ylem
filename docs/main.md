@@ -7,11 +7,11 @@
 
 ## Description
 
-`react-view-models` follows the pattern popularized by [react-redux](https://github.com/reactjs/react-redux) and provides users with a [react-view-models.reactViewModel reactViewModel] function for extending [React](https://facebook.github.io/react/) Presentational Components into Container Components, by providing a `ViewModel` constructor function, which is an extended [DefineMap](./can-define/map/map.html).
+`react-view-models` follows the pattern popularized by [react-redux](https://github.com/reactjs/react-redux) and provides users with a [react-view-models.reactViewModel reactViewModel] function for extending [React](https://facebook.github.io/react/) presentational components into container components. This is accomplished by providing a `ViewModel` constructor function, which is an extended [DefineMap](./can-define/map/map.html).
 
-The `ViewModel` is an observable, and when any observable change happens to one of its properties, or if new props get set on the Container Component, some of the view-model’s properties will be sent into the connected component as props, forcing an update/render.
+The `ViewModel` is an observable, and when any observable change happens to one of its properties, or if new props get set on the container component, some of the view-model’s properties will be sent into the connected component as props, forcing an update/render.
 
-By following the patterns established by react-redux, but avoiding the complexity of pure-functional programming, reducer composition, immutability, and the single store paradigm, `react-view-models` offers a familiar, powerful, yet far simpler solution to creating great state management and data stores for your React app.
+By following the patterns established by react-redux, but avoiding the complexity of pure-functional programming, reducer composition, immutability, and the single store paradigm, `react-view-models` offers a familiar, powerful, yet far simpler solution to managing state and data in your React app.
 
 _Note: If you extend any of the [React lifecycle methods](https://facebook.github.io/react/docs/react-component.html#the-component-lifecycle), you must call `super` so as not to break the view-model binding. This includes: `componentWillReceiveProps`, `componentWillMount`, `componentDidMount`, `componentWillUpdate`, `componentDidUpdate`, and `componentWillUnmount`._
 
