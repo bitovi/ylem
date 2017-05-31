@@ -1,5 +1,5 @@
 {
-  "name": "react-view-models",
+  "name": "react-view-model",
   "version": "0.2.0",
   "description": "Add Observable View-Models to React components",
   "homepage": "http://canjs.com",
@@ -41,9 +41,7 @@
     "can-define": "^1.0.25",
     "can-observation": "^3.0.1",
     "can-util": "^3.7.0",
-    "can-view-scope": "^3.1.1",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "can-view-scope": "^3.1.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -63,6 +61,10 @@
     "steal-qunit": "^1.0.0",
     "steal-tools": "^1.3.5",
     "testee": "^0.5.1"
+  },
+  "peerDependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "steal": {
     "main": "react-view-models",
