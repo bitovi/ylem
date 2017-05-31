@@ -6,7 +6,7 @@ import DefineMap from 'can-define/map/map';
 import CanComponent from 'can-component';
 import stache from 'can-stache';
 
-import reactViewModel, { Component, makeReactComponent } from '../react-view-models';
+import reactViewModel, { Component, makeReactComponent } from 'react-view-model';
 
 function getTextFromFrag(node) {
 	var txt = "";
@@ -22,7 +22,7 @@ function getTextFromFrag(node) {
 	return txt;
 }
 
-QUnit.module('react-view-models', () => {
+QUnit.module('react-view-model', () => {
 
 	QUnit.module('when extending Component', () => {
 

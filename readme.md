@@ -1,26 +1,26 @@
 # React View-Models
 
-[![Build Status](https://travis-ci.org/canjs/react-view-models.png?branch=master)](https://travis-ci.org/canjs/react-view-models)
-[![Greenkeeper badge](https://badges.greenkeeper.io/canjs/react-view-models.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/canjs/react-view-model.png?branch=master)](https://travis-ci.org/canjs/react-view-model)
+[![Greenkeeper badge](https://badges.greenkeeper.io/canjs/react-view-model.svg)](https://greenkeeper.io/)
 
-Connect observable view-models to React [presentational components][1] to create auto rendering [container components][1].
+Connect observable view-model to React [presentational components][1] to create auto rendering [container components][1].
 
 ## Install
 
 ### ES6
 
 ```js
-import reactViewModel from 'react-view-models';
-import { Component } from 'react-view-models';
-import { makeReactComponent } from 'react-view-models';
+import reactViewModel from 'react-view-model';
+import { Component } from 'react-view-model';
+import { makeReactComponent } from 'react-view-model';
 ```
 
 ### CommonJS
 
 ```js
-var reactViewModel = require('react-view-models');
-var Component = require('react-view-models').Component;
-var makeReactComponent = require('react-view-models').makeReactComponent;
+var reactViewModel = require('react-view-model');
+var Component = require('react-view-model').Component;
+var makeReactComponent = require('react-view-model').makeReactComponent;
 ```
 
 ## API
@@ -37,7 +37,7 @@ Since the **Container Component** doesn't produce DOM artifacts of it’s own, y
 ```javascript
 var React = require('react');
 var CanComponent = require('can-component');
-var reactViewModel = require('react-view-models');
+var reactViewModel = require('react-view-model');
 var stache = require('can-stache');
 
 var ViewModel = DefineMap.extend('AppVM', {
@@ -80,7 +80,7 @@ _note: If you extend any of the react lifecycle methods, you must call super so 
 
 ```javascript
 import React from 'react';
-import { Component } from 'react-view-models';
+import { Component } from 'react-view-model';
 import DefineMap from 'can-define/map/';
 
 export default class AppComponent extends Component {
@@ -118,7 +118,7 @@ Since the Component doesn't produce DOM artifacts of it’s own, you won’t end
 ```javascript
 import React from 'react';
 import CanComponent from 'can-component';
-import { makeReactComponent } from 'react-view-models';
+import { makeReactComponent } from 'react-view-model';
 
 const InnerComponent = makeReactComponent(
   CanComponent.extend('InnerComponent', {
@@ -153,7 +153,7 @@ const ViewModel = DefineMap.extend({
 });
 ```
 
-### Calling a parents callback, while also doing something special in your view models callback
+### Calling a parents callback, while also doing something special in your view model's callback
 Sometimes, you still want to notify the connected components owner component that the state changed (by calling a callback), but only after or while doing something different within the view-model. In this case, you'll want to define the callback prop as a observable attribute with a getter, rather than a method, and use the `lastSetVal` argument to call the parent components callback.
 
 ```javascript

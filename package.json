@@ -5,7 +5,7 @@
   "homepage": "http://canjs.com",
   "repository": {
     "type": "git",
-    "url": "git://github.com/canjs/react-view-models.git"
+    "url": "git://github.com/canjs/react-view-model.git"
   },
   "author": {
     "name": "Bitovi",
@@ -28,7 +28,7 @@
     "document": "bit-docs",
     "develop": "done-serve --static --develop --port 8080"
   },
-  "main": "dist/cjs/react-view-models",
+  "main": "dist/cjs/react-view-model",
   "keywords": [
     "canjs",
     "canjs-plugin",
@@ -67,7 +67,7 @@
     "react-dom": "^15.4.2"
   },
   "steal": {
-    "main": "react-view-models",
+    "main": "react-view-model",
     "configDependencies": [
       "live-reload"
     ],
