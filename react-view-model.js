@@ -1,87 +1,94 @@
-import { Component as ReactComponent } from "react";
-import DefineMap from "can-define/map/map";
-import Observer from "./observer";
-import makeEnumerable, { isEnumerable } from "./make-enumerable";
-import dev from "can-util/js/dev/dev";
+var ReactComponent = require("react").Component;
+var DefineMap = require("can-define/map/map");
+var assign = require("can-util/js/assign/assign");
+var Observer = require("./observer");
+var makeEnumerable = require("./make-enumerable");
+var dev = require("can-util/js/dev/dev");
 
-export class Component extends ReactComponent {
-	constructor() {
-		super();
 
-		if (this.constructor.ViewModel && !isEnumerable(this.constructor.ViewModel)) {
-			makeEnumerable(this.constructor.ViewModel, true);
-		}
+function Component() {
+	ReactComponent.call(this);
 
-		this._observer = new Observer();
-
-		if (typeof this.shouldComponentUpdate === "function") {
-			this._shouldComponentUpdate = this.shouldComponentUpdate;
-		}
-		this.shouldComponentUpdate = () => false;
-
-		//!steal-remove-start
-		if (process.env.NODE_ENV !== "production") {
-			if (!this.constructor.ViewModel) {
-				dev.warn(`The ReactViewModel Component ${ this.constructor.name } was created without a ViewModel.`);
-			}
-
-			let methods = [
-				"componentWillReceiveProps",
-				"componentWillMount",
-				"componentDidMount",
-				"componentWillUpdate",
-				"componentDidUpdate",
-				"componentWillUnmount",
-			];
-
-			methods.forEach((method) => {
-				let methodAsString = this[method].toString();
-				if (
-					this[method] !== Component.prototype[method]
-					&& !methodAsString.includes(method, methodAsString.indexOf(") {"))
-				) {
-					throw new Error(`super.${ method }() must be called on ${ this.constructor.name }.`);
-				}
-			});
-		}
-		//!steal-remove-end
+	if (this.constructor.ViewModel && !makeEnumerable.isEnumerable(this.constructor.ViewModel)) {
+		makeEnumerable(this.constructor.ViewModel, true);
 	}
 
-	componentWillReceiveProps(nextProps) {
+	this._observer = new Observer();
+
+	if (typeof this.shouldComponentUpdate === "function") {
+		this._shouldComponentUpdate = this.shouldComponentUpdate;
+	}
+	this.shouldComponentUpdate = function () { return false; };
+
+	//!steal-remove-start
+	if (process.env.NODE_ENV !== "production") {
+		if (!this.constructor.ViewModel) {
+			dev.warn('The ReactViewModel Component ' + this.constructor.name + ' was created without a ViewModel.');
+		}
+
+		var methods = [
+			"componentWillReceiveProps",
+			"componentWillMount",
+			"componentDidMount",
+			"componentWillUpdate",
+			"componentDidUpdate",
+			"componentWillUnmount",
+		];
+
+		methods.forEach(function (method) {
+			var methodAsString = this[method].toString();
+			if (
+				this[method] !== Component.prototype[method]
+				&& !methodAsString.includes(method, methodAsString.indexOf(") {"))
+			) {
+				throw new Error('super.' + method + '() must be called on ' + this.constructor.name + '.');
+			}
+		}.bind(this));
+	}
+	//!steal-remove-end
+}
+
+Component.prototype = Object.create(ReactComponent.prototype);
+
+assign(Component.prototype, {
+	constructor: Component,
+
+	componentWillReceiveProps: function(nextProps) {
 		// TODO: check if unchange props overwrite viewModel changes
 		this.viewModel.set( nextProps );
-	}
+	},
 
-	componentWillMount() {
-		const ViewModel = this.constructor.ViewModel || DefineMap;
+	componentWillMount: function() {
+		var ViewModel = this.constructor.ViewModel || DefineMap;
 		this.viewModel = new ViewModel( this.props );
 
-		this._observer.startLisening(() => {
+		this._observer.startLisening(function () {
 			if (typeof this._shouldComponentUpdate !== "function" || this._shouldComponentUpdate()) {
 				this.forceUpdate();
 			}
-		});
-	}
+		}.bind(this));
+	},
 
-	componentDidMount() {
+	componentDidMount: function() {
 		this._observer.stopListening();
-	}
+	},
 
-	componentWillUpdate() {
+	componentWillUpdate: function() {
 		this._observer.startLisening();
-	}
+	},
 
-	componentDidUpdate() {
+	componentDidUpdate: function() {
 		this._observer.stopListening();
-	}
+	},
 
-	componentWillUnmount() {
+	componentWillUnmount: function() {
 		this._observer.stop();
 		this.viewModel = null;
-	}
-}
+	},
+});
 
-export default function reactViewModel(displayName, ViewModel, render) {
+
+module.exports = function reactViewModel(displayName, ViewModel, render) {
 	if (arguments.length === 1) {
 		render = arguments[0];
 		ViewModel = null;
@@ -100,19 +107,39 @@ export default function reactViewModel(displayName, ViewModel, render) {
 		}
 	}
 	if (!displayName) {
-		displayName = `${ render.displayName || render.name || "ReactVMComponent" }Wrapper`;
+		displayName = (render.displayName || render.name || "ReactVMComponent" ) + 'Wrapper';
 	}
 
-	class App extends Component {
-		static get name() { return displayName; }
-
-		render() {
-			return render(this.viewModel);
-		}
+	function App() {
+		Component.call(this);
 	}
 
 	App.ViewModel = ViewModel;
 	App.displayName = displayName;
 
+	App.prototype = Object.create(Component.prototype);
+
+	assign(App.prototype, {
+		constructor: App,
+
+		render: function() {
+			return render(this.viewModel);
+		}
+	});
+
+	try {
+		Object.defineProperty(App, "name", {
+			writable: false,
+			enumerable: false,
+			configurable: true,
+			value: displayName
+		});
+	}
+	catch(e) {
+		//
+	}
+
 	return App;
-}
+};
+
+module.exports.Component = Component;

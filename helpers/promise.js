@@ -2,33 +2,33 @@ import DefineMap from "can-define/map/map";
 import observeReader from "can-observation/reader/reader";
 
 export default DefineMap.extend("PromiseViewModel", {
-	init(promise) {
+	init: function(promise) {
 		this.promise = promise;
 	},
 
 	promise: "any",
 	isPending: {
-		get() {
+		get: function() {
 			return observeReader.read(this, observeReader.reads("promise.isPending")).value;
 		}
 	},
 	isResolved: {
-		get() {
+		get: function() {
 			return observeReader.read(this, observeReader.reads("promise.isResolved")).value;
 		}
 	},
 	isRejected: {
-		get() {
+		get: function() {
 			return observeReader.read(this, observeReader.reads("promise.isRejected")).value;
 		}
 	},
 	reason: {
-		get() {
+		get: function() {
 			return observeReader.read(this, observeReader.reads("promise.reason")).value;
 		}
 	},
 	value: {
-		get() {
+		get: function() {
 			return observeReader.read(this, observeReader.reads("promise.value")).value;
 		}
 	}
