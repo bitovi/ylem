@@ -1,10 +1,10 @@
-import { Component as ReactComponent } from "react";
-import DefineMap from "can-define/map/map";
-import Observer from "./observer";
-import makeEnumerable, { isEnumerable } from "./make-enumerable";
-import dev from "can-util/js/dev/dev";
+var ReactComponent = require("react").Component;
+var DefineMap = require("can-define/map/map");
+var Observer = require("./observer");
+var makeEnumerable, { isEnumerable } = require("./make-enumerable");
+var dev = require("can-util/js/dev/dev");
 
-export class Component extends ReactComponent {
+class Component extends ReactComponent {
 	constructor() {
 		super();
 
@@ -17,15 +17,15 @@ export class Component extends ReactComponent {
 		if (typeof this.shouldComponentUpdate === "function") {
 			this._shouldComponentUpdate = this.shouldComponentUpdate;
 		}
-		this.shouldComponentUpdate = () => false;
+		this.shouldComponentUpdate = function () { return false; };
 
 		//!steal-remove-start
 		if (process.env.NODE_ENV !== "production") {
 			if (!this.constructor.ViewModel) {
-				dev.warn(`The ReactViewModel Component ${ this.constructor.name } was created without a ViewModel.`);
+				dev.warn('The ReactViewModel Component ' + this.constructor.name + ' was created without a ViewModel.');
 			}
 
-			let methods = [
+			var methods = [
 				"componentWillReceiveProps",
 				"componentWillMount",
 				"componentDidMount",
@@ -34,15 +34,15 @@ export class Component extends ReactComponent {
 				"componentWillUnmount",
 			];
 
-			methods.forEach((method) => {
-				let methodAsString = this[method].toString();
+			methods.forEach(function (method) {
+				var methodAsString = this[method].toString();
 				if (
 					this[method] !== Component.prototype[method]
 					&& !methodAsString.includes(method, methodAsString.indexOf(") {"))
 				) {
-					throw new Error(`super.${ method }() must be called on ${ this.constructor.name }.`);
+					throw new Error('super.' + method + '() must be called on ' + this.constructor.name + '.');
 				}
-			});
+			}.bind(this));
 		}
 		//!steal-remove-end
 	}
@@ -53,14 +53,14 @@ export class Component extends ReactComponent {
 	}
 
 	componentWillMount() {
-		const ViewModel = this.constructor.ViewModel || DefineMap;
+		var ViewModel = this.constructor.ViewModel || DefineMap;
 		this.viewModel = new ViewModel( this.props );
 
-		this._observer.startLisening(() => {
+		this._observer.startLisening(function () {
 			if (typeof this._shouldComponentUpdate !== "function" || this._shouldComponentUpdate()) {
 				this.forceUpdate();
 			}
-		});
+		}.bind(this));
 	}
 
 	componentDidMount() {
@@ -81,7 +81,7 @@ export class Component extends ReactComponent {
 	}
 }
 
-export default function reactViewModel(displayName, ViewModel, render) {
+module.exports = function reactViewModel(displayName, ViewModel, render) {
 	if (arguments.length === 1) {
 		render = arguments[0];
 		ViewModel = null;
@@ -100,7 +100,7 @@ export default function reactViewModel(displayName, ViewModel, render) {
 		}
 	}
 	if (!displayName) {
-		displayName = `${ render.displayName || render.name || "ReactVMComponent" }Wrapper`;
+		displayName = (render.displayName || render.name || "ReactVMComponent" ) + 'Wrapper';
 	}
 
 	class App extends Component {
@@ -115,4 +115,6 @@ export default function reactViewModel(displayName, ViewModel, render) {
 	App.displayName = displayName;
 
 	return App;
-}
+};
+
+module.exports.Component = Component;
