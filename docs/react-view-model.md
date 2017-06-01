@@ -1,4 +1,4 @@
-@function react-view-model reactViewModel
+@function react-view-model react-view-model
 @parent can-ecosystem
 @description Connect a [can-define/map/map] constructor function to a React component to create an auto-rendering component with an observable view-model
 @package ../package.json

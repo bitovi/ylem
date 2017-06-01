@@ -22,7 +22,7 @@ The `ViewModel` is an observable, and when any observable change happens to one 
 
 _Note: If you extend any of the [React lifecycle methods](https://facebook.github.io/react/docs/react-component.html#the-component-lifecycle), you must call `super` so as not to break the view-model binding. This includes: `componentWillReceiveProps`, `componentWillMount`, `componentDidMount`, `componentWillUpdate`, `componentDidUpdate`, and `componentWillUnmount`._
 
-@property {can-define/map/map} ViewModel A [can-define/map/map] constructor function
+@param {can-define/map/map} ViewModel A [can-define/map/map] constructor function
 
 
 @body
