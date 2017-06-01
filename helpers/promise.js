@@ -1,7 +1,7 @@
-import DefineMap from 'can-define/map/map';
+import DefineMap from "can-define/map/map";
 import observeReader from "can-observation/reader/reader";
 
-export default DefineMap.extend('PromiseViewModel', {
+export default DefineMap.extend("PromiseViewModel", {
 	init(promise) {
 		this.promise = promise;
 	},

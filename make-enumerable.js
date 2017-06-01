@@ -5,7 +5,7 @@ module.exports = function makeEnumerable(Type, recursive) {
 		recursive = true;
 	}
 
-	let setup = Type.prototype.setup;
+	var setup = Type.prototype.setup;
 	Type.prototype.setup = function() {
 		var map = this;
 		each(this._define.definitions, function(value, prop) {

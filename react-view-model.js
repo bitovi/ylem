@@ -1,8 +1,8 @@
-import { Component as ReactComponent } from 'react';
-import DefineMap from 'can-define/map/map';
-import Observer from './observer';
-import makeEnumerable, { isEnumerable } from './make-enumerable';
-import dev from 'can-util/js/dev/dev';
+import { Component as ReactComponent } from "react";
+import DefineMap from "can-define/map/map";
+import Observer from "./observer";
+import makeEnumerable, { isEnumerable } from "./make-enumerable";
+import dev from "can-util/js/dev/dev";
 
 export class Component extends ReactComponent {
 	constructor() {
@@ -14,7 +14,7 @@ export class Component extends ReactComponent {
 
 		this._observer = new Observer();
 
-		if (typeof this.shouldComponentUpdate === 'function') {
+		if (typeof this.shouldComponentUpdate === "function") {
 			this._shouldComponentUpdate = this.shouldComponentUpdate;
 		}
 		this.shouldComponentUpdate = () => false;
@@ -26,19 +26,19 @@ export class Component extends ReactComponent {
 			}
 
 			let methods = [
-				'componentWillReceiveProps',
-				'componentWillMount',
-				'componentDidMount',
-				'componentWillUpdate',
-				'componentDidUpdate',
-				'componentWillUnmount',
+				"componentWillReceiveProps",
+				"componentWillMount",
+				"componentDidMount",
+				"componentWillUpdate",
+				"componentDidUpdate",
+				"componentWillUnmount",
 			];
 
 			methods.forEach((method) => {
 				let methodAsString = this[method].toString();
 				if (
 					this[method] !== Component.prototype[method]
-					&& !methodAsString.includes(method, methodAsString.indexOf(') {'))
+					&& !methodAsString.includes(method, methodAsString.indexOf(") {"))
 				) {
 					throw new Error(`super.${ method }() must be called on ${ this.constructor.name }.`);
 				}
@@ -57,7 +57,7 @@ export class Component extends ReactComponent {
 		this.viewModel = new ViewModel( this.props );
 
 		this._observer.startLisening(() => {
-			if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
+			if (typeof this._shouldComponentUpdate !== "function" || this._shouldComponentUpdate()) {
 				this.forceUpdate();
 			}
 		});
@@ -90,7 +90,7 @@ export default function reactViewModel(displayName, ViewModel, render) {
 	if (arguments.length === 2) {
 		render = arguments[1];
 
-		if (typeof arguments[0] === 'string') {
+		if (typeof arguments[0] === "string") {
 			displayName = arguments[0];
 			ViewModel = null;
 		}
@@ -100,7 +100,7 @@ export default function reactViewModel(displayName, ViewModel, render) {
 		}
 	}
 	if (!displayName) {
-		displayName = `${ render.displayName || render.name || 'ReactVMComponent' }Wrapper`;
+		displayName = `${ render.displayName || render.name || "ReactVMComponent" }Wrapper`;
 	}
 
 	class App extends Component {
