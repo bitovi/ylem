@@ -60,7 +60,7 @@ QUnit.module('react-view-model', () => {
 
 			class TestComponent extends Component {
 				render() {
-					return <div>{this.props.foobar}</div>;
+					return <div>{this.viewModel.foobar}</div>;
 				}
 			}
 
@@ -71,22 +71,22 @@ QUnit.module('react-view-model', () => {
 
 		});
 
-		QUnit.test('should set props to be instance of ViewModel', (assert) => {
+		QUnit.test('should set viewModel to be instance of ViewModel', (assert) => {
 			class TestComponent extends Component {
 				render() {
-					return <div>{this.props.foobar}</div>;
+					return <div>{this.viewModel.foobar}</div>;
 				}
 			}
 			TestComponent.ViewModel = DefinedViewModel;
 
 			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent /> );
-			assert.ok( testInstance.props instanceof DefinedViewModel );
+			assert.ok( testInstance.viewModel instanceof DefinedViewModel );
 		});
 
 		QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
 			class TestComponent extends Component {
 				render() {
-					return <div>{this.props.foobar}</div>;
+					return <div>{this.viewModel.foobar}</div>;
 				}
 			}
 			TestComponent.ViewModel = DefinedViewModel;
@@ -115,7 +115,7 @@ QUnit.module('react-view-model', () => {
 
 			class OutterComponent extends Component {
 				render() {
-					return <InnerComponent bar={ this.props.foo.bar } />;
+					return <InnerComponent bar={ this.viewModel.foo.bar } />;
 				}
 			}
 			OutterComponent.ViewModel = DefineMap.extend('ViewModel', {
@@ -139,7 +139,7 @@ QUnit.module('react-view-model', () => {
 		QUnit.test('should update the component when new props are received', (assert) => {
 			class TestComponent extends Component {
 				render() {
-					return <div>{this.props.foo}</div>;
+					return <div>{this.viewModel.foo}</div>;
 				}
 			}
 			TestComponent.ViewModel = DefinedViewModel;
@@ -176,7 +176,7 @@ QUnit.module('react-view-model', () => {
 		QUnit.test('should be able to have the viewModel transform props before passing to child component', (assert) => {
 			class TestComponent extends Component {
 				render() {
-					return <div>{this.props.zzz}</div>;
+					return <div>{this.viewModel.zzz}</div>;
 				}
 			}
 			TestComponent.ViewModel = DefinedViewModel;
@@ -184,14 +184,14 @@ QUnit.module('react-view-model', () => {
 			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent zzz="zzz" /> );
 			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
-			assert.equal(testInstance.props.zzz, 'ZZZ');
+			assert.equal(testInstance.viewModel.zzz, 'ZZZ');
 			assert.equal(divComponent.innerText, 'ZZZ');
 		});
 
-		QUnit.test('should be able to call the props.interceptedCallback function received from parent component', (assert) => {
+		QUnit.test('should be able to call the viewModel.interceptedCallback function received from parent component', (assert) => {
 			class TestComponent extends Component {
 				render() {
-					return <div>{this.props.foobar}</div>;
+					return <div>{this.viewModel.foobar}</div>;
 				}
 			}
 			TestComponent.ViewModel = DefinedViewModel;
@@ -210,11 +210,11 @@ QUnit.module('react-view-model', () => {
 			const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
 			const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
 
-			const actual = testInstance.props.interceptedCallback();
+			const actual = testInstance.viewModel.interceptedCallback();
 
 			assert.equal(actual, expectedValue, 'Value returned from wrapping components callback successfully');
-			assert.equal(testInstance.props.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
-			testInstance.props.interceptedCallbackCalled = undefined;
+			assert.equal(testInstance.viewModel.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
+			testInstance.viewModel.interceptedCallbackCalled = undefined;
 		});
 
 	});
@@ -328,7 +328,7 @@ QUnit.module('react-view-model', () => {
 			class TestComponent extends Component {
 				render() {
 					let props = { target: '_blank' };
-					return <a {...this.props} {...props} />;
+					return <a {...this.viewModel} {...props} />;
 				}
 			}
 			TestComponent.ViewModel = ViewModel;
@@ -366,7 +366,7 @@ QUnit.module('react-view-model', () => {
 			class TestComponent extends Component {
 				render() {
 					let props = { target: '_blank' };
-					return <a {...this.props.inner} {...props} />;
+					return <a {...this.viewModel.inner} {...props} />;
 				}
 			}
 			TestComponent.ViewModel = ViewModel;

@@ -47,21 +47,14 @@ export class Component extends ReactComponent {
 		//!steal-remove-end
 	}
 
-	get props() {
-		return this.viewModel;
-	}
-
-	set props(value) {
-		this._props = value;
-	}
-
 	componentWillReceiveProps(nextProps) {
+		// TODO: check if unchange props overwrite viewModel changes
 		this.viewModel.set( nextProps );
 	}
 
 	componentWillMount() {
 		const ViewModel = this.constructor.ViewModel || DefineMap;
-		this.viewModel = new ViewModel( this._props );
+		this.viewModel = new ViewModel( this.props );
 
 		this._observer.startLisening(() => {
 			if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
@@ -114,7 +107,7 @@ export default function reactViewModel(displayName, ViewModel, render) {
 		static get name() { return displayName; }
 
 		render() {
-			return render(this.props);
+			return render(this.viewModel);
 		}
 	}
 
