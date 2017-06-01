@@ -5,7 +5,6 @@ stealTools.export( {
 		config: __dirname + "/package.json!npm"
 	},
 	outputs: {
-		"+cjs": {},
 		"+amd": {},
 		"+global-js": {}
 	}

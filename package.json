@@ -28,7 +28,7 @@
     "document": "bit-docs",
     "develop": "done-serve --static --develop --port 8080"
   },
-  "main": "dist/cjs/react-view-model",
+  "main": "react-view-model",
   "keywords": [
     "canjs",
     "canjs-plugin",
@@ -57,20 +57,6 @@
   },
   "peerDependencies": {
     "react": "^15.0.0"
-  },
-  "steal": {
-    "main": "react-view-model",
-    "configDependencies": [
-      "live-reload"
-    ],
-    "npmIgnore": [
-      "babel-eslint",
-      "bit-docs",
-      "done-serve",
-      "eslint",
-      "eslint-plugin-react",
-      "testee"
-    ]
   },
   "bit-docs": {
     "dependencies": {
