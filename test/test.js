@@ -136,7 +136,7 @@ QUnit.module('react-view-model', () => {
 			assert.equal(divComponent.innerText, 'world');
 		});
 
-		QUnit.test('should update the component when new props are received', (assert) => {
+		QUnit.test('should update the viewModel when new props are received', (assert) => {
 			class TestComponent extends Component {
 				render() {
 					return <div>{this.viewModel.foo}</div>;
@@ -149,16 +149,16 @@ QUnit.module('react-view-model', () => {
 					super();
 
 					this.state = {
-						barValue: 'Initial Prop Value'
+						foo: 'Initial Prop Value'
 					};
 				}
 
 				changeState() {
-					this.setState({ barValue: 'New Prop Value' });
+					this.setState({ foo: 'New Prop Value' });
 				}
 
 				render() {
-					return <TestComponent foo={ this.state.barValue } />;
+					return <TestComponent foo={ this.state.foo } />;
 				}
 			}
 
@@ -171,6 +171,47 @@ QUnit.module('react-view-model', () => {
 			wrappingInstance.changeState();
 			assert.equal(testInstance.props.foo, 'New Prop Value');
 			assert.equal(divComponent.innerText, 'New Prop Value');
+		});
+
+		QUnit.test('should not overwrite the viewModel with unchanged values when new props are received', (assert) => {
+			class TestComponent extends Component {
+				changeState() {
+					this.viewModel.bar = 'bar1';
+				}
+
+				render() {
+					return <div>{this.viewModel.foobar}</div>;
+				}
+			}
+			TestComponent.ViewModel = DefinedViewModel;
+
+			class WrappingComponent extends ReactComponent {
+				constructor() {
+					super();
+
+					this.state = {
+						foo: 'foo'
+					};
+				}
+
+				changeState() {
+					this.setState({ foo: 'foo1' });
+				}
+
+				render() {
+					return <TestComponent foo={ this.state.foo } bar="bar" />;
+				}
+			}
+
+			const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
+			const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, TestComponent )[0];
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+
+			assert.equal(divComponent.innerText, 'foobar');
+			testInstance.changeState();
+			assert.equal(divComponent.innerText, 'foobar1');
+			wrappingInstance.changeState();
+			assert.equal(divComponent.innerText, 'foo1bar1');
 		});
 
 		QUnit.test('should be able to have the viewModel transform props before passing to child component', (assert) => {
