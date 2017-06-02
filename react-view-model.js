@@ -54,8 +54,15 @@ assign(Component.prototype, {
 	constructor: Component,
 
 	componentWillReceiveProps: function(nextProps) {
-		// TODO: check if unchange props overwrite viewModel changes
-		this.viewModel.set( nextProps );
+		var props = {};
+
+		for (var key in nextProps) {
+			if (!(key in this.props) || nextProps[key] !== this.props[key]) {
+				props[key] = nextProps[key];
+			}
+		}
+
+		this.viewModel.set( props );
 	},
 
 	componentWillMount: function() {
