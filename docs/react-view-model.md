@@ -7,6 +7,8 @@
 
 Create an auto-rendering [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8) by connecting an observable view-model to a React [presentational render function](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
 
+Every instance of the component will generate an instance of the ViewModel, initialized with the props, and provide it to the render function. Whenever the container component receives new props or a value on the viewModel changes, it will trigger an update.
+
 If `displayName` is omitted, it will default based on the `renderFunction`'s name, or "ReactVMComponentWrapper." This is really only significant when debugging.
 
 If `ViewModel` is omitted, it will default to [can-define/map/map]. This will still provide the benefits of auto-rendering, though you cannot add smart properties like you can with a custom `ViewModel`.
@@ -25,9 +27,12 @@ export default reactViewModel( 'AppComponent', ViewModel, (viewModel) => (<div>{
 
 ## Use
 
+An example application using the ViewModel to create an extra prop, who's value is derived from other props.
+
 ```jsx
 var React = require('react');
 var ReactDOM = require('react-dom');
+var DefineMap = require('can-define/map/map');
 var reactViewModel = require('react-view-model');
 
 var ViewModel = DefineMap.extend('AppVM', {
@@ -37,10 +42,8 @@ var ViewModel = DefineMap.extend('AppVM', {
   last: {
     type: 'string'
   },
-  name: {
-    get() {
-      return this.first + ' ' + this.last;
-    },
+  get name() {
+    return this.first + ' ' + this.last;
   },
 });
 
@@ -56,4 +59,31 @@ ReactDOM.render(<AppComponent first="Christopher" last="Baker" />, div);
 // prints: <div>Christopher Baker</div>
 ```
 
-Every instance of the component will generate an instance of the ViewModel, initialized with the props, and provide it to the render function. Whenever the container component receives new props, the new values are passed to the viewModel’s `.set()` method, which may in turn cause an observable change event, which will re-run the observed render process.
+An example application which includes viewModel mutation and demonstrates auto-rendering.
+
+```jsx
+var React = require('react');
+var ReactDOM = require('react-dom');
+var DefineMap = require('can-define/map/map');
+var reactViewModel = require('react-view-model');
+
+var ViewModel = DefineMap.extend('AppVM', {
+  count: {
+    type: 'number'
+  },
+  increment: function() {
+    return this.count++;
+  },
+});
+
+var AppComponent = reactViewModel('AppComponent', ViewModel, (viewModel) => {
+  return (
+    <div onClick={ viewModel.increment.bind(viewModel) }>{viewModel.count}</div>
+  );
+});
+
+var div = document.createElement('div');
+document.body.appendChild(div);
+ReactDOM.render(<AppComponent count={0} />, div);
+// prints: <div>Christopher Baker</div>
+```
