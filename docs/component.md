@@ -31,54 +31,8 @@ _Note: If you extend any of the [React lifecycle methods](https://facebook.githu
 
 An example application using the ViewModel to create an extra prop, who's value is derived from other props.
 
-```jsx
-import React from 'react';
-import { Component } from 'react-view-model';
-import DefineMap from 'can-define/map/map';
-
-export default class AppComponent extends Component {
-  static ViewModel = DefineMap.extend('AppVM', {
-    first: {
-      type: 'string',
-      value: 'Christopher'
-    },
-    last: {
-      type: 'string',
-      value: 'Baker'
-    },
-    name: {
-      get() {
-        return this.first + ' ' + this.last;
-      },
-    },
-  });
-
-  render() {
-    return <div>{this.viewModel.name}</div>;
-  }
-}
-```
+@demo demos/react-view-model/component.name.html
 
 An example application which includes viewModel mutation and demonstrates auto-rendering.
 
-```jsx
-import React from 'react';
-import { Component } from 'react-view-model';
-import DefineMap from 'can-define/map/map';
-
-export default class AppComponent extends Component {
-  static ViewModel = DefineMap.extend('AppVM', {
-    count: {
-      type: 'number',
-	  value: 0
-    },
-    increment: function() {
-      return this.count++;
-    },
-  });
-
-  render() {
-    return <div>{this.viewModel.name}</div>;
-  }
-}
-```
+@demo demos/react-view-model/component.counter.html

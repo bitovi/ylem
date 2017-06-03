@@ -29,61 +29,8 @@ export default reactViewModel( 'AppComponent', ViewModel, (viewModel) => (<div>{
 
 An example application using the ViewModel to create an extra prop, who's value is derived from other props.
 
-```jsx
-var React = require('react');
-var ReactDOM = require('react-dom');
-var DefineMap = require('can-define/map/map');
-var reactViewModel = require('react-view-model');
-
-var ViewModel = DefineMap.extend('AppVM', {
-  first: {
-    type: 'string'
-  },
-  last: {
-    type: 'string'
-  },
-  get name() {
-    return this.first + ' ' + this.last;
-  },
-});
-
-var AppComponent = reactViewModel('AppComponent', ViewModel, (viewModel) => {
-  return (
-    <div>{viewModel.name}</div>
-  );
-});
-
-var div = document.createElement('div');
-document.body.appendChild(div);
-ReactDOM.render(<AppComponent first="Christopher" last="Baker" />, div);
-// prints: <div>Christopher Baker</div>
-```
+@demo demos/react-view-model/function.name.html
 
 An example application which includes viewModel mutation and demonstrates auto-rendering.
 
-```jsx
-var React = require('react');
-var ReactDOM = require('react-dom');
-var DefineMap = require('can-define/map/map');
-var reactViewModel = require('react-view-model');
-
-var ViewModel = DefineMap.extend('AppVM', {
-  count: {
-    type: 'number'
-  },
-  increment: function() {
-    return this.count++;
-  },
-});
-
-var AppComponent = reactViewModel('AppComponent', ViewModel, (viewModel) => {
-  return (
-    <div onClick={ viewModel.increment.bind(viewModel) }>{viewModel.count}</div>
-  );
-});
-
-var div = document.createElement('div');
-document.body.appendChild(div);
-ReactDOM.render(<AppComponent count={0} />, div);
-// prints: <div>Christopher Baker</div>
-```
+@demo demos/react-view-model/function.counter.html
