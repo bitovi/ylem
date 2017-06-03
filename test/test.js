@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
 
-import reactViewModel, { Component } from 'react-view-model';
+import reactViewModel from 'react-view-model';
+import Component from 'react-view-model/component';
 
 function getTextFromElement(node) {
 	var txt = "";
