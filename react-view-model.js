@@ -1,7 +1,8 @@
 var assign = require("can-util/js/assign/assign");
 var Component = require("./component");
+var namespace = require('can-namespace');
 
-module.exports = function reactViewModel(displayName, ViewModel, render) {
+module.exports = namespace.reactViewModel = function reactViewModel(displayName, ViewModel, render) {
 	if (arguments.length === 1) {
 		render = arguments[0];
 		ViewModel = null;

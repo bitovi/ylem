@@ -4,6 +4,7 @@ var assign = require("can-util/js/assign/assign");
 var Observer = require("./observer");
 var makeEnumerable = require("./make-enumerable");
 var dev = require("can-util/js/dev/dev");
+var namespace = require('can-namespace');
 
 function Component() {
 	ReactComponent.call(this);
@@ -93,4 +94,4 @@ assign(Component.prototype, {
 	},
 });
 
-module.exports = Component;
+module.exports = namespace.ReactViewModelComponent = Component;
