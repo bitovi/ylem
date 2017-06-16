@@ -1,11 +1,14 @@
 import QUnit from 'steal-qunit';
-import React, { Component as ReactComponent } from 'react';
+import React /*, { Component as ReactComponent } */ from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
 
 import reactViewModel from 'react-view-model';
 import Component from 'react-view-model/component';
+
+// old stealjs does not seem to handle named exports properly
+const ReactComponent = React.Component;
 
 function getTextFromElement(node) {
 	var txt = "";
