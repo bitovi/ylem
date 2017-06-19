@@ -24,6 +24,11 @@ function getTextFromElement(node) {
 	return txt;
 }
 
+const supportsFunctionName = (function() {
+	function foo(){}
+	return foo.name === 'foo';
+})();
+
 QUnit.module('react-view-model', () => {
 
 	QUnit.module('when extending Component', () => {
@@ -288,7 +293,7 @@ QUnit.module('react-view-model', () => {
 			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
 			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			assert.equal(Person.name, 'Person', 'returned component is properly named');
+			supportsFunctionName && assert.equal(Person.name, 'Person', 'returned component is properly named');
 			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
 			testInstance.viewModel.first = 'Yetti';
 			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
@@ -303,7 +308,7 @@ QUnit.module('react-view-model', () => {
 			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
 			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			assert.equal(Person.name, 'Person', 'returned component is properly named');
+			supportsFunctionName && assert.equal(Person.name, 'Person', 'returned component is properly named');
 			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
 			testInstance.viewModel.first = 'Yetti';
 			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
@@ -331,7 +336,7 @@ QUnit.module('react-view-model', () => {
 			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
 			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			assert.equal(Person.name, 'PersonWrapper', 'returned component is properly named');
+			supportsFunctionName && assert.equal(Person.name, 'PersonWrapper', 'returned component is properly named');
 			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
 			testInstance.viewModel.first = 'Yetti';
 			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
@@ -346,7 +351,7 @@ QUnit.module('react-view-model', () => {
 			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
 			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			assert.equal(Person.name, 'ReactVMComponentWrapper', 'returned component is properly named');
+			supportsFunctionName && assert.equal(Person.name, 'ReactVMComponentWrapper', 'returned component is properly named');
 			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
 			testInstance.viewModel.first = 'Yetti';
 			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
@@ -382,7 +387,9 @@ QUnit.module('react-view-model', () => {
 			const aComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'a' );
 
 			const props = {};
-			for (let { name, value } of aComponent.attributes) {
+			for (let index = 0; index < aComponent.attributes.length; index++) {
+				let { name, value } = aComponent.attributes[index];
+
 				props[name] = value;
 			}
 
@@ -420,7 +427,9 @@ QUnit.module('react-view-model', () => {
 			const aComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'a' );
 
 			const props = {};
-			for (let { name, value } of aComponent.attributes) {
+			for (let index = 0; index < aComponent.attributes.length; index++) {
+				let { name, value } = aComponent.attributes[index];
+
 				props[name] = value;
 			}
 
