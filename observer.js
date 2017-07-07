@@ -11,7 +11,7 @@ Observer.prototype.constructor = Observer;
 
 assign(Observer.prototype, {
 	start: function() {
-		this.value = Date.now();
+		this.value = {};
 	},
 	startLisening: function(listener) {
 		this.listener = listener || this.listener;
