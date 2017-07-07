@@ -1,6 +1,6 @@
 {
   "name": "react-view-model",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Add Observable View-Models to React Components",
   "homepage": "http://canjs.com",
   "repository": {
