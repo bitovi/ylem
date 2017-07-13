@@ -1,5 +1,5 @@
 import DefineMap from "can-define/map/map";
-import observeReader from "can-observation/reader/reader";
+import observeReader from "can-stache-key";
 
 export default DefineMap.extend("PromiseViewModel", {
 	init: function(promise) {
