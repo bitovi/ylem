@@ -29,10 +29,24 @@ _Note: If you extend any of the [React lifecycle methods](https://facebook.githu
 
 ## Use
 
-An example application using the ViewModel to create an extra prop, who's value is derived from other props.
+An example application using the ViewModel to create an extra prop, whose value is derived from other props.
 
 @demo demos/react-view-model/component.name.html
 
 An example application which includes viewModel mutation and demonstrates auto-rendering.
 
 @demo demos/react-view-model/component.counter.html
+
+You can also play with the above example on JS Bin:
+
+<a class="jsbin-embed" href="https://jsbin.com/lunajov/1/embed?js,output">react-view-model/component demo on jsbin.com</a>
+
+You can also use this module with [Preact](https://preactjs.com):
+
+<a class="jsbin-embed" href="https://jsbin.com/fuxerik/2/embed?js,output">react-view-model/component demo with Preact on jsbin.com</a>
+
+Here’s a recreation of the clock example from [React’s State and Lifecycle docs](https://facebook.github.io/react/docs/state-and-lifecycle.html):
+
+<a class="jsbin-embed" href="https://jsbin.com/zikaxuy/4/embed?js,output">react-view-model/component clock demo on jsbin.com</a>
+
+<script src="https://static.jsbin.com/js/embed.min.js?4.0.4"></script>

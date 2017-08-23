@@ -27,10 +27,20 @@ export default reactViewModel( 'AppComponent', ViewModel, (viewModel) => (<div>{
 
 ## Use
 
-An example application using the ViewModel to create an extra prop, who's value is derived from other props.
+An example application using the ViewModel to create an extra prop, whose value is derived from other props.
 
 @demo demos/react-view-model/function.name.html
 
 An example application which includes viewModel mutation and demonstrates auto-rendering.
 
 @demo demos/react-view-model/function.counter.html
+
+You can also play with the above example on JS Bin:
+
+<a class="jsbin-embed" href="https://jsbin.com/cudobut/2/embed?js,output">react-view-model demo on jsbin.com</a>
+
+You can also use this module with [Preact](https://preactjs.com):
+
+<a class="jsbin-embed" href="https://jsbin.com/muqeqec/5/embed?js,output">react-view-model demo with Preact on jsbin.com</a>
+
+<script src="https://static.jsbin.com/js/embed.min.js?4.0.4"></script>
