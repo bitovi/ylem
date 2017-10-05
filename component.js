@@ -63,7 +63,7 @@ if (React) {
 				}
 			}
 
-			this.viewModel.set( props );
+			this.viewModel.assign(props);
 		},
 
 		componentWillMount: function() {
