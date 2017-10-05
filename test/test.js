@@ -439,6 +439,85 @@ QUnit.module('react-view-model', () => {
 
 		});
 
+		QUnit.test('should autobind viewModel methods to the viewModel (but not defined function values)', (assert) => {
+			let vm;
+			let BaseMap = DefineMap.extend('ViewModel', {
+				unboundMethod: {
+					type: 'any',
+					value: function() {
+						return function() {
+							assert.notEqual(this, vm, `the context of defined functions are not bound`);
+						};
+					},
+				},
+				method() {
+					assert.equal(this, vm, `the context of vm method calls are bound to the vm`);
+				}
+			});
+			let ViewModel = BaseMap.extend({
+				someOtherMethod() {
+					return this;
+				}
+			});
+			var Person = reactViewModel(ViewModel, (vm) => {
+				return <div onClick={vm.method} onDoubleClick={vm.unboundMethod}>Adam Barrett</div>;
+			});
+
+			const testInstance = ReactTestUtils.renderIntoDocument(<Person />);
+			vm = testInstance.viewModel;
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
+			ReactTestUtils.Simulate.click(divComponent);
+			ReactTestUtils.Simulate.doubleClick(divComponent);
+		});
+
+		QUnit.test('the autobind methods feature should follow JS prototype rules, and bind only the lowest method in the proto chain', (assert) => {
+			let BaseMap = DefineMap.extend('ViewModel', {
+				method(){
+					return 'NO BAD';
+				}
+			});
+			let ViewModel = BaseMap.extend({
+				method() {
+					return 'GOOD!';
+				}
+			});
+			var Person = reactViewModel(ViewModel, (vm) => {
+				return <div>{ vm.method() }</div>;
+			});
+
+			const testInstance = ReactTestUtils.renderIntoDocument(<Person />);
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
+			assert.equal(divComponent.textContent, 'GOOD!', 'autobinding respects prototype rules');
+		});
+
+		QUnit.test('should not autobind methods again, if 2 components are using the same ViewModel class', (assert) => {
+			let ViewModel = DefineMap.extend({});
+			let descriptor = Object.getOwnPropertyDescriptor(ViewModel.prototype, 'setup');
+			let setupSetCount = 0;
+			ViewModel.prototype._xx_setup = descriptor.value;
+			Object.defineProperty(ViewModel.prototype, 'setup', {
+				get() {
+					return this._xx_setup;
+				},
+				set(setupFn) {
+					if (setupFn.name === 'setUpWithAutoBind') {
+						setupSetCount++;
+					}
+					this._xx_setup = setupFn;
+				},
+				enumerable: descriptor.enumerable
+			});
+			var Rule = reactViewModel(ViewModel, () => <hr />);
+			var HRule = reactViewModel(ViewModel, () => <hr />);
+			ReactTestUtils.renderIntoDocument(
+				<div>
+					<Rule />
+					<HRule />
+				</div>
+			);
+			supportsFunctionName ? assert.equal(setupSetCount, 1, 'the autobind setup modifier was only called once') : assert.ok(true);
+		});
+
 	});
 
 });

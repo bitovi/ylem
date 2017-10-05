@@ -3,6 +3,7 @@ var DefineMap = require("can-define/map/map");
 var assign = require("can-util/js/assign/assign");
 var Observer = require("./observer");
 var makeEnumerable = require("./make-enumerable");
+var autobindMethods = require("./helpers/autobind-methods");
 var dev = require("can-util/js/dev/dev");
 var namespace = require("can-namespace");
 
@@ -10,8 +11,11 @@ if (React) {
 	var Component = function Component() {
 		React.Component.call(this);
 
-		if (this.constructor.ViewModel && !makeEnumerable.isEnumerable(this.constructor.ViewModel)) {
-			makeEnumerable(this.constructor.ViewModel, true);
+		if (this.constructor.ViewModel) {
+			autobindMethods(this.constructor.ViewModel, true);
+			if (!makeEnumerable.isEnumerable(this.constructor.ViewModel)) {
+				makeEnumerable(this.constructor.ViewModel, true);
+			}
 		}
 
 		this._observer = new Observer();
