@@ -38,11 +38,10 @@
     "viewmodel"
   ],
   "dependencies": {
-    "can-cid": "^1.1.1",
     "can-define": "^1.5.0",
     "can-namespace": "^1.0.0",
     "can-observation": "^3.0.1",
-    "can-stache-key": "0.1.0",
+    "can-stache-key": "^0.1.0",
     "can-util": "^3.7.0"
   },
   "devDependencies": {

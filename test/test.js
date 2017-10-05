@@ -1,15 +1,13 @@
 import QUnit from 'steal-qunit';
 import React /*, { Component as ReactComponent } */ from 'react';
 import PropTypes from 'prop-types';
+import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
 // old stealjs does not seem to handle named exports properly
 const ReactComponent = React.Component;
 
 import reactViewModel from 'react-view-model';
 import Component from 'react-view-model/component';
-
-// must be after 'react-view-model' import for polyfill
-import ReactTestUtils from 'react-dom/test-utils';
 
 function getTextFromElement(node) {
 	var txt = "";

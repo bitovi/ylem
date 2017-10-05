@@ -1,4 +1,3 @@
-require("./polyfill");
 var assign = require("can-util/js/assign/assign");
 var Component = require("./component");
 var namespace = require("can-namespace");
