@@ -499,7 +499,7 @@ QUnit.module('react-view-model', () => {
 					return this._xx_setup;
 				},
 				set(setupFn) {
-					if (setupFn.name === 'setUpWithAutoBind') {
+					if (setupFn.name === 'setUpWithAutobind') {
 						setupSetCount++;
 					}
 					this._xx_setup = setupFn;
