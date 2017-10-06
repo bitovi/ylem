@@ -45,7 +45,7 @@
     "can-util": "^3.7.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.0.1",
     "bit-docs": "0.0.7",
     "detect-cyclic-packages": "^1.1.0",
     "done-serve": "^1.3.0",
