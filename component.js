@@ -13,9 +13,7 @@ if (React) {
 
 		if (this.constructor.ViewModel) {
 			autobindMethods(this.constructor.ViewModel, true);
-			if (!makeEnumerable.isEnumerable(this.constructor.ViewModel)) {
-				makeEnumerable(this.constructor.ViewModel, true);
-			}
+			makeEnumerable(this.constructor.ViewModel, true);
 		}
 
 		this._observer = new Observer();

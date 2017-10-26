@@ -3,6 +3,7 @@ import React /*, { Component as ReactComponent } */ from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import DefineMap from 'can-define/map/map';
+import DefineList from 'can-define/list/list';
 // old stealjs does not seem to handle named exports properly
 const ReactComponent = React.Component;
 
@@ -32,7 +33,21 @@ QUnit.module('react-view-model', () => {
 
 	QUnit.module('when extending Component', () => {
 
-		const DefinedViewModel = DefineMap.extend('ViewModel', {
+		const DefinedViewModel = DefineMap.extend('DefinedViewModel', {
+			// for #91
+			childMap1: {
+				Type: DefineMap.extend('ChildMap', {}),
+			},
+			childList1: {
+				Type: DefineList.extend('ChildList', {}),
+			},
+			childMap2: {
+				Type: DefineMap,
+			},
+			childList2: {
+				Type: DefineList,
+			},
+
 			foo: {
 				type: 'string',
 				value: 'foo'
@@ -126,7 +141,7 @@ QUnit.module('react-view-model', () => {
 					return <InnerComponent bar={ this.viewModel.foo.bar } />;
 				}
 			}
-			OutterComponent.ViewModel = DefineMap.extend('ViewModel', {
+			OutterComponent.ViewModel = DefineMap.extend('OutterComponentViewModel', {
 				foo: DefineMap.extend('Foo', {
 					bar: DefineMap.extend('Bar', {
 						bam: DefineMap.extend('Bam', {
@@ -271,7 +286,7 @@ QUnit.module('react-view-model', () => {
 	QUnit.module('when using reactViewModel', () => {
 
 		QUnit.test('should work with displayName, ViewModel, and render function', (assert) => {
-			let ViewModel = DefineMap.extend('ViewModel', {
+			let ViewModel = DefineMap.extend('RenderableViewModel1', {
 				first: {
 					type: 'string',
 					value: 'Christopher'
@@ -314,7 +329,7 @@ QUnit.module('react-view-model', () => {
 		});
 
 		QUnit.test('should work with ViewModel and render function', (assert) => {
-			let ViewModel = DefineMap.extend('ViewModel', {
+			let ViewModel = DefineMap.extend('RenderableViewModel2', {
 				first: {
 					type: 'string',
 					value: 'Christopher'
@@ -362,7 +377,7 @@ QUnit.module('react-view-model', () => {
 
 		QUnit.test('should work with prop spread', (assert) => {
 
-			let ViewModel = DefineMap.extend('ViewModel', {
+			let ViewModel = DefineMap.extend('ReactViewModel1', {
 				title: {
 					type: 'string',
 					value: 'Test Page',
@@ -400,8 +415,8 @@ QUnit.module('react-view-model', () => {
 
 		QUnit.test('should work with prop spread (nested)', (assert) => {
 
-			let ViewModel = DefineMap.extend('ViewModel', {
-				inner: DefineMap.extend('Inner', {
+			let ViewModel = DefineMap.extend('ReactViewModel2', {
+				inner: DefineMap.extend('InnerReactViewModel2', {
 					title: {
 						type: 'string',
 						value: 'Test Page',
@@ -440,7 +455,7 @@ QUnit.module('react-view-model', () => {
 
 		QUnit.test('should autobind viewModel methods to the viewModel (but not defined function values)', (assert) => {
 			let vm;
-			let BaseMap = DefineMap.extend('ViewModel', {
+			let BaseMap = DefineMap.extend('ReactViewModel3', {
 				unboundMethod: {
 					type: 'any',
 					value: function() {
@@ -453,7 +468,7 @@ QUnit.module('react-view-model', () => {
 					assert.equal(this, vm, `the context of vm method calls are bound to the vm`);
 				}
 			});
-			let ViewModel = BaseMap.extend({
+			let ViewModel = BaseMap.extend('ReactViewModel4', {
 				someOtherMethod() {
 					return this;
 				}
@@ -470,7 +485,7 @@ QUnit.module('react-view-model', () => {
 		});
 
 		QUnit.test('the autobind methods feature should follow JS prototype rules, and bind only the lowest method in the proto chain', (assert) => {
-			let BaseMap = DefineMap.extend('ViewModel', {
+			let BaseMap = DefineMap.extend('ReactViewModel5', {
 				method(){
 					return 'NO BAD';
 				}
@@ -490,7 +505,7 @@ QUnit.module('react-view-model', () => {
 		});
 
 		QUnit.test('should not autobind methods again, if 2 components are using the same ViewModel class', (assert) => {
-			let ViewModel = DefineMap.extend({});
+			let ViewModel = DefineMap.extend('ReactViewModel6', {});
 			let descriptor = Object.getOwnPropertyDescriptor(ViewModel.prototype, 'setup');
 			let setupSetCount = 0;
 			ViewModel.prototype._xx_setup = descriptor.value;
