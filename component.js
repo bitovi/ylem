@@ -1,4 +1,5 @@
 var React = require("react");
+var canReflect = require("can-reflect");
 var DefineMap = require("can-define/map/map");
 var assign = require("can-util/js/assign/assign");
 var Observer = require("./observer");
@@ -16,7 +17,19 @@ if (React) {
 			makeEnumerable(this.constructor.ViewModel, true);
 		}
 
-		this._observer = new Observer();
+		var observer = function () {
+			if (typeof this._shouldComponentUpdate !== "function" || this._shouldComponentUpdate()) {
+				this.forceUpdate();
+			}
+		}.bind(this);
+
+		//!steal-remove-start
+		Object.defineProperty(observer, "name", {
+			value: canReflect.getName(this),
+		});
+		//!steal-remove-end
+
+		this._observer = new Observer(observer);
 
 		if (typeof this.shouldComponentUpdate === "function") {
 			this._shouldComponentUpdate = this.shouldComponentUpdate;
@@ -52,6 +65,7 @@ if (React) {
 	};
 
 	Component.prototype = Object.create(React.Component.prototype);
+	Component.prototype.constructor = Component;
 
 	assign(Component.prototype, {
 		constructor: Component,
@@ -72,30 +86,34 @@ if (React) {
 			var ViewModel = this.constructor.ViewModel || DefineMap;
 			this.viewModel = new ViewModel( this.props );
 
-			this._observer.startLisening(function () {
-				if (typeof this._shouldComponentUpdate !== "function" || this._shouldComponentUpdate()) {
-					this.forceUpdate();
-				}
-			}.bind(this));
+			this._observer.startRecording();
 		},
 
 		componentDidMount: function() {
-			this._observer.stopListening();
+			this._observer.stopRecording();
 		},
 
 		componentWillUpdate: function() {
-			this._observer.startLisening();
+			this._observer.startRecording();
 		},
 
 		componentDidUpdate: function() {
-			this._observer.stopListening();
+			this._observer.stopRecording();
 		},
 
 		componentWillUnmount: function() {
-			this._observer.stop();
+			this._observer.teardown();
 			this.viewModel = null;
 		},
 	});
+
+	//!steal-remove-start
+	canReflect.assignSymbols(Component.prototype, {
+		"can.getName": function() {
+			return canReflect.getName(this.constructor) + "{}";
+		},
+	});
+	//!steal-remove-end
 
 	module.exports = namespace.ReactViewModelComponent = Component;
 }

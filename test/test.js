@@ -281,6 +281,56 @@ QUnit.module('react-view-model', () => {
 			testInstance.viewModel.interceptedCallbackCalled = undefined;
 		});
 
+		QUnit.test('should update parent before child', (assert) => {
+			var expected = [ "parent", "child1", "child2", "parent", "child1", "child2" ];
+
+			class ChildComponent1 extends Component {
+				render() {
+					assert.equal("child1", expected.shift(), "child1 renderer called in the right order");
+					return <div>{this.viewModel.value}</div>;
+				}
+			}
+			ChildComponent1.ViewModel = DefineMap.extend('ChildVM', {
+				value: {
+					type: 'string',
+					value: 'foo',
+				},
+			});
+			class ChildComponent2 extends Component {
+				render() {
+					assert.equal("child2", expected.shift(), "child2 renderer called in the right order");
+					return <div>{this.viewModel.value}</div>;
+				}
+			}
+			ChildComponent2.ViewModel = DefineMap.extend('ChildVM', {
+				value: {
+					type: 'string',
+					value: 'foo',
+				},
+			});
+
+			class ParentComponent extends Component {
+				render() {
+					assert.equal("parent", expected.shift(), "parent renderer called in the right order");
+					return (
+						<div>
+							<ChildComponent1 value={this.viewModel.value} />
+							<ChildComponent2 value={this.viewModel.value} />
+						</div>
+					);
+				}
+			}
+			ParentComponent.ViewModel = DefineMap.extend('ParentVM', {
+				value: {
+					type: 'string',
+					value: 'bar',
+				},
+			});
+
+			const viewModel = ReactTestUtils.renderIntoDocument( <ParentComponent value="foobar" /> ).viewModel;
+			viewModel.value = "change";
+		});
+
 	});
 
 	QUnit.module('when using reactViewModel', () => {
@@ -495,7 +545,8 @@ QUnit.module('react-view-model', () => {
 					return 'GOOD!';
 				}
 			});
-			var Person = reactViewModel(ViewModel, (vm) => {
+
+			var Person = reactViewModel('AutobindCheck', ViewModel, (vm) => {
 				return <div>{ vm.method() }</div>;
 			});
 
@@ -507,9 +558,11 @@ QUnit.module('react-view-model', () => {
 		QUnit.test('should not autobind methods again, if 2 components are using the same ViewModel class', (assert) => {
 			let ViewModel = DefineMap.extend('ReactViewModel6', {});
 			let descriptor = Object.getOwnPropertyDescriptor(ViewModel.prototype, 'setup');
-			let setupSetCount = 0;
 			ViewModel.prototype._xx_setup = descriptor.value;
+
+			let setupSetCount = 0;
 			Object.defineProperty(ViewModel.prototype, 'setup', {
+				enumerable: descriptor.enumerable,
 				get() {
 					return this._xx_setup;
 				},
@@ -519,16 +572,18 @@ QUnit.module('react-view-model', () => {
 					}
 					this._xx_setup = setupFn;
 				},
-				enumerable: descriptor.enumerable
 			});
-			var Rule = reactViewModel(ViewModel, () => <hr />);
-			var HRule = reactViewModel(ViewModel, () => <hr />);
+
+			var Rule = reactViewModel('AutobindCheckHr1', ViewModel, () => <hr />);
+			var HRule = reactViewModel('AutobindCheckHr2', ViewModel, () => <hr />);
+
 			ReactTestUtils.renderIntoDocument(
 				<div>
 					<Rule />
 					<HRule />
 				</div>
 			);
+
 			supportsFunctionName ? assert.equal(setupSetCount, 1, 'the autobind setup modifier was only called once') : assert.ok(true);
 		});
 
