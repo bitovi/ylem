@@ -38,11 +38,14 @@
     "viewmodel"
   ],
   "dependencies": {
-    "can-define": "^1.5.0",
+    "can-define": "^v2.0.0-pre.11",
     "can-namespace": "^1.0.0",
-    "can-observation": "^3.0.1",
-    "can-stache-key": "^0.1.0",
-    "can-util": "^3.7.0"
+    "can-observation": "4.0.0-pre.17",
+    "can-observation-recorder": "<2.0.0",
+    "can-queues": "<2.0.0",
+    "can-reflect": "^1.7.1",
+    "can-stache-key": "^v1.0.0-pre.8",
+    "can-util": "^3.10.12"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",
