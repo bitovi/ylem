@@ -1,5 +1,6 @@
 @function react-view-model react-view-model
-@parent can-ecosystem
+@parent can-views
+@collection can-ecosystem
 @description Create an auto-rendering container component with an observable view-model by providing a ViewModel and a React render function.
 @package ../package.json
 
