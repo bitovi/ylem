@@ -13,17 +13,25 @@ module.exports = function makeEnumerable(Type, recursive) {
 	Type.prototype.setup = function() {
 		if (this._define) {
 			var map = this;
+
 			each(this._define.definitions, function(value, prop) {
-				var parent = Object.getOwnPropertyDescriptor(map.constructor.prototype, prop);
-				Object.defineProperty(map, prop, {
-					enumerable: true,
-					get: parent.get,
-					set: parent.set
-				});
+				var descriptor = Object.getOwnPropertyDescriptor(map.constructor.prototype, prop);
+				descriptor.enumerable = true;
+				Object.defineProperty(map, prop, descriptor);
 
 				if (recursive && value.Type) {
 					makeEnumerable(value.Type, recursive);
 				}
+			});
+
+			each(this._define.methods, function(method, prop) {
+				if (prop === 'constructor') {
+					return;
+				}
+
+				var descriptor = Object.getOwnPropertyDescriptor(map.constructor.prototype, prop);
+				descriptor.enumerable = true;
+				Object.defineProperty(map, prop, descriptor);
 			});
 		}
 
