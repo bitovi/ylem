@@ -37,7 +37,7 @@
   "dependencies": {
     "can-define": "^v2.0.0-pre.11",
     "can-namespace": "^1.0.0",
-    "can-observation": "4.0.0-pre.17",
+    "can-observation": "^4.0.0-pre.24",
     "can-observation-recorder": "<2.0.0",
     "can-queues": "<2.0.0",
     "can-reflect": "^1.7.1",
