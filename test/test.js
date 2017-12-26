@@ -421,6 +421,45 @@ QUnit.module('react-view-model', () => {
 			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
 		});
 
+		QUnit.test('unmount works', (assert) => {
+			let ParentVM = DefineMap.extend('ParentVM', {
+				showChild: {type: "boolean", value: true}
+			});
+			let ChildVM = DefineMap.extend('ChildVM', {
+
+			});
+
+			var ChildComponent = reactViewModel(ChildVM, function ChildComponent() {
+				return <p>I AM CHILD</p>;
+			});
+
+			var ParentComponent = reactViewModel(ParentVM, function ParentComponent(props) {
+				return <div>{ props.showChild ? <ChildComponent/> : <span/> }</div>;
+			});
+
+			const testInstance = ReactTestUtils.renderIntoDocument( <ParentComponent/> );
+			var pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
+
+
+			testInstance.viewModel.showChild = false;
+			try {
+				pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
+				assert.ok(!pComponent, "there is no p anymore");
+			} catch (e) {
+				assert.ok(true, "was unable to find a `p` within DOM");
+			}
+
+			var spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'span' );
+
+			assert.ok(spanComponent, "span inserted");
+
+			/*assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
+			supportsFunctionName && assert.equal(Person.name, 'PersonWrapper', 'returned component is properly named');
+			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
+
+			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');*/
+		});
+
 	});
 
 	QUnit.module('when using React patterns', () => {

@@ -46,7 +46,7 @@ Observer.prototype.dependencyChange = function() {
 };
 
 Observer.prototype.teardown = function() {
-	queues.priorityQueue.dequeue(this.onUpdate);
+	queues.deriveQueue.dequeue(this.onUpdate);
 };
 
 //!steal-remove-start
