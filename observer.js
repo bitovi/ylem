@@ -1,6 +1,7 @@
 var canReflect = require("can-reflect");
 var ObservationRecorder = require("can-observation-recorder");
 var recorderHelpers = require("can-observation/recorder-dependency-helpers");
+var Observation = require("can-observation");
 var queues = require("can-queues");
 
 var ORDER = undefined;
@@ -16,9 +17,19 @@ function Observer(onUpdate) {
 	};
 }
 
+var weLeftSomethingOnTheStack = false;
 Observer.prototype.startRecording = function() {
+	if(weLeftSomethingOnTheStack){
+		var deps = ObservationRecorder.stop();
+		if(!deps.reactViewModel){
+			throw new Error('One of these things is not like the others');
+		}
+	}
+
 	this.oldDependencies = this.newDependencies;
-	ObservationRecorder.start();
+	this.nextDependencies = ObservationRecorder.start();
+	this.nextDependencies.reactViewModel = true;
+	weLeftSomethingOnTheStack = true;
 
 	if(this.order !== undefined) {
 		ORDER = this.order;
@@ -37,7 +48,15 @@ Observer.prototype.startRecording = function() {
 };
 
 Observer.prototype.stopRecording = function() {
-	this.newDependencies = ObservationRecorder.stop();
+	if(weLeftSomethingOnTheStack){
+		var deps = ObservationRecorder.stop();
+		weLeftSomethingOnTheStack = false;
+
+		if(!deps.reactViewModel){
+			throw new Error('One of these things is not like the others');
+		}
+	}
+	this.newDependencies = this.nextDependencies;
 	recorderHelpers.updateObservations(this);
 };
 
@@ -47,6 +66,10 @@ Observer.prototype.dependencyChange = function() {
 
 Observer.prototype.teardown = function() {
 	queues.deriveQueue.dequeue(this.onUpdate);
+};
+
+Observer.prototype.ignore = function(fn) {
+	Observation.ignore(fn)();
 };
 
 //!steal-remove-start
