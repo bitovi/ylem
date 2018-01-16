@@ -1,9 +1,13 @@
 {
   "root": true,
+  "parser": "babel-eslint",
   "plugins": [
     "react"
   ],
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
   "parserOptions": {
       "ecmaVersion": 6,
       "sourceType": "module",
@@ -12,9 +16,10 @@
       }
   },
   "rules": {
-      "semi": 1,
+      "semi": "error",
       "indent": [ "error", "tab" ],
-      "react/prop-types": 0
+      "react/prop-types": "off",
+      "no-console": "warn"
   },
   "env": {
     "browser": true,

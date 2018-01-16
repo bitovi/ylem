@@ -1,630 +1,248 @@
+import './connect-with-can-observe';
+import './connect-with-can-define';
+import './connect-with-function';
+import './connect-with-object';
+
 import QUnit from 'steal-qunit';
-import React /*, { Component as ReactComponent } */ from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
-import DefineMap from 'can-define/map/map';
-import DefineList from 'can-define/list/list';
-// old stealjs does not seem to handle named exports properly
-const ReactComponent = React.Component;
+import { getTextFromElement, supportsFunctionName } from './utils';
 
-import reactViewModel from 'react-view-model';
-import Component from 'react-view-model/component';
+import { connect } from 'react-view-model';
 
-function getTextFromElement(node) {
-	var txt = "";
-	node = node.firstChild;
-	while(node) {
-		if(node.nodeType === 3) {
-			txt += node.nodeValue;
-		} else {
-			txt += getTextFromElement(node);
+QUnit.module('@connect', () => {
+
+	QUnit.test('basic rendering', (assert) => {
+		@connect((props) => ({ ...props, foo: 'foo' }))
+		class TestComponent extends Component {
+			static propTypes = {
+				foo: PropTypes.string.isRequired,
+				bar: PropTypes.string.isRequired,
+			}
+
+			render() {
+				const { foo, bar } = this.props;
+				return <div>{foo}{bar}</div>;
+			}
 		}
-		node = node.nextSibling;
-	}
-	return txt;
-}
 
-const supportsFunctionName = (function() {
-	function foo(){}
-	return foo.name === 'foo';
-})();
+		supportsFunctionName && assert.equal(TestComponent.name, 'TestComponent~RVM', 'returned component is properly named');
 
-QUnit.module('react-view-model', () => {
+		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
-	QUnit.module('when extending Component', () => {
+		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
+	});
 
-		const DefinedViewModel = DefineMap.extend('DefinedViewModel', {
-			// for #91
-			childMap1: {
-				Type: DefineMap.extend('ChildMap', {}),
-			},
-			childList1: {
-				Type: DefineList.extend('ChildList', {}),
-			},
-			childMap2: {
-				Type: DefineMap,
-			},
-			childList2: {
-				Type: DefineList,
-			},
+	QUnit.test('should update parent before child', (assert) => {
+		var expected = [ "parent", "child1", "child2", "parent", "child1", "child2" ];
 
-			foo: {
-				type: 'string',
-				value: 'foo'
-			},
-			bar: 'string',
-			foobar: {
-				get() {
-					return this.foo + this.bar;
-				}
-			},
-
-			zzz: {
-				set( newVal ) {
-					return newVal.toUpperCase();
-				}
-			},
-
-			interceptedCallbackCalled: 'boolean',
-			interceptedCallback: {
-				type: 'function',
-				get( lastSetValue ) {
-					return (...args) => {
-						this.interceptedCallbackCalled = true;
-						if ( lastSetValue ) {
-							return lastSetValue(...args);
-						}
-					};
-				}
-			}
-		});
-
-		QUnit.test('should work without a ViewModel', (assert) => {
-
-			class TestComponent extends Component {
-				render() {
-					return <div>{this.viewModel.foobar}</div>;
-				}
-			}
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent foobar="foobar" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.equal(divComponent.innerText, 'foobar');
-
-		});
-
-		QUnit.test('should set viewModel to be instance of ViewModel', (assert) => {
-			class TestComponent extends Component {
-				render() {
-					return <div>{this.viewModel.foobar}</div>;
-				}
-			}
-			TestComponent.ViewModel = DefinedViewModel;
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent /> );
-			assert.ok( testInstance.viewModel instanceof DefinedViewModel );
-		});
-
-		QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
-			class TestComponent extends Component {
-				render() {
-					return <div>{this.viewModel.foobar}</div>;
-				}
-			}
-			TestComponent.ViewModel = DefinedViewModel;
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" baz="bam" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.equal(divComponent.innerText, 'foobar');
-			testInstance.viewModel.foo = 'MMM';
-			assert.equal(divComponent.innerText, 'MMMbar');
-		});
-
-		QUnit.test('should update whenever any observable property on the viewModel instance changes (nested)', (assert) => {
-			class InnerComponent extends ReactComponent {
-				render() {
-					return <div>{this.props.bar.bam.quux}</div>;
-				}
-			}
-			InnerComponent.propTypes = {
-				bar: PropTypes.shape({
-					bam: PropTypes.shape({
-						quux: PropTypes.string.isRequired,
-					}).isRequired,
+		@connect({})
+		class ChildComponent1 extends Component {
+			static propTypes = {
+				name: PropTypes.shape({
+					first: PropTypes.string.isRequired,
 				}).isRequired,
-			};
-
-			class OutterComponent extends Component {
-				render() {
-					return <InnerComponent bar={ this.viewModel.foo.bar } />;
-				}
-			}
-			OutterComponent.ViewModel = DefineMap.extend('OutterComponentViewModel', {
-				foo: DefineMap.extend('Foo', {
-					bar: DefineMap.extend('Bar', {
-						bam: DefineMap.extend('Bam', {
-							quux: 'string',
-						}),
-					}),
-				}),
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <OutterComponent foo={{ bar: { bam: { quux: 'hello' } } }} /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.equal(divComponent.innerText, 'hello');
-			testInstance.viewModel.foo.bar.bam.quux = 'world';
-			assert.equal(divComponent.innerText, 'world');
-		});
-
-		QUnit.test('should update the viewModel when new props are received', (assert) => {
-			class TestComponent extends Component {
-				render() {
-					return <div>{this.viewModel.foo}</div>;
-				}
-			}
-			TestComponent.ViewModel = DefinedViewModel;
-
-			class WrappingComponent extends ReactComponent {
-				constructor() {
-					super();
-
-					this.state = {
-						foo: 'Initial Prop Value'
-					};
-				}
-
-				changeState() {
-					this.setState({ foo: 'New Prop Value' });
-				}
-
-				render() {
-					return <TestComponent foo={ this.state.foo } />;
-				}
 			}
 
-			const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
-			const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, TestComponent )[0];
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+			render() {
+				assert.equal("child1", expected.shift(), "child1 renderer called in the right order");
 
-			assert.equal(testInstance.props.foo, 'Initial Prop Value');
-			assert.equal(divComponent.innerText, 'Initial Prop Value');
-			wrappingInstance.changeState();
-			assert.equal(testInstance.props.foo, 'New Prop Value');
-			assert.equal(divComponent.innerText, 'New Prop Value');
-		});
-
-		QUnit.test('should not overwrite the viewModel with unchanged values when new props are received', (assert) => {
-			class TestComponent extends Component {
-				changeState() {
-					this.viewModel.bar = 'bar1';
-				}
-
-				render() {
-					return <div>{this.viewModel.foobar}</div>;
-				}
+				const { name } = this.props;
+				return <div>{name.first}</div>;
 			}
-			TestComponent.ViewModel = DefinedViewModel;
+		}
 
-			class WrappingComponent extends ReactComponent {
-				constructor() {
-					super();
-
-					this.state = {
-						foo: 'foo'
-					};
-				}
-
-				changeState() {
-					this.setState({ foo: 'foo1' });
-				}
-
-				render() {
-					return <TestComponent foo={ this.state.foo } bar="bar" />;
-				}
+		@connect({})
+		class ChildComponent2 extends Component {
+			static propTypes = {
+				name: PropTypes.shape({
+					first: PropTypes.string.isRequired,
+				}).isRequired,
 			}
 
-			const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
-			const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, TestComponent )[0];
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+			render() {
+				assert.equal("child2", expected.shift(), "child2 renderer called in the right order");
 
-			assert.equal(divComponent.innerText, 'foobar');
-			testInstance.changeState();
-			assert.equal(divComponent.innerText, 'foobar1');
-			wrappingInstance.changeState();
-			assert.equal(divComponent.innerText, 'foo1bar1');
-		});
-
-		QUnit.test('should be able to have the viewModel transform props before passing to child component', (assert) => {
-			class TestComponent extends Component {
-				render() {
-					return <div>{this.viewModel.zzz}</div>;
-				}
+				const { name } = this.props;
+				return <div>{name.first}</div>;
 			}
-			TestComponent.ViewModel = DefinedViewModel;
+		}
 
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent zzz="zzz" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.equal(testInstance.viewModel.zzz, 'ZZZ');
-			assert.equal(divComponent.innerText, 'ZZZ');
-		});
-
-		QUnit.test('should be able to call the viewModel.interceptedCallback function received from parent component', (assert) => {
-			class TestComponent extends Component {
-				render() {
-					return <div>{this.viewModel.foobar}</div>;
-				}
-			}
-			TestComponent.ViewModel = DefinedViewModel;
-
-			const expectedValue = [];
-			class WrappingComponent extends ReactComponent {
-				parentCallBack() {
-					return expectedValue;
-				}
-
-				render() {
-					return <TestComponent interceptedCallback={ this.parentCallBack } />;
-				}
+		@connect({})
+		class ParentComponent extends Component {
+			static propTypes = {
+				name: PropTypes.shape({
+					first: PropTypes.string.isRequired,
+				}).isRequired,
 			}
 
-			const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
-			const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
+			render() {
+				assert.equal("parent", expected.shift(), "parent renderer called in the right order");
 
-			const actual = testInstance.viewModel.interceptedCallback();
-
-			assert.equal(actual, expectedValue, 'Value returned from wrapping components callback successfully');
-			assert.equal(testInstance.viewModel.interceptedCallbackCalled, true, 'ViewModels interceptedCallback was called');
-			testInstance.viewModel.interceptedCallbackCalled = undefined;
-		});
-
-		QUnit.test('should update parent before child', (assert) => {
-			var expected = [ "parent", "child1", "child2", "parent", "child1", "child2" ];
-
-			class ChildComponent1 extends Component {
-				render() {
-					assert.equal("child1", expected.shift(), "child1 renderer called in the right order");
-					return <div>{this.viewModel.value}</div>;
-				}
+				const { name } = this.props;
+				return (
+					<div>
+						{name.first}
+						<ChildComponent1 name={name} />
+						<ChildComponent2 name={name} />
+					</div>
+				);
 			}
-			ChildComponent1.ViewModel = DefineMap.extend('ChildVM', {
-				value: {
-					type: 'string',
-					value: 'foo',
-				},
-			});
-			class ChildComponent2 extends Component {
-				render() {
-					assert.equal("child2", expected.shift(), "child2 renderer called in the right order");
-					return <div>{this.viewModel.value}</div>;
-				}
-			}
-			ChildComponent2.ViewModel = DefineMap.extend('ChildVM', {
-				value: {
-					type: 'string',
-					value: 'foo',
-				},
-			});
+		}
 
-			class ParentComponent extends Component {
-				render() {
-					assert.equal("parent", expected.shift(), "parent renderer called in the right order");
-					return (
-						<div>
-							<ChildComponent1 value={this.viewModel.value} />
-							<ChildComponent2 value={this.viewModel.value} />
-						</div>
-					);
-				}
-			}
-			ParentComponent.ViewModel = DefineMap.extend('ParentVM', {
-				value: {
-					type: 'string',
-					value: 'bar',
-				},
-			});
+		const viewModel = ReactTestUtils.renderIntoDocument( <ParentComponent name={{ first: 'Yetti' }} /> ).viewModel;
+		viewModel.name.first = "Christopher";
 
-			const viewModel = ReactTestUtils.renderIntoDocument( <ParentComponent value="foobar" /> ).viewModel;
-			viewModel.value = "change";
-		});
-
+		assert.equal(expected.length, 0, "all expectations were run");
 	});
 
-	QUnit.module('when using reactViewModel', () => {
+	QUnit.test('should unmount properly', (assert) => {
+		@connect({
+			showChild: true,
+		})
+		class ParentComponent extends Component {
+			static propTypes = {
+				showChild: PropTypes.bool.isRequired,
+			}
 
-		QUnit.test('should work with displayName, ViewModel, and render function', (assert) => {
-			let ViewModel = DefineMap.extend('RenderableViewModel1', {
-				first: {
-					type: 'string',
-					value: 'Christopher'
-				},
-				last: 'string',
-				name: {
-					get() {
-						return this.first + ' ' + this.last;
-					}
-				}
-			});
+			render() {
+				const { showChild } = this.props;
+				return <div>{ showChild ? <ChildComponent/> : <span/> }</div>;
+			}
+		}
 
-			var Person = reactViewModel('Person', ViewModel, (props) => {
-				return <div>{ props.name }</div>;
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <Person last="Baker" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			supportsFunctionName && assert.equal(Person.name, 'Person', 'returned component is properly named');
-			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
-			testInstance.viewModel.first = 'Yetti';
-			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
-		});
-
-		QUnit.test('should work with displayName and render function', (assert) => {
-			var Person = reactViewModel('Person', (props) => {
-				return <div>{ props.first } { props.last }</div>;
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <Person first="Christopher" last="Baker" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			supportsFunctionName && assert.equal(Person.name, 'Person', 'returned component is properly named');
-			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
-			testInstance.viewModel.first = 'Yetti';
-			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
-		});
-
-		QUnit.test('should work with ViewModel and render function', (assert) => {
-			let ViewModel = DefineMap.extend('RenderableViewModel2', {
-				first: {
-					type: 'string',
-					value: 'Christopher'
-				},
-				last: 'string',
-				name: {
-					get() {
-						return this.first + ' ' + this.last;
-					}
-				}
-			});
-
-			var Person = reactViewModel(ViewModel, function Person(props) {
-				return <div>{ props.name }</div>;
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <Person last="Baker" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			supportsFunctionName && assert.equal(Person.name, 'PersonWrapper', 'returned component is properly named');
-			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
-			testInstance.viewModel.first = 'Yetti';
-			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
-		});
-
-		QUnit.test('should work with render function', (assert) => {
-			var Person = reactViewModel((props) => {
-				return <div>{ props.first } { props.last }</div>;
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <Person first="Christopher" last="Baker" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
-
-			assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			supportsFunctionName && assert.equal(Person.name, 'ReactVMComponentWrapper', 'returned component is properly named');
-			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
-			testInstance.viewModel.first = 'Yetti';
-			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');
-		});
-
-		QUnit.test('unmount works', (assert) => {
-			let ParentVM = DefineMap.extend('ParentVM', {
-				showChild: {type: "boolean", value: true}
-			});
-			let ChildVM = DefineMap.extend('ChildVM', {
-
-			});
-
-			var ChildComponent = reactViewModel(ChildVM, function ChildComponent() {
+		@connect({})
+		class ChildComponent extends Component {
+			render() {
 				return <p>I AM CHILD</p>;
-			});
-
-			var ParentComponent = reactViewModel(ParentVM, function ParentComponent(props) {
-				return <div>{ props.showChild ? <ChildComponent/> : <span/> }</div>;
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <ParentComponent/> );
-			var pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
-
-
-			testInstance.viewModel.showChild = false;
-			try {
-				pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
-				assert.ok(!pComponent, "there is no p anymore");
-			} catch (e) {
-				assert.ok(true, "was unable to find a `p` within DOM");
 			}
+		}
 
-			var spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'span' );
+		const testInstance = ReactTestUtils.renderIntoDocument( <ParentComponent/> );
+		var pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
 
-			assert.ok(spanComponent, "span inserted");
+		testInstance.viewModel.showChild = false;
 
-			/*assert.ok(Person.prototype instanceof Component, 'returned component is an instance of Component');
-			supportsFunctionName && assert.equal(Person.name, 'PersonWrapper', 'returned component is properly named');
-			assert.equal(getTextFromElement(divComponent), 'Christopher Baker');
+		try {
+			pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
+			assert.ok(!pComponent, "there is no p anymore");
+		} catch (e) {
+			assert.ok(true, "was unable to find a `p` within DOM");
+		}
 
-			assert.equal(getTextFromElement(divComponent), 'Yetti Baker');*/
-		});
-
+		var spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'span' );
+		assert.ok(spanComponent, "span inserted");
 	});
 
-	QUnit.module('when using React patterns', () => {
+	QUnit.test('should autobind methods', (assert) => {
+		let vm = null;
 
-		QUnit.test('should work with prop spread', (assert) => {
-
-			let ViewModel = DefineMap.extend('ReactViewModel1', {
-				title: {
-					type: 'string',
-					value: 'Test Page',
-				},
-				href: {
-					get() {
-						return `/${this.title.toLowerCase().replace(/[^a-z]/g, '-').replace(/--+/g, '-')}`;
-					},
-				},
-			});
-
-			class TestComponent extends Component {
-				render() {
-					let props = { target: '_blank' };
-					return <a {...this.viewModel} {...props} />;
-				}
-			}
-			TestComponent.ViewModel = ViewModel;
-
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent /> );
-			const aComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'a' );
-
-			const props = {};
-			for (let index = 0; index < aComponent.attributes.length; index++) {
-				let { name, value } = aComponent.attributes[index];
-
-				props[name] = value;
+		@connect({
+			method() {
+				assert.equal(this, vm, `the context of vm method calls are bound to the vm`);
+			},
+		})
+		class TestComponent extends Component {
+			static propTypes = {
+				method: PropTypes.func.isRequired,
 			}
 
-			assert.equal(props.target, '_blank');
-			assert.equal(props.title, 'Test Page');
-			assert.equal(props.href, '/test-page');
-
-		});
-
-		QUnit.test('should work with prop spread (nested)', (assert) => {
-
-			let ViewModel = DefineMap.extend('ReactViewModel2', {
-				inner: DefineMap.extend('InnerReactViewModel2', {
-					title: {
-						type: 'string',
-						value: 'Test Page',
-					},
-					href: {
-						get() {
-							return `/${this.title.toLowerCase().replace(/[^a-z]/g, '-').replace(/--+/g, '-')}`;
-						},
-					},
-				}),
-			});
-
-			class TestComponent extends Component {
-				render() {
-					let props = { target: '_blank' };
-					return <a {...this.viewModel.inner} {...props} />;
-				}
+			render() {
+				const { method } = this.props;
+				return <div onClick={method}>Adam Barrett</div>;
 			}
-			TestComponent.ViewModel = ViewModel;
+		}
 
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent inner={{}} /> );
-			const aComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'a' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent />);
+		vm = testInstance.viewModel;
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
+		ReactTestUtils.Simulate.click(divComponent);
+	});
 
-			const props = {};
-			for (let index = 0; index < aComponent.attributes.length; index++) {
-				let { name, value } = aComponent.attributes[index];
+	QUnit.test('should change props on the correct children - deep tree', (assert) => {
 
-				props[name] = value;
-			}
+		var render = (props) => {
+			return <span>{props.value}{props.children}</span>;
+		};
 
-			assert.equal(props.target, '_blank');
-			assert.equal(props.title, 'Test Page');
-			assert.equal(props.href, '/test-page');
+		var Child0 = connect({})(render);
+		var Child00 = connect({})(render);
+		var Child000 = connect({})(render);
+		var Child01 = connect({})(render);
+		var Child1 = connect({})(render);
+		var Child10 = connect({})(render);
+		var Child100 = connect({})(render);
+		var Child1000 = connect({})(render);
+		var Child11 = connect({})(render);
 
-		});
-
-		QUnit.test('should autobind viewModel methods to the viewModel (but not defined function values)', (assert) => {
-			let vm;
-			let BaseMap = DefineMap.extend('ReactViewModel3', {
-				unboundMethod: {
-					type: 'any',
-					value: function() {
-						return function() {
-							assert.notEqual(this, vm, `the context of defined functions are not bound`);
-						};
-					},
-				},
-				method() {
-					assert.equal(this, vm, `the context of vm method calls are bound to the vm`);
-				}
-			});
-			let ViewModel = BaseMap.extend('ReactViewModel4', {
-				someOtherMethod() {
-					return this;
-				}
-			});
-			var Person = reactViewModel(ViewModel, (vm) => {
-				return <div onClick={vm.method} onDoubleClick={vm.unboundMethod}>Adam Barrett</div>;
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument(<Person />);
-			vm = testInstance.viewModel;
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
-			ReactTestUtils.Simulate.click(divComponent);
-			ReactTestUtils.Simulate.doubleClick(divComponent);
-		});
-
-		QUnit.test('the autobind methods feature should follow JS prototype rules, and bind only the lowest method in the proto chain', (assert) => {
-			let BaseMap = DefineMap.extend('ReactViewModel5', {
-				method(){
-					return 'NO BAD';
-				}
-			});
-			let ViewModel = BaseMap.extend({
-				method() {
-					return 'GOOD!';
-				}
-			});
-
-			var Person = reactViewModel('AutobindCheck', ViewModel, (vm) => {
-				return <div>{ vm.method() }</div>;
-			});
-
-			const testInstance = ReactTestUtils.renderIntoDocument(<Person />);
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
-			assert.equal(divComponent.textContent, 'GOOD!', 'autobinding respects prototype rules');
-		});
-
-		QUnit.test('should not autobind methods again, if 2 components are using the same ViewModel class', (assert) => {
-			let ViewModel = DefineMap.extend('ReactViewModel6', {});
-			let descriptor = Object.getOwnPropertyDescriptor(ViewModel.prototype, 'setup');
-			ViewModel.prototype._xx_setup = descriptor.value;
-
-			let setupSetCount = 0;
-			Object.defineProperty(ViewModel.prototype, 'setup', {
-				enumerable: descriptor.enumerable,
-				get() {
-					return this._xx_setup;
-				},
-				set(setupFn) {
-					if (setupFn.name === 'setUpWithAutobind') {
-						setupSetCount++;
-					}
-					this._xx_setup = setupFn;
-				},
-			});
-
-			var Rule = reactViewModel('AutobindCheckHr1', ViewModel, () => <hr />);
-			var HRule = reactViewModel('AutobindCheckHr2', ViewModel, () => <hr />);
-
-			ReactTestUtils.renderIntoDocument(
+		var Parent = connect({})((props) => {
+			return (
 				<div>
-					<Rule />
-					<HRule />
+					<Child0 value="0">
+						<Child00 value="1">
+							{props.prop0}
+							<Child000 value="2" />
+						</Child00>
+						<Child01 value="3" />
+					</Child0>
+					{props.prop1}
+					<Child1 value="4">
+						{props.prop2}
+						<Child10 value="5">
+							<Child100 value="6">
+								<Child1000 value="7" />
+							</Child100>
+						</Child10>
+						<Child11 value="8" />
+					</Child1>
 				</div>
 			);
-
-			supportsFunctionName ? assert.equal(setupSetCount, 1, 'the autobind setup modifier was only called once') : assert.ok(true);
 		});
+
+		const parentInstance = ReactTestUtils.renderIntoDocument( <Parent prop0="!" prop1="@" prop2="#" /> );
+		const parentViewModel = parentInstance.viewModel;
+		const parentDiv = ReactTestUtils.findRenderedDOMComponentWithTag( parentInstance, 'div' );
+
+		const child0ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child0 ).viewModel;
+		const child00ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child00 ).viewModel;
+		const child000ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child000 ).viewModel;
+		const child01ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child01 ).viewModel;
+		const child1ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child1 ).viewModel;
+		const child10ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child10 ).viewModel;
+		const child100ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child100 ).viewModel;
+		const child1000ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child1000 ).viewModel;
+		const child11ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child11 ).viewModel;
+
+		assert.equal(getTextFromElement(parentDiv), '01!23@4#5678', '01!23@4#5678');
+		child0ViewModel.value = 'a';
+		assert.equal(getTextFromElement(parentDiv), 'a1!23@4#5678', 'a1!23@4#5678');
+		child00ViewModel.value = 'b';
+		assert.equal(getTextFromElement(parentDiv), 'ab!23@4#5678', 'ab!23@4#5678');
+		child000ViewModel.value = 'c';
+		assert.equal(getTextFromElement(parentDiv), 'ab!c3@4#5678', 'ab!c3@4#5678');
+		child01ViewModel.value = 'd';
+		assert.equal(getTextFromElement(parentDiv), 'ab!cd@4#5678', 'ab!cd@4#5678');
+		child1ViewModel.value = 'e';
+		assert.equal(getTextFromElement(parentDiv), 'ab!cd@e#5678', 'ab!cd@e#5678');
+		child10ViewModel.value = 'f';
+		assert.equal(getTextFromElement(parentDiv), 'ab!cd@e#f678', 'ab!cd@e#f678');
+		child100ViewModel.value = 'g';
+		assert.equal(getTextFromElement(parentDiv), 'ab!cd@e#fg78', 'ab!cd@e#fg78');
+		child1000ViewModel.value = 'h';
+		assert.equal(getTextFromElement(parentDiv), 'ab!cd@e#fgh8', 'ab!cd@e#fgh8');
+		child11ViewModel.value = 'i';
+		assert.equal(getTextFromElement(parentDiv), 'ab!cd@e#fghi', 'ab!cd@e#fghi');
+
+		// Note: because parent re-rendered, child props overwrite change values in viewModel
+
+		parentViewModel.prop0 = 'A';
+		assert.equal(getTextFromElement(parentDiv), '01A23@4#5678', '01A23@4#5678');
+		parentViewModel.prop1 = 'B';
+		assert.equal(getTextFromElement(parentDiv), '01A23B4#5678', '01A23B4#5678');
+		parentViewModel.prop2 = 'C';
+		assert.equal(getTextFromElement(parentDiv), '01A23B4C5678', '01A23B4C5678');
 
 	});
 

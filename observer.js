@@ -16,9 +16,19 @@ function Observer(onUpdate) {
 	};
 }
 
+var weLeftSomethingOnTheStack = false;
 Observer.prototype.startRecording = function() {
+	if(weLeftSomethingOnTheStack){
+		var deps = ObservationRecorder.stop();
+		if(!deps.reactViewModel){
+			throw new Error('One of these things is not like the others');
+		}
+	}
+
 	this.oldDependencies = this.newDependencies;
-	ObservationRecorder.start();
+	this.nextDependencies = ObservationRecorder.start();
+	this.nextDependencies.reactViewModel = true;
+	weLeftSomethingOnTheStack = true;
 
 	if(this.order !== undefined) {
 		ORDER = this.order;
@@ -32,12 +42,19 @@ Observer.prototype.startRecording = function() {
 			this.order = ORDER = 0;
 		}
 	}
-
-	// console.log(canReflect.getName(this), this.order)
 };
 
 Observer.prototype.stopRecording = function() {
-	this.newDependencies = ObservationRecorder.stop();
+	if(weLeftSomethingOnTheStack){
+		var deps = ObservationRecorder.stop();
+		weLeftSomethingOnTheStack = false;
+
+		if(!deps.reactViewModel){
+			throw new Error('One of these things is not like the others');
+		}
+	}
+
+	this.newDependencies = this.nextDependencies;
 	recorderHelpers.updateObservations(this);
 };
 
@@ -47,6 +64,10 @@ Observer.prototype.dependencyChange = function() {
 
 Observer.prototype.teardown = function() {
 	queues.deriveQueue.dequeue(this.onUpdate);
+};
+
+Observer.prototype.ignore = function(fn) {
+	ObservationRecorder.ignore(fn)();
 };
 
 //!steal-remove-start
