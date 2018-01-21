@@ -25,15 +25,15 @@ export default function connect(config) {
 
 	return function(BaseComponent) {
 		class WrappedComponent extends Component {
-			static displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~RVM`
-
 			constructor(props) {
 				super(props);
 
 				this._boundMethods = {};
 
 				var observer = function () {
-					this.forceUpdate();
+					if (this.viewModel) {
+						this.forceUpdate();
+					}
 				}.bind(this);
 
 				//!steal-remove-start
@@ -92,9 +92,12 @@ export default function connect(config) {
 				const props = extractProps(config, this.viewModel);
 				autobindProps(this._boundMethods, props, this.viewModel);
 
-				return ( <BaseComponent {...props} /> );
+				return React.createElement(BaseComponent, props);
 			}
 		}
+
+		WrappedComponent.displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~RVM`;
+		WrappedComponent.propTypes = BaseComponent.rvmTypes;
 
 		//!steal-remove-start
 		try {

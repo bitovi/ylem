@@ -3,7 +3,7 @@ const canObserve = require('can-observe');
 module.exports = {
 	test: (config) => typeof config === 'function',
 	createViewModel(transform, props) {
-		return canObserve({ ...props });
+		return canObserve(Object.assign({}, props));
 	},
 	updateViewModel(viewModel, nextProps) {
 		Object.assign(viewModel, nextProps);

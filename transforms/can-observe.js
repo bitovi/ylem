@@ -9,8 +9,20 @@ module.exports = {
 		Object.assign(viewModel, nextProps);
 	},
 	extractProps(ViewModel, viewModel) {
-		return {
-			...viewModel,
-		};
+		const props = {};
+
+		for (const prop of Object.getOwnPropertyNames(ViewModel.prototype)) {
+			if (prop === 'constructor') {
+				continue;
+			}
+
+			props[prop] = viewModel[prop];
+		}
+
+		for (const prop of Object.getOwnPropertyNames(viewModel)) {
+			props[prop] = viewModel[prop];
+		}
+
+		return props;
 	},
 };
