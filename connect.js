@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import Observer from './observer';
-import canReflect from 'can-reflect';
+const React = require('react');
+const Component = React.Component;
+const Observer = require('./observer');
+const canReflect = require('can-reflect');
 
-import transformCanObserve from './transforms/can-observe';
-import transformCanDefine from './transforms/can-define';
-import transformFunction from './transforms/function';
-import transformObject from './transforms/object';
+const transformCanObserve = require('./transforms/can-observe');
+const transformCanDefine = require('./transforms/can-define');
+const transformFunction = require('./transforms/function');
+const transformObject = require('./transforms/object');
 
 const TRANSFORMS = [
 	transformCanObserve,
@@ -14,7 +15,7 @@ const TRANSFORMS = [
 	transformObject,
 ];
 
-export default function connect(config) {
+module.exports = function connect(config) {
 	const type = TRANSFORMS.find(({ test }) => test(config));
 	if (!type) {
 		console.error('RVM: unrecognized config', config); // eslint-disable-line no-console
@@ -121,7 +122,7 @@ export default function connect(config) {
 
 		return WrappedComponent;
 	};
-}
+};
 
 function autobindProps(methods, props, context) {
 	for (const prop in props) {
