@@ -1,6 +1,6 @@
 {
   "name": "react-view-model",
-  "version": "0.5.11",
+  "version": "1.0.0-pre.9",
   "description": "Add Observable View-Models to React Components",
   "homepage": "http://canjs.com",
   "repository": {
@@ -13,18 +13,15 @@
     "url": "http://bitovi.com"
   },
   "scripts": {
-    "preversion": "npm test && npm run build",
-    "version": "git commit -am \"Update dist for release\" && git checkout -b release && git add -f dist/",
-    "postversion": "git push --tags && git checkout master && git branch -D release && git push",
+    "preversion": "npm test",
+    "postversion": "git push --tags && git push",
     "testee": "testee test/test.html --browsers firefox",
     "test": "npm run detect-cycle && npm run eslint && npm run testee",
     "eslint": "eslint \"**/*.js\" --ignore-pattern \"dist\" --ignore-pattern \"node_modules\"",
-    "release:pre": "npm version prerelease && npm publish",
+    "release:pre": "npm version prerelease && npm publish --tag pre",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "prepublishOnly": "npm run build",
-    "build": "node build.js",
     "document": "bit-docs",
     "develop": "done-serve --static --develop --port 8080",
     "detect-cycle": "detect-cyclic-packages --ignore done-serve"
@@ -38,11 +35,14 @@
     "viewmodel"
   ],
   "dependencies": {
-    "can-define": "^1.5.0",
+    "can-define": "^2.0.0",
     "can-namespace": "^1.0.0",
-    "can-observation": "^3.0.1",
-    "can-stache-key": "^0.1.0",
-    "can-util": "^3.7.0"
+    "can-observation": "^4.0.0",
+    "can-observation-recorder": "<2.0.0",
+    "can-queues": "<2.0.0",
+    "can-reflect": "^1.7.1",
+    "can-stache-key": "^1.0.0",
+    "can-util": "^3.10.12"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",
