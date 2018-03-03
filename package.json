@@ -35,14 +35,14 @@
     "viewmodel"
   ],
   "dependencies": {
-    "can-define": "^2.0.0-pre.30",
+    "can-define": "^2.0.3",
     "can-namespace": "^1.0.0",
-    "can-observation": "^4.0.0-pre.24",
-    "can-observation-recorder": "<2.0.0",
-    "can-observe": "^2.0.0-pre.14",
-    "can-queues": "<2.0.0",
+    "can-observation": "^4.0.1",
+    "can-observation-recorder": "^1.0.2",
+    "can-observe": "^2.1.0",
+    "can-queues": "^1.0.1",
     "can-reflect": "^1.11.1",
-    "can-stache-key": "^v1.0.0-pre.15",
+    "can-stache-key": "^1.0.1",
     "can-util": "^3.10.18"
   },
   "devDependencies": {
