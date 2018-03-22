@@ -22,7 +22,7 @@ module.exports = function connect(config) {
 		throw new Error('RVM: unrecognized config');
 	}
 
-	const { createViewModel, updateViewModel, extractProps } = type;
+	const { createViewModel, updateViewModel, extractProps, getPropTypes } = type;
 
 	return function(BaseComponent) {
 		class WrappedComponent extends Component {
@@ -98,7 +98,13 @@ module.exports = function connect(config) {
 		}
 
 		WrappedComponent.displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~RVM`;
-		WrappedComponent.propTypes = BaseComponent.rvmTypes;
+
+		if (getPropTypes) {
+			const propTypes = getPropTypes(config);
+			if (propTypes) {
+				WrappedComponent.propTypes = propTypes;
+			}
+		}
 
 		//!steal-remove-start
 		try {

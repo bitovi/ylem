@@ -25,4 +25,7 @@ module.exports = {
 
 		return props;
 	},
+	getPropTypes(config) {
+		return config.propTypes;
+	},
 };

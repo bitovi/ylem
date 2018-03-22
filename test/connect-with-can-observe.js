@@ -3,14 +3,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 
-import observe from 'can-observe';
+import { Object as ObserveObject } from 'can-observe';
 import { connect } from 'react-view-model';
 
 QUnit.module('@connect with can-observe', () => {
 
 	QUnit.test('basic rendering', (assert) => {
 
-		class ViewModel extends observe.Object {
+		class ViewModel extends ObserveObject {
+			static propTypes = {
+				bar: PropTypes.string.isRequired,
+			}
+
 			constructor(props) {
 				super(props);
 
@@ -33,6 +37,8 @@ QUnit.module('@connect with can-observe', () => {
 			}
 		}
 
+		assert.equal(TestComponent.propTypes, ViewModel.propTypes, 'connected component has the correct propTypes');
+
 		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
 		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
@@ -42,7 +48,7 @@ QUnit.module('@connect with can-observe', () => {
 
 	QUnit.test('should update whenever any observable property on the viewModel instance changes', (assert) => {
 
-		class ViewModel extends observe.Object {
+		class ViewModel extends ObserveObject {
 			constructor(props) {
 				super(props);
 
@@ -75,7 +81,7 @@ QUnit.module('@connect with can-observe', () => {
 
 	QUnit.test('should update whenever any observable property on the viewModel instance changes (nested)', (assert) => {
 
-		class InnerViewModel extends observe.Object {
+		class InnerViewModel extends ObserveObject {
 			constructor(props) {
 				super(props);
 
@@ -100,7 +106,7 @@ QUnit.module('@connect with can-observe', () => {
 			}
 		}
 
-		class OuterViewModel extends observe.Object {
+		class OuterViewModel extends ObserveObject {
 			constructor(props) {
 				super(props);
 			}
@@ -135,7 +141,7 @@ QUnit.module('@connect with can-observe', () => {
 
 	QUnit.test('should update the viewModel when new props are received', (assert) => {
 
-		class ViewModel extends observe.Object {
+		class ViewModel extends ObserveObject {
 			constructor(props) {
 				super(props);
 
