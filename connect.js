@@ -1,7 +1,8 @@
 const React = require('react');
 const Component = React.Component;
-const Observer = require('./observer');
+const PropTypes = require('prop-types');
 const canReflect = require('can-reflect');
+const ObservableComponent = require('./observable-component');
 
 const transformCanObserve = require('./transforms/can-observe');
 const transformCanDefine = require('./transforms/can-define');
@@ -25,32 +26,39 @@ module.exports = function connect(config) {
 	const { createViewModel, updateViewModel, extractProps, getPropTypes } = type;
 
 	return function(BaseComponent) {
-		class WrappedComponent extends Component {
-			constructor(props) {
-				super(props);
+		const ConnectedComponent = getConnectedComponent(BaseComponent);
 
-				this._boundMethods = {};
+		//!steal-remove-start
+		ConnectedComponent.displayName = BaseComponent.displayName || BaseComponent.name;
 
-				var observer = function () {
-					if (this.viewModel) {
-						this.forceUpdate();
-					}
-				}.bind(this);
+		try {
+			Object.defineProperty(ConnectedComponent, 'name', {
+				writable: false,
+				enumerable: false,
+				configurable: true,
+				value: ConnectedComponent.displayName,
+			});
+		}
+		catch(e) {
+			//
+		}
 
-				//!steal-remove-start
-				Object.defineProperty(observer, "name", {
-					value: canReflect.getName(this),
-				});
-				//!steal-remove-end
+		if (BaseComponent.propTypes) {
+			ConnectedComponent.propTypes = {
+				_vm: PropTypes.shape(BaseComponent.propTypes),
+			};
+		}
 
-				Object.defineProperty(this, "_observer", {
-					writable: false,
-					enumerable: false,
-					configurable: false,
-					value: new Observer(observer),
-				});
-			}
+		if (ConnectedComponent.prototype) {
+			canReflect.assignSymbols(ConnectedComponent.prototype, {
+				'can.getName': function() {
+					return canReflect.getName(this.constructor) + '{}';
+				},
+			});
+		}
+		//!steal-remove-end
 
+		class UpgradedComponent extends ObservableComponent {
 			componentWillReceiveProps(nextProps) {
 				this._observer.ignore(function () {
 					updateViewModel(this.viewModel, nextProps);
@@ -58,91 +66,131 @@ module.exports = function connect(config) {
 			}
 
 			shouldComponentUpdate() {
-				return false;
+				return !!this.viewModel;
 			}
 
 			componentWillMount() {
-				Object.defineProperty(this, "viewModel", {
+				Object.defineProperty(this, 'viewModel', {
 					writable: false,
 					enumerable: false,
 					configurable: true,
 					value: createViewModel(config, this.props),
 				});
 
-				this._observer.startRecording();
-			}
-
-			componentDidMount() {
-				this._observer.stopRecording();
-			}
-
-			componentWillUpdate() {
-				this._observer.startRecording();
-			}
-
-			componentDidUpdate() {
-				this._observer.stopRecording();
+				super.componentWillMount();
 			}
 
 			componentWillUnmount() {
-				this._observer.teardown();
 				delete this.viewModel;
+
+				super.componentWillUnmount();
 			}
 
 			render() {
-				const props = extractProps(config, this.viewModel);
-				autobindProps(this._boundMethods, props, this.viewModel);
+				const _vm = extractProps
+					? extractProps(config, this.viewModel)
+					: this.viewModel
+				;
 
-				return React.createElement(BaseComponent, props);
-			}
-		}
-
-		WrappedComponent.displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~RVM`;
-
-		if (getPropTypes) {
-			const propTypes = getPropTypes(config);
-			if (propTypes) {
-				WrappedComponent.propTypes = propTypes;
+				return React.createElement(ConnectedComponent, { _vm });
 			}
 		}
 
 		//!steal-remove-start
+		UpgradedComponent.displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~RVM`;
+
 		try {
-			Object.defineProperty(WrappedComponent, "name", {
+			Object.defineProperty(UpgradedComponent, 'name', {
 				writable: false,
 				enumerable: false,
 				configurable: true,
-				value: WrappedComponent.displayName,
+				value: UpgradedComponent.displayName,
 			});
 		}
 		catch(e) {
 			//
 		}
 
-		canReflect.assignSymbols(WrappedComponent.prototype, {
-			"can.getName": function() {
-				return canReflect.getName(this.constructor) + "{}";
+		if (getPropTypes) {
+			const propTypes = getPropTypes(config);
+			if (propTypes) {
+				UpgradedComponent.propTypes = propTypes;
+			}
+		}
+
+		canReflect.assignSymbols(UpgradedComponent.prototype, {
+			'can.getName': function() {
+				return canReflect.getName(this.constructor) + '{}';
 			},
 		});
 		//!steal-remove-end
 
-		return WrappedComponent;
+		return UpgradedComponent;
 	};
 };
 
-function autobindProps(methods, props, context) {
-	for (const prop in props) {
-		if (typeof props[prop] !== 'function') {
-			continue;
+function getConnectedComponent(BaseComponent) {
+	if (BaseComponent.prototype instanceof Component) {
+		class ConnectedComponent extends BaseComponent {
+			constructor(props) {
+				const proxy = typeof Proxy === 'undefined'
+					? {
+						...props._vm,
+						_raw: props,
+						_vm: props._vm,
+					}
+					: new Proxy(props._vm, {
+						get(target, prop) {
+							if (prop === '_raw') {
+								return props;
+							}
+							if (prop === '_vm') {
+								return target;
+							}
+
+							return target[prop];
+						},
+					})
+				;
+
+				super(proxy);
+
+				//!steal-remove-start
+				this._raw_props = true;
+				//!steal-remove-end
+			}
+
+			//!steal-remove-start
+			componentWillMount() {
+				this._raw_props = false;
+
+				if (typeof super.componentWillMount === 'function') {
+					super.componentWillMount();
+				}
+			}
+			//!steal-remove-end
+
+			set props(props) {
+				this._props = props;
+			}
+
+			get props() {
+				//!steal-remove-start
+				if (this._raw_props) {
+					return this._props._raw;
+				}
+				//!steal-remove-end
+
+				return this._props._vm;
+			}
 		}
 
-		if (!methods[prop] || methods[prop].original !== props[prop]) {
-			methods[prop] = {
-				original: props[prop],
-				bound: props[prop].bind(context),
-			};
-		}
-
-		props[prop] = methods[prop].bound;
+		return ConnectedComponent;
 	}
+
+	const ConnectedComponent = ({ _vm }) => {
+		return BaseComponent(_vm);
+	};
+
+	return ConnectedComponent;
 }

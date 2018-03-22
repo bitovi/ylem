@@ -13,7 +13,7 @@ import { connect } from 'react-view-model';
 
 QUnit.module('@connect', () => {
 
-	QUnit.test('basic rendering', (assert) => {
+	QUnit.test('basic rendering with Component', (assert) => {
 		@connect((props) => ({ ...props, foo: 'foo' }))
 		class TestComponent extends Component {
 			static propTypes = {
@@ -35,8 +35,29 @@ QUnit.module('@connect', () => {
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 	});
 
+	QUnit.test('basic rendering with Function', (assert) => {
+		function TestComponent(props) {
+			const { foo, bar } = props;
+			return <div>{foo}{bar}</div>;
+		}
+
+		TestComponent.propTypes = {
+			foo: PropTypes.string.isRequired,
+			bar: PropTypes.string.isRequired,
+		};
+
+		const ConnectedTestComponent = connect((props) => ({ ...props, foo: 'foo' }))(TestComponent);
+
+		supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'TestComponent~RVM', 'returned component is properly named');
+
+		const testInstance = ReactTestUtils.renderIntoDocument( <ConnectedTestComponent bar="bar" /> );
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+
+		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
+	});
+
 	QUnit.test('should update parent before child', (assert) => {
-		var expected = [ "parent", "child1", "child2", "parent", "child1", "child2" ];
+		var expected = [ 'parent', 'child1', 'child2', 'parent', 'child1', 'child2' ];
 
 		@connect({})
 		class ChildComponent1 extends Component {
@@ -47,7 +68,7 @@ QUnit.module('@connect', () => {
 			}
 
 			render() {
-				assert.equal("child1", expected.shift(), "child1 renderer called in the right order");
+				assert.equal('child1', expected.shift(), 'child1 renderer called in the right order');
 
 				const { name } = this.props;
 				return <div>{name.first}</div>;
@@ -63,7 +84,7 @@ QUnit.module('@connect', () => {
 			}
 
 			render() {
-				assert.equal("child2", expected.shift(), "child2 renderer called in the right order");
+				assert.equal('child2', expected.shift(), 'child2 renderer called in the right order');
 
 				const { name } = this.props;
 				return <div>{name.first}</div>;
@@ -79,7 +100,7 @@ QUnit.module('@connect', () => {
 			}
 
 			render() {
-				assert.equal("parent", expected.shift(), "parent renderer called in the right order");
+				assert.equal('parent', expected.shift(), 'parent renderer called in the right order');
 
 				const { name } = this.props;
 				return (
@@ -93,9 +114,9 @@ QUnit.module('@connect', () => {
 		}
 
 		const viewModel = ReactTestUtils.renderIntoDocument( <ParentComponent name={{ first: 'Yetti' }} /> ).viewModel;
-		viewModel.name.first = "Christopher";
+		viewModel.name.first = 'Christopher';
 
-		assert.equal(expected.length, 0, "all expectations were run");
+		assert.equal(expected.length, 0, 'all expectations were run');
 	});
 
 	QUnit.test('should unmount properly', (assert) => {
@@ -127,21 +148,21 @@ QUnit.module('@connect', () => {
 
 		try {
 			pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
-			assert.ok(!pComponent, "there is no p anymore");
+			assert.ok(!pComponent, 'there is no p anymore');
 		} catch (e) {
-			assert.ok(true, "was unable to find a `p` within DOM");
+			assert.ok(true, 'was unable to find a `p` within DOM');
 		}
 
 		var spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'span' );
-		assert.ok(spanComponent, "span inserted");
+		assert.ok(spanComponent, 'span inserted');
 	});
 
-	QUnit.test('should autobind methods', (assert) => {
+	QUnit.skip('should autobind methods', (assert) => {
 		let vm = null;
 
 		@connect({
 			method() {
-				assert.equal(this, vm, `the context of vm method calls are bound to the vm`);
+				assert.equal(this, vm, 'the context of vm method calls are bound to the vm');
 			},
 		})
 		class TestComponent extends Component {

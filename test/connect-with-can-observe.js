@@ -31,7 +31,21 @@ QUnit.module('@connect with can-observe', () => {
 				bar: PropTypes.string.isRequired,
 			}
 
+			constructor(props) {
+				assert.ok(typeof props.foo !== 'undefined', 'props has foo');
+				assert.ok(typeof props.bar !== 'undefined', 'props has bar');
+
+				super(props);
+				assert.ok(this.props, 'props is an instance of ViewModel');
+			}
+
+			componentWillMount() {
+				assert.ok(this.props, 'props is an instance of ViewModel');
+			}
+
 			render() {
+				assert.ok(this.props, 'props is an instance of ViewModel');
+
 				const { foo, bar } = this.props;
 				return <div>{foo}{bar}</div>;
 			}

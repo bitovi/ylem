@@ -1,7 +1,7 @@
-var canReflect = require("can-reflect");
-var ObservationRecorder = require("can-observation-recorder");
-var recorderHelpers = require("can-observation/recorder-dependency-helpers");
-var queues = require("can-queues");
+var canReflect = require('can-reflect');
+var ObservationRecorder = require('can-observation-recorder');
+var recorderHelpers = require('can-observation/recorder-dependency-helpers');
+var queues = require('can-queues');
 
 var ORDER = undefined;
 
@@ -72,8 +72,8 @@ Observer.prototype.ignore = function(fn) {
 
 //!steal-remove-start
 canReflect.assignSymbols(Observer.prototype, {
-	"can.getName": function() {
-		return canReflect.getName(this.constructor) + "<" + canReflect.getName(this.onUpdate) + ">";
+	'can.getName': function() {
+		return canReflect.getName(this.constructor) + '<' + canReflect.getName(this.onUpdate) + '>';
 	},
 });
 //!steal-remove-end
