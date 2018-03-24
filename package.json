@@ -41,9 +41,7 @@
     "can-observation-recorder": "^1.0.2",
     "can-observe": "^2.1.0",
     "can-queues": "^1.0.1",
-    "can-reflect": "^1.11.1",
-    "can-stache-key": "^1.0.1",
-    "can-util": "^3.10.18"
+    "can-reflect": "^1.11.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",
