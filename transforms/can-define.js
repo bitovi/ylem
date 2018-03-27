@@ -1,6 +1,6 @@
-const DefineMap = require('can-define/map/map');
+import DefineMap from 'can-define/map/map';
 
-module.exports = {
+export default {
 	test: (config) => typeof config === 'function' && config.prototype instanceof DefineMap,
 	createViewModel(ViewModel, props) {
 		return new ViewModel(props);

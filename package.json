@@ -15,18 +15,20 @@
   "scripts": {
     "preversion": "npm test",
     "postversion": "git push --tags && git push",
+    "prepublish": "npm run build",
     "testee": "testee test/test.html --browsers firefox",
     "test": "npm run detect-cycle && npm run eslint && npm run testee",
-    "eslint": "eslint \"**/*.js\" --ignore-pattern \"dist\" --ignore-pattern \"node_modules\"",
+    "eslint": "eslint . --ignore-pattern \"dist\"",
     "release:pre": "npm version prerelease && npm publish --tag pre",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
     "document": "bit-docs",
     "develop": "done-serve --static --develop --port 8080",
+    "build": "node build.js",
     "detect-cycle": "detect-cyclic-packages --ignore done-serve"
   },
-  "main": "react-view-model",
+  "main": "dist",
   "keywords": [
     "canjs",
     "canjs-plugin",
@@ -52,10 +54,9 @@
     "eslint-plugin-react": "^7.5.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "steal": "^1.6.2",
-    "steal-builtins": "^1.0.0",
-    "steal-qunit": "^1.0.0",
-    "steal-tools": "^1.3.5",
+    "steal": "^1.11.0",
+    "steal-qunit": "^1.0.1",
+    "steal-tools": "^1.11.7",
     "testee": "0.7.0"
   },
   "peerDependencies": {
@@ -77,6 +78,7 @@
     }
   },
   "steal": {
+    "main": "react-view-model",
     "babelOptions": {
       "plugins": [
         "transform-decorators-legacy"

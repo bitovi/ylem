@@ -1,13 +1,12 @@
-const React = require('react');
-const Component = React.Component;
-const PropTypes = require('prop-types');
-const canReflect = require('can-reflect');
-const ObservableComponent = require('./observable-component');
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import canReflect from 'can-reflect';
+import ObservableComponent from './observable-component';
 
-const transformCanObserve = require('./transforms/can-observe');
-const transformCanDefine = require('./transforms/can-define');
-const transformFunction = require('./transforms/function');
-const transformObject = require('./transforms/object');
+import transformCanObserve from './transforms/can-observe';
+import transformCanDefine from './transforms/can-define';
+import transformFunction from './transforms/function';
+import transformObject from './transforms/object';
 
 const TRANSFORMS = [
 	transformCanObserve,
@@ -16,7 +15,7 @@ const TRANSFORMS = [
 	transformObject,
 ];
 
-module.exports = function connect(config) {
+export default function connect(config) {
 	const type = TRANSFORMS.find(({ test }) => test(config));
 	if (!type) {
 		console.error('RVM: unrecognized config', config); // eslint-disable-line no-console
@@ -127,18 +126,17 @@ module.exports = function connect(config) {
 
 		return UpgradedComponent;
 	};
-};
+}
 
 function getConnectedComponent(BaseComponent) {
 	if (BaseComponent.prototype instanceof Component) {
 		class ConnectedComponent extends BaseComponent {
 			constructor(props) {
 				const proxy = typeof Proxy === 'undefined'
-					? {
-						...props._vm,
+					? Object.assign({}, props._vm, {
 						_raw: props,
 						_vm: props._vm,
-					}
+					})
 					: new Proxy(props._vm, {
 						get(target, prop) {
 							if (prop === '_raw') {

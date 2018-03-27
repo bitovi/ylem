@@ -1,9 +1,8 @@
-const React = require('react');
-const Component = React.Component;
-const canReflect = require('can-reflect');
-const Observer = require('./observer');
+import { Component } from 'react';
+import canReflect from 'can-reflect';
+import Observer from './observer';
 
-class ObservableComponent extends Component {
+export default class ObservableComponent extends Component {
 	constructor(props) {
 		super(props);
 
@@ -56,5 +55,3 @@ class ObservableComponent extends Component {
 		this._observer.teardown();
 	}
 }
-
-module.exports = ObservableComponent;

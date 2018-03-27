@@ -1,11 +1,11 @@
-var canReflect = require('can-reflect');
-var ObservationRecorder = require('can-observation-recorder');
-var recorderHelpers = require('can-observation/recorder-dependency-helpers');
-var queues = require('can-queues');
+import canReflect from 'can-reflect';
+import ObservationRecorder from 'can-observation-recorder';
+import recorderHelpers from 'can-observation/recorder-dependency-helpers';
+import queues from 'can-queues';
 
 var ORDER = undefined;
 
-function Observer(onUpdate) {
+export default function Observer(onUpdate) {
 	this.newDependencies = ObservationRecorder.makeDependenciesRecorder();
 	this.oldDependencies = null;
 	this.onUpdate = onUpdate;
@@ -77,5 +77,3 @@ canReflect.assignSymbols(Observer.prototype, {
 	},
 });
 //!steal-remove-end
-
-module.exports = Observer;

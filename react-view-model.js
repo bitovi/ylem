@@ -1,9 +1,14 @@
-var namespace = require('can-namespace');
+import namespace from 'can-namespace';
 
-var connect = require('./connect');
-var ObservableComponent = require('./observable-component');
+import connect from './connect';
+import ObservableComponent from './observable-component';
 
-module.exports = namespace.reactViewModel = {
-	connect: connect,
-	ObservableComponent: ObservableComponent,
+namespace.reactViewModel = {
+	connect,
+	ObservableComponent,
+};
+
+export {
+	connect,
+	ObservableComponent,
 };

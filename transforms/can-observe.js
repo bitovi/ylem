@@ -1,6 +1,6 @@
-const canObserve = require('can-observe');
+import canObserve from 'can-observe';
 
-module.exports = {
+export default {
 	test: (config) => typeof config === 'function' && config.prototype instanceof canObserve.Object,
 	createViewModel(ViewModel, props) {
 		return new ViewModel(props);
