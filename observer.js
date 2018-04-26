@@ -21,7 +21,10 @@ Observer.prototype.startRecording = function() {
 	if(weLeftSomethingOnTheStack){
 		var deps = ObservationRecorder.stop();
 		if(!deps.reactViewModel){
-			throw new Error('One of these things is not like the others');
+			throw new Error(
+				'If you see this error with another error, clearing that should solve this. If you see '
+				+ 'this error alone, please open and issue on our github and tag Christopher and Justin.'
+			);
 		}
 	}
 
@@ -63,6 +66,7 @@ Observer.prototype.dependencyChange = function() {
 };
 
 Observer.prototype.teardown = function() {
+	recorderHelpers.stopObserving(this.newDependencies, this.onDependencyChange);
 	queues.deriveQueue.dequeue(this.onUpdate);
 };
 

@@ -15,6 +15,8 @@ const TRANSFORMS = [
 	transformObject,
 ];
 
+// TODO: transform? connect((props) => ({ props }), VM)
+
 export default function connect(config) {
 	const type = TRANSFORMS.find(({ test }) => test(config));
 	if (!type) {
@@ -27,8 +29,14 @@ export default function connect(config) {
 	return function(BaseComponent) {
 		const ConnectedComponent = getConnectedComponent(BaseComponent);
 
+		if (BaseComponent.propTypes) {
+			ConnectedComponent.propTypes = {
+				_vm: PropTypes.shape(BaseComponent.propTypes),
+			};
+		}
+
 		//!steal-remove-start
-		ConnectedComponent.displayName = BaseComponent.displayName || BaseComponent.name;
+		ConnectedComponent.displayName = `${BaseComponent.displayName || BaseComponent.name}~RVMConnected`;
 
 		try {
 			Object.defineProperty(ConnectedComponent, 'name', {
@@ -40,12 +48,6 @@ export default function connect(config) {
 		}
 		catch(e) {
 			//
-		}
-
-		if (BaseComponent.propTypes) {
-			ConnectedComponent.propTypes = {
-				_vm: PropTypes.shape(BaseComponent.propTypes),
-			};
 		}
 
 		if (ConnectedComponent.prototype) {
@@ -169,6 +171,10 @@ function getConnectedComponent(BaseComponent) {
 			//!steal-remove-end
 
 			set props(props) {
+				if (this._props && props === this._props._vm) {
+					return;
+				}
+
 				this._props = props;
 			}
 

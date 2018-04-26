@@ -15,7 +15,7 @@
   "scripts": {
     "preversion": "npm test",
     "postversion": "git push --tags && git push",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "testee": "testee test/test.html --browsers firefox",
     "test": "npm run detect-cycle && npm run eslint && npm run testee",
     "eslint": "eslint . --ignore-pattern \"dist\"",
