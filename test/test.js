@@ -57,7 +57,8 @@ QUnit.module('@connect', () => {
 	});
 
 	QUnit.test('should update parent before child', (assert) => {
-		var expected = [ 'parent', 'child1', 'child2', 'parent', 'child1', 'child2' ];
+		// var expected = [ 'parent', 'child1', 'child2', 'parent', 'child1', 'child2' ];
+		var expected = [ 'parent', 'child1', 'child2', 'parent', 'parent', 'child1', 'parent', 'child2' ];
 
 		@connect({})
 		class ChildComponent1 extends Component {

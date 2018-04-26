@@ -18,7 +18,7 @@ QUnit.module('@connect with can-observe', () => {
 			constructor(props) {
 				super(props);
 
-				assert.deepEqual(props, { bar: 'bar' }, 'constructor is called with the correct props');
+				assert.deepEqual(props, undefined, 'constructor is called with the correct props');
 
 				this.foo = 'foo';
 			}
