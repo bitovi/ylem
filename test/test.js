@@ -1,6 +1,8 @@
 import QUnit from 'steal-qunit';
 import React /*, { Component as ReactComponent } */ from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
+import DefineMap from 'can-define/map/map';
+import canReflect from 'can-reflect';
 
 
 import reactViewModel from 'react-view-model';
@@ -200,6 +202,32 @@ QUnit.module('react-view-model', () => {
 
 		});
 
+		QUnit.test('should remove bound instances when component unmounts', () => {
+			const Type = DefineMap.extend({en: 'string'});
+			const greeting = new Type({en: 'hi'});
+			const calls = [];
+
+			canReflect.onInstanceBoundChange(Type, function(instance, isBound){
+				calls.push( [instance, isBound] )
+			});
+
+			class TestComponent extends Component {
+				render() {
+					return <div>{this.viewModel.sayWhat.en}</div>;
+				}
+			}
+
+			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent sayWhat={greeting} /> );
+			const vm = testInstance.viewModel;
+
+			// vm change re-renders component, triggering unmount
+			vm.sayWhat = 'hello';
+
+			QUnit.deepEqual( calls, [
+				[greeting, true],
+				[greeting, false]
+			]);
+		});
 
 	});
 

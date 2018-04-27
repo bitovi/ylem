@@ -12,7 +12,7 @@ function Observer(onUpdate) {
 	this.onUpdate = onUpdate;
 
 	var self = this;
-	this.onDependencyChange = function(newVal, oldVal) {
+	this.onDependencyChange = function onDependencyChange(newVal, oldVal) {
 		self.dependencyChange(this, newVal, oldVal);
 	};
 }
@@ -65,6 +65,7 @@ Observer.prototype.dependencyChange = function() {
 };
 
 Observer.prototype.teardown = function() {
+	recorderHelpers.stopObserving(this.newDependencies, this.onDependencyChange);
 	queues.deriveQueue.dequeue(this.onUpdate);
 };
 
