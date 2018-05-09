@@ -5,17 +5,13 @@ import ObservableComponent from './observable-component';
 
 import transformCanObserve from './transforms/can-observe';
 import transformCanDefine from './transforms/can-define';
-import transformFunction from './transforms/function';
-import transformObject from './transforms/object';
 
 const TRANSFORMS = [
 	transformCanObserve,
 	transformCanDefine,
-	transformFunction,
-	transformObject,
 ];
 
-// TODO: transform? connect((props) => ({ props }), VM)
+// TODO: transform? connect(VM, (props) => ({ props }))
 
 export default function connect(config) {
 	const type = TRANSFORMS.find(({ test }) => test(config));
@@ -24,7 +20,7 @@ export default function connect(config) {
 		throw new Error('RVM: unrecognized config');
 	}
 
-	const { createViewModel, updateViewModel, extractProps, getPropTypes } = type;
+	const { createViewModel, updateViewModel, getPropTypes } = type;
 
 	return function(BaseComponent) {
 		const ConnectedComponent = getConnectedComponent(BaseComponent);
@@ -61,9 +57,9 @@ export default function connect(config) {
 
 		class UpgradedComponent extends ObservableComponent {
 			componentWillReceiveProps(nextProps) {
-				this._observer.ignore(function () {
+				this._observer.ignore(() => {
 					updateViewModel(this.viewModel, nextProps);
-				}.bind(this));
+				});
 			}
 
 			shouldComponentUpdate() {
@@ -71,11 +67,13 @@ export default function connect(config) {
 			}
 
 			componentWillMount() {
-				Object.defineProperty(this, 'viewModel', {
-					writable: false,
-					enumerable: false,
-					configurable: true,
-					value: createViewModel(config, this.props),
+				this._observer.ignore(() => {
+					Object.defineProperty(this, 'viewModel', {
+						writable: false,
+						enumerable: false,
+						configurable: true,
+						value: createViewModel(config, this.props),
+					});
 				});
 
 				super.componentWillMount();
@@ -88,10 +86,7 @@ export default function connect(config) {
 			}
 
 			render() {
-				const _vm = extractProps
-					? extractProps(config, this.viewModel)
-					: this.viewModel
-				;
+				const _vm = this.viewModel;
 
 				return React.createElement(ConnectedComponent, { _vm });
 			}
@@ -192,7 +187,7 @@ function getConnectedComponent(BaseComponent) {
 		if (typeof BaseComponent.prototype.componentWillReceiveProps === 'function') {
 			ConnectedComponent.prototype.componentWillReceiveProps = function(props, state) {
 				return BaseComponent.prototype.componentWillReceiveProps.call(this, props._vm, state);
-			}
+			};
 		}
 
 		return ConnectedComponent;

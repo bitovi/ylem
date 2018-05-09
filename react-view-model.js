@@ -1,14 +1,14 @@
 import namespace from 'can-namespace';
 
 import connect from './connect';
-import ObservableComponent from './observable-component';
+const withViewModel = connect;
 
 namespace.reactViewModel = {
 	connect,
-	ObservableComponent,
+	withViewModel,
 };
 
 export {
 	connect,
-	ObservableComponent,
+	withViewModel,
 };
