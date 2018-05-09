@@ -1,7 +1,5 @@
 import './connect-with-can-observe';
 import './connect-with-can-define';
-import './connect-with-function';
-import './connect-with-object';
 
 import QUnit from 'steal-qunit';
 import React, { Component } from 'react';
@@ -10,11 +8,18 @@ import ReactTestUtils from 'react-dom/test-utils';
 import { getTextFromElement, supportsFunctionName } from './utils';
 
 import { connect } from 'react-view-model';
+import { Object as ObserveObject } from 'can-observe';
+
+class EmptyViewModel extends ObserveObject {}
 
 QUnit.module('@connect', () => {
 
 	QUnit.test('basic rendering with Component', (assert) => {
-		@connect((props) => ({ ...props, foo: 'foo' }))
+		class ViewModel extends ObserveObject {
+			foo = 'foo'
+		}
+
+		@connect(ViewModel)
 		class TestComponent extends Component {
 			static propTypes = {
 				foo: PropTypes.string.isRequired,
@@ -36,6 +41,10 @@ QUnit.module('@connect', () => {
 	});
 
 	QUnit.test('basic rendering with Function', (assert) => {
+		class ViewModel extends ObserveObject {
+			foo = 'foo'
+		}
+
 		function TestComponent(props) {
 			const { foo, bar } = props;
 			return <div>{foo}{bar}</div>;
@@ -46,7 +55,7 @@ QUnit.module('@connect', () => {
 			bar: PropTypes.string.isRequired,
 		};
 
-		const ConnectedTestComponent = connect((props) => ({ ...props, foo: 'foo' }))(TestComponent);
+		const ConnectedTestComponent = connect(ViewModel)(TestComponent);
 
 		supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'TestComponent~RVM', 'returned component is properly named');
 
@@ -60,7 +69,7 @@ QUnit.module('@connect', () => {
 		// var expected = [ 'parent', 'child1', 'child2', 'parent', 'child1', 'child2' ];
 		var expected = [ 'parent', 'child1', 'child2', 'parent', 'parent', 'child1', 'parent', 'child2' ];
 
-		@connect({})
+		@connect(EmptyViewModel)
 		class ChildComponent1 extends Component {
 			static propTypes = {
 				name: PropTypes.shape({
@@ -76,7 +85,7 @@ QUnit.module('@connect', () => {
 			}
 		}
 
-		@connect({})
+		@connect(EmptyViewModel)
 		class ChildComponent2 extends Component {
 			static propTypes = {
 				name: PropTypes.shape({
@@ -92,7 +101,7 @@ QUnit.module('@connect', () => {
 			}
 		}
 
-		@connect({})
+		@connect(EmptyViewModel)
 		class ParentComponent extends Component {
 			static propTypes = {
 				name: PropTypes.shape({
@@ -121,9 +130,11 @@ QUnit.module('@connect', () => {
 	});
 
 	QUnit.test('should unmount properly', (assert) => {
-		@connect({
-			showChild: true,
-		})
+		class ViewModel extends ObserveObject {
+			showChild = true
+		}
+
+		@connect(ViewModel)
 		class ParentComponent extends Component {
 			static propTypes = {
 				showChild: PropTypes.bool.isRequired,
@@ -135,7 +146,7 @@ QUnit.module('@connect', () => {
 			}
 		}
 
-		@connect({})
+		@connect(EmptyViewModel)
 		class ChildComponent extends Component {
 			render() {
 				return <p>I AM CHILD</p>;
@@ -161,11 +172,13 @@ QUnit.module('@connect', () => {
 	QUnit.skip('should autobind methods', (assert) => {
 		let vm = null;
 
-		@connect({
-			method() {
+		class ViewModel extends ObserveObject {
+			method = () => {
 				assert.equal(this, vm, 'the context of vm method calls are bound to the vm');
-			},
-		})
+			}
+		}
+
+		@connect(ViewModel)
 		class TestComponent extends Component {
 			static propTypes = {
 				method: PropTypes.func.isRequired,
@@ -189,17 +202,17 @@ QUnit.module('@connect', () => {
 			return <span>{props.value}{props.children}</span>;
 		};
 
-		var Child0 = connect({})(render);
-		var Child00 = connect({})(render);
-		var Child000 = connect({})(render);
-		var Child01 = connect({})(render);
-		var Child1 = connect({})(render);
-		var Child10 = connect({})(render);
-		var Child100 = connect({})(render);
-		var Child1000 = connect({})(render);
-		var Child11 = connect({})(render);
+		var Child0 = connect(EmptyViewModel)(render);
+		var Child00 = connect(EmptyViewModel)(render);
+		var Child000 = connect(EmptyViewModel)(render);
+		var Child01 = connect(EmptyViewModel)(render);
+		var Child1 = connect(EmptyViewModel)(render);
+		var Child10 = connect(EmptyViewModel)(render);
+		var Child100 = connect(EmptyViewModel)(render);
+		var Child1000 = connect(EmptyViewModel)(render);
+		var Child11 = connect(EmptyViewModel)(render);
 
-		var Parent = connect({})((props) => {
+		var Parent = connect(EmptyViewModel)((props) => {
 			return (
 				<div>
 					<Child0 value="0">
