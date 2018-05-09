@@ -20,7 +20,7 @@ var weLeftSomethingOnTheStack = false;
 Observer.prototype.startRecording = function() {
 	if(weLeftSomethingOnTheStack){
 		var deps = ObservationRecorder.stop();
-		if(!deps.reactViewModel){
+		if(!deps.ylem){
 			throw new Error(
 				'If you see this error with another error, clearing that should solve this. If you see '
 				+ 'this error alone, please open and issue on our github and tag Christopher and Justin.'
@@ -30,7 +30,7 @@ Observer.prototype.startRecording = function() {
 
 	this.oldDependencies = this.newDependencies;
 	this.nextDependencies = ObservationRecorder.start();
-	this.nextDependencies.reactViewModel = true;
+	this.nextDependencies.ylem = true;
 	weLeftSomethingOnTheStack = true;
 
 	if(this.order !== undefined) {
@@ -52,7 +52,7 @@ Observer.prototype.stopRecording = function() {
 		var deps = ObservationRecorder.stop();
 		weLeftSomethingOnTheStack = false;
 
-		if(!deps.reactViewModel){
+		if(!deps.ylem){
 			throw new Error('One of these things is not like the others');
 		}
 	}

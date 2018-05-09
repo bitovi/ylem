@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import { getTextFromElement, supportsFunctionName } from './utils';
 
-import { connect } from 'react-view-model';
+import { connect } from 'ylem';
 import { Object as ObserveObject } from 'can-observe';
 
 class EmptyViewModel extends ObserveObject {}
@@ -32,7 +32,7 @@ QUnit.module('@connect', () => {
 			}
 		}
 
-		supportsFunctionName && assert.equal(TestComponent.name, 'TestComponent~RVM', 'returned component is properly named');
+		supportsFunctionName && assert.equal(TestComponent.name, 'TestComponent~ylem', 'returned component is properly named');
 
 		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
 		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
@@ -57,7 +57,7 @@ QUnit.module('@connect', () => {
 
 		const ConnectedTestComponent = connect(ViewModel)(TestComponent);
 
-		supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'TestComponent~RVM', 'returned component is properly named');
+		supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'TestComponent~ylem', 'returned component is properly named');
 
 		const testInstance = ReactTestUtils.renderIntoDocument( <ConnectedTestComponent bar="bar" /> );
 		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );

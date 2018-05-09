@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 
 import DefineMap from 'can-define/map/map';
-import { connect } from 'react-view-model';
+import { connect } from 'ylem';
 
 QUnit.module('@connect with can-define', () => {
 

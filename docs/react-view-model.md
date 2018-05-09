@@ -1,4 +1,4 @@
-@function react-view-model react-view-model
+@function ylem ylem
 @parent can-views
 @collection can-ecosystem
 @description Create an auto-rendering container component with an observable view-model by providing a ViewModel and a React render function.
@@ -30,18 +30,18 @@ export default reactViewModel( 'AppComponent', ViewModel, (viewModel) => (<div>{
 
 An example application using the ViewModel to create an extra prop, whose value is derived from other props.
 
-@demo demos/react-view-model/function.name.html
+@demo demos/ylem/function.name.html
 
 An example application which includes viewModel mutation and demonstrates auto-rendering.
 
-@demo demos/react-view-model/function.counter.html
+@demo demos/ylem/function.counter.html
 
 You can also play with the above example on JS Bin:
 
-<a class="jsbin-embed" href="https://jsbin.com/cudobut/2/embed?js,output">react-view-model demo on jsbin.com</a>
+<a class="jsbin-embed" href="https://jsbin.com/cudobut/2/embed?js,output">ylem demo on jsbin.com</a>
 
 You can also use this module with [Preact](https://preactjs.com):
 
-<a class="jsbin-embed" href="https://jsbin.com/muqeqec/5/embed?js,output">react-view-model demo with Preact on jsbin.com</a>
+<a class="jsbin-embed" href="https://jsbin.com/muqeqec/5/embed?js,output">ylem demo with Preact on jsbin.com</a>
 
 <script src="https://static.jsbin.com/js/embed.min.js?4.0.4"></script>
