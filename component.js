@@ -19,7 +19,7 @@ if (React) {
 		}
 
 		var observer = function () {
-			if (typeof this._shouldComponentUpdate !== "function" || this._shouldComponentUpdate()) {
+			if (this.viewModel && (typeof this._shouldComponentUpdate !== "function" || this._shouldComponentUpdate())) {
 				this.forceUpdate();
 			}
 		}.bind(this);
