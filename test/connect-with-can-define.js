@@ -12,7 +12,7 @@ QUnit.module('@connect with can-define', () => {
 
 		const ViewModel = DefineMap.extend('ViewModel', {
 			init(props) {
-				assert.deepEqual(props, { bar: 'bar' }, 'constructor is called with the correct props');
+				assert.deepEqual(props, undefined, 'constructor is called with the correct props');
 			},
 
 			foo: {
@@ -33,15 +33,15 @@ QUnit.module('@connect with can-define', () => {
 				assert.ok(typeof props.bar !== 'undefined', 'props has bar');
 
 				super(props);
-				assert.ok(this.props, 'props is an instance of ViewModel');
+				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
 			}
 
 			componentWillMount() {
-				assert.ok(this.props, 'props is an instance of ViewModel');
+				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
 			}
 
 			render() {
-				assert.ok(this.props, 'props is an instance of ViewModel');
+				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
 
 				const { foo, bar } = this.props;
 				return <div>{foo}{bar}</div>;
