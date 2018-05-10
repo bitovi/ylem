@@ -56,27 +56,28 @@ export default function connect(config) {
 		//!steal-remove-end
 
 		class UpgradedComponent extends ObservableComponent {
-			componentWillReceiveProps(nextProps) {
-				this._observer.ignore(() => {
-					updateViewModel(this.viewModel, nextProps);
+			static getDerivedStateFromProps(nextProps, { observer, viewModel }) {
+				observer.ignore(() => {
+					updateViewModel(viewModel, nextProps);
 				});
+
+				return null;
+			}
+
+			constructor(props) {
+				super(props);
+				this.observer.ignore(() => {
+					this.viewModel = createViewModel(config, this.props);
+				});
+
+				this.state = {
+					viewModel: this.viewModel,
+					observer: this.observer
+				};
 			}
 
 			shouldComponentUpdate() {
 				return !!this.viewModel;
-			}
-
-			componentWillMount() {
-				this._observer.ignore(() => {
-					Object.defineProperty(this, 'viewModel', {
-						writable: false,
-						enumerable: false,
-						configurable: true,
-						value: createViewModel(config, this.props),
-					});
-				});
-
-				super.componentWillMount();
 			}
 
 			componentWillUnmount() {
@@ -182,12 +183,6 @@ function getConnectedComponent(BaseComponent) {
 
 				return this._props._vm;
 			}
-		}
-
-		if (typeof BaseComponent.prototype.componentWillReceiveProps === 'function') {
-			ConnectedComponent.prototype.componentWillReceiveProps = function(props, state) {
-				return BaseComponent.prototype.componentWillReceiveProps.call(this, props._vm, state);
-			};
 		}
 
 		return ConnectedComponent;

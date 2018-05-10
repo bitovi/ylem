@@ -11,47 +11,38 @@ export default class ObservableComponent extends Component {
 			delete this.constructor.prototype.shouldComponentUpdate;
 		}
 
-		var observer = function () {
+		this.observer = new Observer(() => {
 			if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
 				this.forceUpdate();
 			}
-		}.bind(this);
+		});
 
 		//!steal-remove-start
-		Object.defineProperty(observer, 'name', {
+		Object.defineProperty(this.observer.onUpdate, 'name', {
 			value: canReflect.getName(this),
 		});
 		//!steal-remove-end
 
-		Object.defineProperty(this, '_observer', {
-			writable: false,
-			enumerable: false,
-			configurable: false,
-			value: new Observer(observer),
-		});
+		const oldRender = this.render;
+		this.render = function() {
+			this.observer.startRecording();
+			return oldRender.call(this);
+		};
 	}
 
 	shouldComponentUpdate() {
 		return false;
 	}
 
-	componentWillMount() {
-		this._observer.startRecording();
-	}
-
 	componentDidMount() {
-		this._observer.stopRecording();
-	}
-
-	componentWillUpdate() {
-		this._observer.startRecording();
+		this.observer.stopRecording();
 	}
 
 	componentDidUpdate() {
-		this._observer.stopRecording();
+		this.observer.stopRecording();
 	}
 
 	componentWillUnmount() {
-		this._observer.teardown();
+		this.observer.teardown();
 	}
 }

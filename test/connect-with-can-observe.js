@@ -39,10 +39,6 @@ QUnit.module('@connect with can-observe', () => {
 				assert.ok(this.props, 'props is an instance of ViewModel');
 			}
 
-			componentWillMount() {
-				assert.ok(this.props, 'props is an instance of ViewModel');
-			}
-
 			render() {
 				assert.ok(this.props, 'props is an instance of ViewModel');
 
