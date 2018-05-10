@@ -16,8 +16,8 @@ const TRANSFORMS = [
 export default function connect(config) {
 	const type = TRANSFORMS.find(({ test }) => test(config));
 	if (!type) {
-		console.error('RVM: unrecognized config', config); // eslint-disable-line no-console
-		throw new Error('RVM: unrecognized config');
+		console.error('ylem: unrecognized config', config); // eslint-disable-line no-console
+		throw new Error('ylem: unrecognized config');
 	}
 
 	const { createViewModel, updateViewModel, getPropTypes } = type;
@@ -32,7 +32,7 @@ export default function connect(config) {
 		}
 
 		//!steal-remove-start
-		ConnectedComponent.displayName = `${BaseComponent.displayName || BaseComponent.name}~RVMConnected`;
+		ConnectedComponent.displayName = `${BaseComponent.displayName || BaseComponent.name}~ylemConnected`;
 
 		try {
 			Object.defineProperty(ConnectedComponent, 'name', {
@@ -93,7 +93,7 @@ export default function connect(config) {
 		}
 
 		//!steal-remove-start
-		UpgradedComponent.displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~RVM`;
+		UpgradedComponent.displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~ylem`;
 
 		try {
 			Object.defineProperty(UpgradedComponent, 'name', {

@@ -1,5 +1,5 @@
-@property {function} react-view-model/component.view-model ViewModel
-@parent react-view-model/component.static
+@property {function} ylem/component.view-model ViewModel
+@parent ylem/component.static
 
 @description Provide a constructor function that provides values and methods to the component. The constructor function is initialized with the props, and updated as the props change.
 
@@ -8,7 +8,7 @@
 the component.
 
 ```javascript
-import { Component } from 'react-view-model';
+import { Component } from 'ylem';
 
 export default class AppComponent extends Component {
   ...
@@ -30,7 +30,7 @@ AppComponent.ViewModel = DefineMap.extend({
 
 ```jsx
 import React from 'react';
-import { Component } from 'react-view-model';
+import { Component } from 'ylem';
 import DefineMap from 'can-define/map/map';
 
 export default class AppComponent extends Component {

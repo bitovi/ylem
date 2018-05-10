@@ -1,7 +1,11 @@
-# React-View-Model
+# ylem
 
-[![Build Status](https://travis-ci.org/canjs/react-view-model.png?branch=master)](https://travis-ci.org/canjs/react-view-model)
-[![Greenkeeper badge](https://badges.greenkeeper.io/canjs/react-view-model.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/bitovi/ylem.png?branch=master)](https://travis-ci.org/bitovi/ylem)
+[![Greenkeeper badge](https://badges.greenkeeper.io/bitovi/ylem.svg)](https://greenkeeper.io/)
+
+*noun* `ASTRONOMY`
+
+(in the Big Bang theory) the primordial matter of the universe, originally conceived as composed of neutrons at high temperature and density.
 
 Connect [CanJS](https://canjs.com/) observables to [React](https://reactjs.org/) components to create auto rendering [smart/container components][1].
 
@@ -12,7 +16,7 @@ Connect [CanJS](https://canjs.com/) observables to [React](https://reactjs.org/)
     * [`Observable State`](#observable-state)
     * [`Higher Order Component(HoC)`](#higher-order-component-hoc)
     * [`Render Props`](#render-props)
-* [Test Utils](#rvm-test-utils)
+* [Test Utils](#ylem-test-utils)
 * [API Docs](#api)
 * [Contributing](#contributing)
 * [LICENSE](#license)
@@ -22,27 +26,27 @@ Connect [CanJS](https://canjs.com/) observables to [React](https://reactjs.org/)
 ### ES6
 
 ```js
-import reactViewModel from 'react-view-model';
+import reactViewModel from 'ylem';
 // or
-import { Component, connect, createComponent } from 'react-view-model';
+import { Component, connect, createComponent } from 'ylem';
 ```
 
 ### CommonJS
 
 ```js
-const reactViewModel = require('react-view-model');
+const reactViewModel = require('ylem');
 // or
-const { Component, connect, createComponent } = require('react-view-model');
+const { Component, connect, createComponent } = require('ylem');
 ```
 
 ## Usage
 
 ### Observable State
-The most basic use of **react-view-model** is to create a component with observable state.
+The most basic use of **ylem** is to create a component with observable state.
 
 ```js
 import React from 'react';
-import { Component } from 'react-view-model';
+import { Component } from 'ylem';
 import observe from 'can-observe';
 
 class MyComponent extends Component {
@@ -71,20 +75,20 @@ class MyComponent extends Component {
 }
 ```
 
-React-View-Model gives your React components access to entire CanJS ecosystem of observables, data modeling and more, and your components will auto render when any observable value changes.
+ylem gives your React components access to entire CanJS ecosystem of observables, data modeling and more, and your components will auto render when any observable value changes.
 
 _*Learn more about our Observer Component API in our [Component Docs](./docs/api/component.md)_
 
 ---
 
-React-View-Model also provides 2 great MVVM focused functions for Building Apps with CanJS and React, using the common React patterns: Higher order Components and Render Props.
+ylem also provides 2 great MVVM focused functions for Building Apps with CanJS and React, using the common React patterns: Higher order Components and Render Props.
 
 ### Higher Order Component (HoC)
-The [`connect()`](./docs/api/connect.md) method provided by react-view-model is a HoC factory function that follows a pattern of **enhancing** "dumb" or [Presentational React components][1] into "smart" a.k.a. [Container Components][1] by "connecting" them to an observable CanJS ViewModel.
+The [`connect()`](./docs/api/connect.md) method provided by ylem is a HoC factory function that follows a pattern of **enhancing** "dumb" or [Presentational React components][1] into "smart" a.k.a. [Container Components][1] by "connecting" them to an observable CanJS ViewModel.
 
 ```js
 import React from 'react';
-import { connect } from 'react-view-model';
+import { connect } from 'ylem';
 import { Object as ObserveObject } from 'can-observe';
 
 export class ViewModel extends ObserveObject {
@@ -108,13 +112,13 @@ export const MenuToggle = ({ showMenu, toggleMenu }) => (
 export default connect(ViewModel)(MenuToggle);
 ```
 
-Similar to, and inspired by, React-Redux, RVM allows a clean separation of the view and the data, which leads to easier testing and great maintainability.
+Similar to, and inspired by, React-Redux, ylem allows a clean separation of the view and the data, which leads to easier testing and great maintainability.
 
 If you are able to use [ES Decorators](https://babeljs.io/docs/plugins/transform-decorators/), the connect method works nicely as a decorator too.
 
 ```js
 import React from 'react';
-import { connect } from 'react-view-model';
+import { connect } from 'ylem';
 import { Object as ObserveObject } from 'can-observe';
 
 export class ViewModel extends ObserveObject {
@@ -144,11 +148,11 @@ The [`connect()`](./docs/api/connect.md) method is also aliased as `withViewMode
 _*Learn more about our connect API in our [connect Docs](./docs/api/connect.md)_
 
 ### Render Props
-The [`createComponent()`](./docs/api/create-component.md) function provided by react-view-model produces React Components that accept [Render Props](https://reactjs.org/docs/render-props.html) or a **function as child**, out of a Observable CanJS class.
+The [`createComponent()`](./docs/api/create-component.md) function provided by ylem produces React Components that accept [Render Props](https://reactjs.org/docs/render-props.html) or a **function as child**, out of a Observable CanJS class.
 
 ```js
 import React from 'react';
-import { createComponent } from 'react-view-model';
+import { createComponent } from 'ylem';
 import { Object as ObserveObject } from 'can-observe';
 
 export class ViewModel extends ObserveObject {
@@ -180,17 +184,17 @@ This allows full control over your rendering, while still offering the auto-upda
 
 _*Learn more about our connect API in our [createComponent Docs](./docs/api/create-component.md)_
 
-## RVM Test Utils
-The [`test-utils`](./docs/api/test-utils.md) module provides some utility methods to make testing your React-View-Model components easy.
+## ylem Test Utils
+The [`test-utils`](./docs/api/test-utils.md) module provides some utility methods to make testing your ylem components easy.
 
 * [`mock()`](./docs/api/test-utils.md#mock) provides quick mocking of the behaviors of the connected observables so you can test your react components without triggering side effects
-* [`getViewModel()`](./docs/api/test-utils.md#getviewmodel) extracts the ViewModel class from an RVM component class, great for when you are using ES Decorators
+* [`getViewModel()`](./docs/api/test-utils.md#getviewmodel) extracts the ViewModel class from an ylem component class, great for when you are using ES Decorators
 * [`getComponent()`](./docs/api/test-utils.md#getcomponent) extracts the dumb/presentational component from an enhanced smart/container component
 
 Mock Example
 
 ```javascript
-import { mock } from 'react-view-model/test-utils';
+import { mock } from 'ylem/test-utils';
 import Header from './header';
 import Profile from 'components/profile';
 
@@ -218,7 +222,7 @@ describe('Header Component (which renders a Container Profile component)', ()=>{
 
 
 ## API Docs
-Checkout our in depth [API Docs here](./docs/api/index.md) or on the [CanJS website](https://canjs.com/doc/react-view-model.html)
+Checkout our in depth [API Docs here](./docs/api/index.md) or on the [CanJS website](https://canjs.com/doc/ylem.html)
 
 ## Contributing
 Checkout out our docs on [Contributing](./contributing.md)

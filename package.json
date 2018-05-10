@@ -1,16 +1,18 @@
 {
-  "name": "react-view-model",
-  "version": "2.0.0-pre.9",
+  "name": "ylem",
+  "version": "0.0.1",
   "description": "Add Observable View-Models to React Components",
   "homepage": "http://canjs.com",
   "repository": {
     "type": "git",
-    "url": "git://github.com/canjs/react-view-model.git"
+    "url": "git+https://github.com/bitovi/ylem.git",
+    "github": "http://bitovi.com"
   },
   "author": {
     "name": "Bitovi",
     "email": "contact@bitovi.com",
-    "url": "http://bitovi.com"
+    "url": "http://bitovi.com",
+    "github": "http://bitovi.com"
   },
   "scripts": {
     "preversion": "npm test",
@@ -34,7 +36,12 @@
     "canjs-plugin",
     "donejs",
     "react",
-    "viewmodel"
+    "viewmodel",
+    "ylem",
+    "react-view-model",
+    "rvm",
+    "bitovi",
+    "observables"
   ],
   "dependencies": {
     "can-define": "^2.0.3",
@@ -78,7 +85,7 @@
     }
   },
   "steal": {
-    "main": "react-view-model",
+    "main": "ylem",
     "babelOptions": {
       "plugins": [
         "transform-decorators-legacy"
