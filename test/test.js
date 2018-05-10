@@ -15,7 +15,7 @@ class EmptyViewModel extends ObserveObject {}
 
 QUnit.module('@connect', () => {
 
-	QUnit.test('basic rendering with Component', (assert) => {
+	QUnit.test('rendering with Component', (assert) => {
 		class ViewModel extends ObserveObject {
 			foo = 'foo'
 		}
@@ -41,7 +41,7 @@ QUnit.module('@connect', () => {
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 	});
 
-	QUnit.test('basic rendering with Function', (assert) => {
+	QUnit.test('rendering with Function', (assert) => {
 		class ViewModel extends ObserveObject {
 			foo = 'foo'
 		}
@@ -57,6 +57,61 @@ QUnit.module('@connect', () => {
 		};
 
 		const ConnectedTestComponent = connect(ViewModel)(TestComponent);
+
+		supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'TestComponent~ylem', 'returned component is properly named');
+
+		const testInstance = ReactTestUtils.renderIntoDocument( <ConnectedTestComponent bar="bar" /> );
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+
+		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
+	});
+
+	QUnit.test('rendering with Component and transformed props', (assert) => {
+		class ViewModel extends ObserveObject {
+			foo = 'foo'
+		}
+
+		@connect(ViewModel, props => ({ props }))
+		class TestComponent extends Component {
+			static propTypes = {
+				foo: PropTypes.string.isRequired,
+				props: PropTypes.shape({
+					bar: PropTypes.string.isRequired,
+				}).isRequired,
+			}
+
+			render() {
+				const { foo, props: { bar } } = this.props;
+				return <div>{foo}{bar}</div>;
+			}
+		}
+
+		supportsFunctionName && assert.equal(TestComponent.name, 'TestComponent~ylem', 'returned component is properly named');
+
+		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+
+		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
+	});
+
+	QUnit.test('rendering with Function and transformed props', (assert) => {
+		class ViewModel extends ObserveObject {
+			foo = 'foo'
+		}
+
+		function TestComponent(props) {
+			const { foo, props: { bar } } = props;
+			return <div>{foo}{bar}</div>;
+		}
+
+		TestComponent.propTypes = {
+			foo: PropTypes.string.isRequired,
+			props: PropTypes.shape({
+				bar: PropTypes.string.isRequired,
+			}).isRequired,
+		};
+
+		const ConnectedTestComponent = connect(ViewModel, props => ({ props }))(TestComponent);
 
 		supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'TestComponent~ylem', 'returned component is properly named');
 

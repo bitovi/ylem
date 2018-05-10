@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import canReflect from 'can-reflect';
 import ObservableComponent from './observable-component';
 
-// TODO: transform? connect(VM, (props) => ({ props }))
-
-export default function connect(ViewModel) {
+export default function connect(ViewModel, transform = props => props) {
 	return function(BaseComponent) {
 		const ConnectedComponent = getConnectedComponent(BaseComponent);
 
@@ -42,7 +40,7 @@ export default function connect(ViewModel) {
 		class UpgradedComponent extends ObservableComponent {
 			static getDerivedStateFromProps(nextProps, { observer, viewModel }) {
 				observer.ignore(() => {
-					Object.assign(viewModel, nextProps);
+					Object.assign(viewModel, transform(nextProps));
 				});
 
 				return null;
@@ -53,7 +51,7 @@ export default function connect(ViewModel) {
 
 				this.observer.ignore(() => {
 					this.viewModel = new ViewModel();
-					Object.assign(this.viewModel, props);
+					Object.assign(this.viewModel, transform(props));
 				});
 
 				this.state = {
