@@ -3,25 +3,7 @@ import PropTypes from 'prop-types';
 import canReflect from 'can-reflect';
 import ObservableComponent from './observable-component';
 
-import transformCanObserve from './transforms/can-observe';
-import transformCanDefine from './transforms/can-define';
-
-const TRANSFORMS = [
-	transformCanObserve,
-	transformCanDefine,
-];
-
-// TODO: transform? connect(VM, (props) => ({ props }))
-
-export default function connect(config) {
-	const type = TRANSFORMS.find(({ test }) => test(config));
-	if (!type) {
-		console.error('ylem: unrecognized config', config); // eslint-disable-line no-console
-		throw new Error('ylem: unrecognized config');
-	}
-
-	const { createViewModel, updateViewModel, getPropTypes } = type;
-
+export default function connect(ViewModel, transform = props => props) {
 	return function(BaseComponent) {
 		const ConnectedComponent = getConnectedComponent(BaseComponent);
 
@@ -58,7 +40,7 @@ export default function connect(config) {
 		class UpgradedComponent extends ObservableComponent {
 			static getDerivedStateFromProps(nextProps, { observer, viewModel }) {
 				observer.ignore(() => {
-					updateViewModel(viewModel, nextProps);
+					Object.assign(viewModel, transform(nextProps));
 				});
 
 				return null;
@@ -66,8 +48,10 @@ export default function connect(config) {
 
 			constructor(props) {
 				super(props);
+
 				this.observer.ignore(() => {
-					this.viewModel = createViewModel(config, this.props);
+					this.viewModel = new ViewModel();
+					Object.assign(this.viewModel, transform(props));
 				});
 
 				this.state = {
@@ -108,11 +92,8 @@ export default function connect(config) {
 			//
 		}
 
-		if (getPropTypes) {
-			const propTypes = getPropTypes(config);
-			if (propTypes) {
-				UpgradedComponent.propTypes = propTypes;
-			}
+		if (ViewModel.propTypes) {
+			UpgradedComponent.propTypes = ViewModel.propTypes;
 		}
 
 		canReflect.assignSymbols(UpgradedComponent.prototype, {
