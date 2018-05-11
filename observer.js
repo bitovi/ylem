@@ -1,18 +1,17 @@
-var canReflect = require("can-reflect");
-var ObservationRecorder = require("can-observation-recorder");
-var recorderHelpers = require("can-observation/recorder-dependency-helpers");
-var Observation = require("can-observation");
-var queues = require("can-queues");
+import canReflect from 'can-reflect';
+import ObservationRecorder from 'can-observation-recorder';
+import recorderHelpers from 'can-observation/recorder-dependency-helpers';
+import queues from 'can-queues';
 
 var ORDER = undefined;
 
-function Observer(onUpdate) {
+export default function Observer(onUpdate) {
 	this.newDependencies = ObservationRecorder.makeDependenciesRecorder();
 	this.oldDependencies = null;
 	this.onUpdate = onUpdate;
 
 	var self = this;
-	this.onDependencyChange = function onDependencyChange(newVal, oldVal) {
+	this.onDependencyChange = function(newVal, oldVal) {
 		self.dependencyChange(this, newVal, oldVal);
 	};
 }
@@ -21,14 +20,17 @@ var weLeftSomethingOnTheStack = false;
 Observer.prototype.startRecording = function() {
 	if(weLeftSomethingOnTheStack){
 		var deps = ObservationRecorder.stop();
-		if(!deps.reactViewModel){
-			throw new Error('One of these things is not like the others');
+		if(!deps.ylem){
+			throw new Error(
+				'If you see this error with another error, clearing that should solve this. If you see '
+				+ 'this error alone, please open and issue on our github and tag Christopher and Justin.'
+			);
 		}
 	}
 
 	this.oldDependencies = this.newDependencies;
 	this.nextDependencies = ObservationRecorder.start();
-	this.nextDependencies.reactViewModel = true;
+	this.nextDependencies.ylem = true;
 	weLeftSomethingOnTheStack = true;
 
 	if(this.order !== undefined) {
@@ -43,8 +45,6 @@ Observer.prototype.startRecording = function() {
 			this.order = ORDER = 0;
 		}
 	}
-
-	// console.log(canReflect.getName(this), this.order)
 };
 
 Observer.prototype.stopRecording = function() {
@@ -52,10 +52,11 @@ Observer.prototype.stopRecording = function() {
 		var deps = ObservationRecorder.stop();
 		weLeftSomethingOnTheStack = false;
 
-		if(!deps.reactViewModel){
+		if(!deps.ylem){
 			throw new Error('One of these things is not like the others');
 		}
 	}
+
 	this.newDependencies = this.nextDependencies;
 	recorderHelpers.updateObservations(this);
 };
@@ -70,15 +71,13 @@ Observer.prototype.teardown = function() {
 };
 
 Observer.prototype.ignore = function(fn) {
-	Observation.ignore(fn)();
+	ObservationRecorder.ignore(fn)();
 };
 
 //!steal-remove-start
 canReflect.assignSymbols(Observer.prototype, {
-	"can.getName": function() {
-		return canReflect.getName(this.constructor) + "<" + canReflect.getName(this.onUpdate) + ">";
+	'can.getName': function() {
+		return canReflect.getName(this.constructor) + '<' + canReflect.getName(this.onUpdate) + '>';
 	},
 });
 //!steal-remove-end
-
-module.exports = Observer;
