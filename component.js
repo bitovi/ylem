@@ -2,6 +2,20 @@ import observe from 'can-observe';
 import reflect from 'can-reflect';
 import ObservableComponent from './observable-component';
 
+const gdsfp = Symbol.for('ylem.component.gdsfp');
+
+const makeDerive = (ctor) => {
+	const oldDerive = ctor.getDerivedStateFromProps;
+
+	ctor.getDerivedStateFromProps = (nextProps, state) => {
+		if (oldDerive && oldDerive(nextProps, state) !== undefined) {
+			console.warn('ylem: you should not return a value from getDerivedStateFromProps'); // eslint-disable-line no-console
+		}
+
+		return null;
+	};
+};
+
 class Component extends ObservableComponent {
 	constructor() {
 		super();
@@ -26,6 +40,18 @@ class Component extends ObservableComponent {
 			enumerable: true,
 			configurable: false
 		});
+
+		const ctor = this.constructor;
+		if (ctor.getDerivedStateFromProps && !ctor[gdsfp]) {
+			Object.defineProperty(ctor, gdsfp, {
+				value: true,
+				writable: false,
+				enumerable: false,
+				configurable: true
+			});
+
+			makeDerive(ctor);
+		}
 	}
 }
 
