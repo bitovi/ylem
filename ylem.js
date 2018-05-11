@@ -3,18 +3,22 @@ import { Object, Array } from 'can-observe';
 
 import connect from './connect';
 import Component from './component';
-const withViewModel = connect;
+import createViewModelComponent from './create-view-model-component';
 
 namespace.reactViewModel = {
 	connect,
-	withViewModel,
+	withViewModel: connect,
 	Component,
+	Object,
+	Array,
+	createViewModelComponent,
 };
 
 export {
 	connect,
-	withViewModel,
+	connect as withViewModel,
 	Component,
 	Object,
 	Array,
+	createViewModelComponent,
 };

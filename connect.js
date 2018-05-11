@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import canReflect from 'can-reflect';
-import ObservableComponent from './observable-component';
+import { createNewComponentClass, getConnectedComponent } from './observable-component';
 
 //!steal-remove-start
 (function(version) {
@@ -45,46 +45,9 @@ export default function connect(ViewModel, transform = props => props) {
 			});
 		}
 		//!steal-remove-end
-
-		class UpgradedComponent extends ObservableComponent {
-			static getDerivedStateFromProps(nextProps, { observer, viewModel }) {
-				observer.ignore(() => {
-					Object.assign(viewModel, transform(nextProps));
-				});
-
-				return null;
-			}
-
-			constructor(props) {
-				super(props);
-
-				this.observer.ignore(() => {
-					this.viewModel = new ViewModel();
-					Object.assign(this.viewModel, transform(props));
-				});
-
-				this.state = {
-					viewModel: this.viewModel,
-					observer: this.observer
-				};
-			}
-
-			shouldComponentUpdate() {
-				return !!this.viewModel;
-			}
-
-			componentWillUnmount() {
-				delete this.viewModel;
-
-				super.componentWillUnmount();
-			}
-
-			render() {
-				const _vm = this.viewModel;
-
-				return React.createElement(ConnectedComponent, { _vm });
-			}
-		}
+		const UpgradedComponent = createNewComponentClass(ViewModel, transform, _vm => {
+			return React.createElement(ConnectedComponent, { _vm });
+		});
 
 		//!steal-remove-start
 		UpgradedComponent.displayName = `${ BaseComponent.displayName || BaseComponent.name || 'Component' }~ylem`;
@@ -114,73 +77,4 @@ export default function connect(ViewModel, transform = props => props) {
 
 		return UpgradedComponent;
 	};
-}
-
-function getConnectedComponent(BaseComponent) {
-	if (BaseComponent.prototype instanceof Component) {
-		class ConnectedComponent extends BaseComponent {
-			constructor(props) {
-				const proxy = typeof Proxy === 'undefined'
-					? Object.assign({}, props._vm, {
-						_raw: props,
-						_vm: props._vm,
-					})
-					: new Proxy(props._vm, {
-						get(target, prop) {
-							if (prop === '_raw') {
-								return props;
-							}
-							if (prop === '_vm') {
-								return target;
-							}
-
-							return target[prop];
-						},
-					})
-				;
-
-				super(proxy);
-
-				//!steal-remove-start
-				this._raw_props = true;
-				//!steal-remove-end
-			}
-
-			//!steal-remove-start
-			componentWillMount() {
-				this._raw_props = false;
-
-				if (typeof super.componentWillMount === 'function') {
-					super.componentWillMount();
-				}
-			}
-			//!steal-remove-end
-
-			set props(props) {
-				if (this._props && props === this._props._vm) {
-					return;
-				}
-
-				this._props = props;
-			}
-
-			get props() {
-				//!steal-remove-start
-				if (this._raw_props) {
-					return this._props._raw;
-				}
-				//!steal-remove-end
-
-				return this._props._vm;
-			}
-		}
-
-		return ConnectedComponent;
-	}
-
-	const ConnectedComponent = ({ _vm }) => {
-		return BaseComponent(_vm);
-	};
-
-	return ConnectedComponent;
 }

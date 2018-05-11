@@ -1,6 +1,7 @@
 import './connect-with-can-observe';
 import './connect-with-can-define';
 import './component';
+import './create-view-model-component';
 
 import QUnit from 'steal-qunit';
 import React, { Component } from 'react';
