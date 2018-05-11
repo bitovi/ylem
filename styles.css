@@ -161,6 +161,10 @@ h1 {
 	opacity: .6;
 }
 
+.button-inverse + .button-inverse {
+	margin-left: 1em;
+}
+
 .section-inner .button-inverse {
 	margin-top: 30px;
 }
@@ -230,6 +234,7 @@ h1 {
 }
 
 .left-column {
+	min-width: 13.5em;
 	border-right: 1px solid #eaeaea;
 	display: flex;
 	flex-direction: column;
