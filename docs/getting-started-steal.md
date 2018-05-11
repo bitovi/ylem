@@ -33,7 +33,7 @@ You will also need an `index.html` to load in the browser.
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ThreatResponse Demo</title>
+    <title>ylem Demo</title>
   </head>
   <body>
     <div id="app"></div>
@@ -63,13 +63,13 @@ class Counter extends ylem.Component { // 👀
     return (
       <div>
         Count: {this.state.count}<br />
-        <button onClick={this.increment}>+1</Button>
+        <button onClick={this.increment}>+1</button>
       </div>
     )
   }
 }
 
-const container = document.getElementById('#app');
+const container = document.getElementById('app');
 ReactDOM.render(<Counter />, container);
 ```
 
