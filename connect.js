@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 import canReflect from 'can-reflect';
 import ObservableComponent from './observable-component';
 
+//!steal-remove-start
+(function(version) {
+	const [ major, minor ] = version.split('.').map(v => +v);
+	if (major < 16 || (major === 16 && minor < 3)) {
+		throw new Error(`ylem requires at least React v16.3. Currently ${version}`);
+	}
+})(React.version);
+//!steal-remove-end
+
 export default function connect(ViewModel, transform = props => props) {
 	return function(BaseComponent) {
 		const ConnectedComponent = getConnectedComponent(BaseComponent);

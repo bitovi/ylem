@@ -1,6 +1,8 @@
 import observe from 'can-observe';
-import reflect from 'can-reflect';
+import canReflect from 'can-reflect';
 import ObservableComponent from './observable-component';
+
+import ReactDOM from 'react-dom';
 
 const gdsfp = Symbol.for('ylem.component.gdsfp');
 
@@ -30,7 +32,7 @@ class Component extends ObservableComponent {
 					throw new Error('You must set state to an object');
 				}
 
-				if (reflect.isObservableLike(obj)) {
+				if (canReflect.isObservableLike(obj)) {
 					state = obj;
 					return;
 				}
@@ -53,6 +55,21 @@ class Component extends ObservableComponent {
 			makeDerive(ctor);
 		}
 	}
+
+	//!steal-remove-start
+	componentDidMount() {
+		super.componentDidMount();
+
+		const element = ReactDOM.findDOMNode(this); // eslint-disable-line react/no-find-dom-node
+		if (!element) {
+			return;
+		}
+
+		canReflect.assignSymbols(element, {
+			'can.viewModel': this.state,
+		});
+	}
+	//!steal-remove-end
 }
 
 export default Component;
