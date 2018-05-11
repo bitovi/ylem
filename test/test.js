@@ -226,33 +226,6 @@ QUnit.module('@connect', () => {
 		assert.ok(spanComponent, 'span inserted');
 	});
 
-	QUnit.skip('should autobind methods', (assert) => {
-		let vm = null;
-
-		class ViewModel extends ObserveObject {
-			method = () => {
-				assert.equal(this, vm, 'the context of vm method calls are bound to the vm');
-			}
-		}
-
-		@connect(ViewModel)
-		class TestComponent extends Component {
-			static propTypes = {
-				method: PropTypes.func.isRequired,
-			}
-
-			render() {
-				const { method } = this.props;
-				return <div onClick={method}>Adam Barrett</div>;
-			}
-		}
-
-		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent />);
-		vm = testInstance.viewModel;
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
-		ReactTestUtils.Simulate.click(divComponent);
-	});
-
 	QUnit.test('should change props on the correct children - deep tree', (assert) => {
 
 		var render = (props) => {
