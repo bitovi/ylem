@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>ylem - reactive state management for React</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="styles.css" />
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/components/prism-json.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism-coy.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.css" />
+	</head>
+	<body>
+		<div class="main-nav">
+			<div class="main-nav_left">
+				<a href="index.html" class="logo-container">
+					<img class="logo-image" src="images/logo.svg">
+					<p class="logo">ylem</p>
+				</a>
+
+				<a href="getting-started-stealjs.html" class="main-nav-link">Getting Started with StealJS</a>
+				<a href="getting-started-webpack.html" class="main-nav-link">Getting Started with Webpack</a>
+			</div>
+			<div class="main-nav_right">
+				<a class="main-nav-link">Bitovi</a>
+			</div>
+		</div>
+
+		<div class="no-columns-container">
+			<div class="page-container">
+				<div class="section-top">
+					<div class="section-inner">
+						<h1 class="h1-dark">If you know <span class="highlight">React</span>, you already know <span class="highlight">ylem</span>.</h1>
+						<p class="subheading-1-dark"><strong>ylem</strong> provides reactive state management for your React application. Set properties and React will update without the need to call <span class="code-highlight-dark">setState</span> on every component.</p>
+						<a class="button-inverse" href="getting-started-stealjs.html">Get Started with StealJS</a>
+						<a class="button-inverse" href="getting-started-webpack.html">Get Started with Webpack</a>
+					</div>
+				</div>
+
+				<div class="section-2 section-inline">
+					<div class="section-inner">
+						<h2>React with ylem</h2>
+						<p class="subheading-3">Instead of calling <span class="code-highlight-light">.setState</span>, we can simply set the <span class="code-highlight-light">.date</span> property.</p>
+
+						<div class="code-container">
+							<div class="code-container_left">
+								<div class="code-container_title">
+									<h3>React</h3>
+									<p>React's <a href="https://reactjs.org/docs/state-and-lifecycle.html#adding-local-state-to-a-class" target="_blank">state and lifecycle guide</a> shows how to use <span class="code-highlight-light">this.state</span> to manage state in a component like the following:</p>
+								</div>
+<pre><code class="language-js">
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date() };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(() => {
+      this.setState({ date: new Date() });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  render() {
+    const { date } = this.state;
+    return (
+      <h2>
+        It is {date.toLocaleTimeString()}.
+      </h2>
+    );
+  }
+}
+</code></pre>
+							</div>
+
+							<div class="code-container_right">
+								<div class="code-container_title">
+									<h3>ylem</h3>
+									<p>With ylem, you can simply change the state and any of the values within state and react will update. With ylem, the example on the left now looks like:</p>
+								</div>
+<pre><code class="language-js">
+class Clock extends ylem.Component { // 👀
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date() };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(() => {
+      this.state.date = new Date(); // 👀
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  render() {
+    const { date } = this.state;
+    return (
+      <h2>
+        It is {date.toLocaleTimeString()}.
+      </h2>
+    );
+  }
+}
+</code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="section-light">
+					<div class="section-inner">
+						<h2>Title</h2>
+						<p>A few more sentences that explain ylem a little more. Could be one line of text, could be a few, not sure. Adding anothe sentence just to show what looks like. Call to action below.</p>
+						<button class="button-inverse">Learn more</button>
+					</div>
+				</div>
+			</div>
+
+			<footer>
+				<div class="footer-links">
+					<p class="p-title">License</p>
+					<p class="list-link">MIT</p>
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
