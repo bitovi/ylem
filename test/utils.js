@@ -1,5 +1,5 @@
 function getTextFromElement(node) {
-	var txt = "";
+	var txt = '';
 	node = node.firstChild;
 	while(node) {
 		if(node.nodeType === 3) {
