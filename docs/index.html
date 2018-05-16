@@ -24,7 +24,8 @@
 				-->
 			</div>
 			<div class="main-nav_right">
-				<a class="main-nav-link">Bitovi</a>
+				<a href="https://github.com/bitovi/ylem" class="main-nav-link">View on Github</a>
+				<a href="https://www.bitovi.com/" class="main-nav-link">Bitovi</a>
 			</div>
 		</div>
 
@@ -36,7 +37,7 @@
 							<h1 class="h1-huge h1-dark">ylem</h1>
 							<h1 class="h1-dark">Easy state management for your React application.</h1>
 						</hgroup>
-						<p class="subheading-1-dark"><b class="code-highlight-dark">ylem</b> enables the use of simple object-oriented patterns that developers already understand.<br />There are no APIs or naming conventions to learn for updating state!
+						<p class="subheading-1-dark"><b class="code-highlight-dark">ylem</b> enables the use of simple object-oriented patterns that developers already understand.<br />There are no APIs or naming conventions to learn for updating state!</p>
 
 						<div class="code-container">
 							<div class="code-container_title">
@@ -54,8 +55,7 @@
 				<div class="section-light">
 					<div class="section-inner">
 						<h2>How ylem works</h2>
-						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you should never call <span class="code-highlight-light">setState</span>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <span class="code-highlight-light">shouldComponentUpdate</span> or use <span class="code-highlight-light">PureComponent</span>. Humans can never implement <span class="code-highlight-light">shouldComponentUpdate</span> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps rendering consistency and efficiency (for free).</p>
-						<button class="button-inverse">Learn more</button>
+						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you should never call <span class="code-highlight-light">setState</span>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <span class="code-highlight-light">shouldComponentUpdate</span> or use <span class="code-highlight-light">PureComponent</span>. Humans can never implement <span class="code-highlight-light">shouldComponentUpdate</span> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps consistency and rendering efficiency (for free).</p>
 					</div>
 				</div>
 
@@ -71,76 +71,187 @@
 								<div class="code-container_title">
 									<h3>React</h3>
 								</div>
-<pre><code class="language-js">
-import React, { Component } from 'react';
+								<pre><code class="language-js">
+								import React, { Component } from 'react';
 
-class Clock extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: new Date() };
-  }
+								class Clock extends Component {
+								  constructor(props) {
+								    super(props);
+								    this.state = { date: new Date() };
+								  }
 
-  componentDidMount() {
-    this.timerID = setInterval(() => {
-      this.setState({ date: new Date() });
-    }, 1000);
-  }
+								  componentDidMount() {
+								    this.timerID = setInterval(() => {
+								      this.setState({ date: new Date() });
+								    }, 1000);
+								  }
 
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
+								  componentWillUnmount() {
+								    clearInterval(this.timerID);
+								  }
 
-  render() {
-    const { date } = this.state;
-    return (
-      &lt;h2&gt;
-        It is {date.toLocaleTimeString()}.
-      &lt;/h2&gt;
-    );
-  }
-}
-</code></pre>
+								  render() {
+								    const { date } = this.state;
+								    return (
+								      &lt;h2&gt;
+								        It is {date.toLocaleTimeString()}.
+								      &lt;/h2&gt;
+								    );
+								  }
+								}
+								</code></pre>
 							</div>
 
 							<div class="code-container_right">
 								<div class="code-container_title">
 									<h3>ylem</h3>
 								</div>
-<pre data-line="2, 12"><code class="language-js">
-import React from 'react';
-import { Component } from 'ylem';
+								<pre data-line="2, 12"><code class="language-js">
+								import React from 'react';
+								import { Component } from 'ylem';
 
-class Clock extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: new Date() };
-  }
+								class Clock extends Component {
+								  constructor(props) {
+								    super(props);
+								    this.state = { date: new Date() };
+								  }
 
-  componentDidMount() {
-    this.timerID = setInterval(() => {
-      this.state.date = new Date();
-    }, 1000);
-  }
+								  componentDidMount() {
+								    this.timerID = setInterval(() => {
+								      this.state.date = new Date();
+								    }, 1000);
+								  }
 
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
+								  componentWillUnmount() {
+								    clearInterval(this.timerID);
+								  }
 
-  render() {
-    const { date } = this.state;
-    return (
-      &lt;h2&gt;
-        It is {date.toLocaleTimeString()}.
-      &lt;/h2&gt;
-    );
-  }
-}
-</code></pre>
+								  render() {
+								    const { date } = this.state;
+								    return (
+								      &lt;h2&gt;
+								        It is {date.toLocaleTimeString()}.
+								      &lt;/h2&gt;
+								    );
+								  }
+								}
+								</code></pre>
 							</div>
 						</div>
 					</div>
 				</div>
+				<div class="section-light">
+					<div class="section-inner">
+						<h2>Removes boilerplate</h2>
 
+						<p>In the real world many components operate on the same state. With plain react you generally pass callbacks around which eventually call `setState`. With tools like Redux you use actions and reducers which introduce naming conventions and code separation in a way that feels unnatural. This distribution of state logic makes it cumbersome to setup complex lines of communication across multiple components.</p>
+
+						<h3>Simple Paginated Grid</h3>
+						<p>Let's say we have a simple paginated grid. It is immediately obvious how much less code is required with <b>ylem</b>:</p>
+
+						<div class="code-container">
+							<div class="code-container_left">
+								<div class="code-container_title">
+									<h3>react</h3>
+								</div>
+								<pre><code class="language-js">
+								class App extends React.Component {
+								  constructor(props) {
+								    super(props);
+								    this.state = {
+								      limit: 10,
+								      offset: 20,
+								      count: 300
+								    };
+								  }
+
+								  setLimit = (limit) => {
+								    this.setState({ limit });
+								  }
+
+								  setOffset = (offset) => {
+								    this.setState({ offset });
+								  }
+
+								  render() {
+								    const { limit, offset, count } = this.state;
+
+								    return (
+								      &lt;div&gt;
+								        &lt;NextPrev
+								          limit={limit}
+								          offset={offset}
+								          count={count}
+								          setOffset={this.setOffset}
+								        /&gt;
+								        &lt;Grid
+								          limit={limit}
+								          offset={offset}
+								          count={count}
+								          setLimit={this.setLimit}
+								        /&gt;
+								      &lt;/div&gt;
+								    );
+								  }
+								}
+								</code></pre>
+								<p>The NextPrev component might look like this:</p>
+								<pre><code class="language-js">
+								const NextPrev = ({ limit, offset, setOffset }) => (
+								  &lt;div&gt;
+								    &lt;button onClick={() =&gt;
+								      setOffset( offset + limit );
+								    }&gt;NEXT&lt;/button&gt;
+								    &lt;button onClick={() =&gt;
+								      setOffset( offset - limit );
+								    }&gt;PREV&lt;/button&gt;
+								  &lt;/div&gt;
+								);
+								</code></pre>
+							</div>
+							<div class="code-container_right">
+								<div class="code-container_title">
+									<h3>ylem</h3>
+								</div>
+								<pre data-line="14,15"><code class="language-js">
+								class App extends ylem.Component {
+								  constructor(props) {
+								    super(props);
+								    this.state = {
+								      limit: 10,
+								      offset: 20,
+								      count: 300
+								    };
+								  }
+
+								  render() {
+								    return (
+								      &lt;div&gt;
+								        &lt;NextPrev paginate={this.state} /&gt;
+								        &lt;Grid paginate={this.state} /&gt;
+								      &lt;/div&gt;
+								    );
+								  }
+								}
+								</code></pre>
+								<p>Now the NextPrev component can set state directly:</p>
+								<pre data-line="4,7"><code class="language-js">
+								const NextPrev = ({ paginate }) => (
+								  &lt;div&gt;
+								    &lt;button onClick={() =&gt;
+								      paginate.offset = ( paginate.offset + paginate.limit )
+								    }&gt;NEXT&lt;/button&gt;
+								    &lt;button onClick={() =&gt;
+								      paginate.offset = ( paginate.offset - paginate.limit )
+								    }&gt;NEXT&lt;/button&gt;
+								  &lt;/div&gt;
+								);
+								</code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<footer>
 				<div class="footer-links">
 					<p class="p-title">License</p>

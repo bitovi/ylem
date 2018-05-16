@@ -68,6 +68,10 @@ a {
 	margin-right: 30px;
 }
 
+.main-nav_right a {
+	margin-left: 30px;
+}
+
 .main-nav .logo {
 	color: #98d8e1;
 	font-weight: 800;
