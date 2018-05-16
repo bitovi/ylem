@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>ylem - Easy state management for React</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
+		<link rel="stylesheet" href="styles.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism-coy.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-highlight/prism-line-highlight.min.css" />
+		<!-- scripts imported at the bottom -->
+	</head>
+	<body>
+		<div class="main-nav">
+			<div class="main-nav_left">
+				<a href="index.html" class="logo-container">
+					<img class="logo-image" src="images/logo.svg">
+					<p class="logo">ylem</p>
+				</a>
+
+				<!--
+				<a href="getting-started-stealjs.html" class="main-nav-link">Getting Started with StealJS</a>
+				<a href="getting-started-webpack.html" class="main-nav-link">Getting Started with Webpack</a>
+				-->
+			</div>
+			<div class="main-nav_right">
+				<a class="main-nav-link">Bitovi</a>
+			</div>
+		</div>
+
+		<div class="no-columns-container">
+			<div class="page-container">
+				<div class="section-top">
+					<div class="section-inner">
+						<hgroup>
+							<h1 class="h1-huge h1-dark">ylem</h1>
+							<h1 class="h1-dark">Easy state management for your React application.</h1>
+						</hgroup>
+						<p class="subheading-1-dark"><b class="code-highlight-dark">ylem</b> enables the use of simple object-oriented patterns that developers already understand.<br />There are no APIs or naming conventions to learn for updating state!
+
+						<div class="code-container">
+							<div class="code-container_title">
+								<p>Simply set properties and modify arrays exactly like you would in plain JavaScript.<br/>Your app will automatically re-render when state changes:</p>
+							</div>
+							<pre><code class="language-js">
+								state.todos.push({ title: 'Dishes', complete: false });
+								state.todos[0].complete = true;
+								state.count++;
+							</code></pre>
+						</div>
+					</div>
+				</div>
+
+				<div class="section-light">
+					<div class="section-inner">
+						<h2>How ylem works</h2>
+						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you should never call <span class="code-highlight-light">setState</span>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <span class="code-highlight-light">shouldComponentUpdate</span> or use <span class="code-highlight-light">PureComponent</span>. Humans can never implement <span class="code-highlight-light">shouldComponentUpdate</span> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps rendering consistency and efficiency (for free).</p>
+						<button class="button-inverse">Learn more</button>
+					</div>
+				</div>
+
+				<div class="section-2 section-inline">
+					<div class="section-inner">
+						<hgroup>
+							<h2>Easy for developers of all skill levels to understand.</h2>
+							<h3>If you know <span class="highlight">JavaScript</span>, you already know <span class="highlight">ylem</span>.</h3>
+						</hgroup>
+
+						<div class="code-container">
+							<div class="code-container_left">
+								<div class="code-container_title">
+									<h3>React</h3>
+								</div>
+<pre><code class="language-js">
+import React, { Component } from 'react';
+
+class Clock extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date() };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(() => {
+      this.setState({ date: new Date() });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  render() {
+    const { date } = this.state;
+    return (
+      &lt;h2&gt;
+        It is {date.toLocaleTimeString()}.
+      &lt;/h2&gt;
+    );
+  }
+}
+</code></pre>
+							</div>
+
+							<div class="code-container_right">
+								<div class="code-container_title">
+									<h3>ylem</h3>
+								</div>
+<pre data-line="2, 12"><code class="language-js">
+import React from 'react';
+import { Component } from 'ylem';
+
+class Clock extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date() };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(() => {
+      this.state.date = new Date();
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  render() {
+    const { date } = this.state;
+    return (
+      &lt;h2&gt;
+        It is {date.toLocaleTimeString()}.
+      &lt;/h2&gt;
+    );
+  }
+}
+</code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			<footer>
+				<div class="footer-links">
+					<p class="p-title">License</p>
+					<p class="list-link">MIT</p>
+				</div>
+			</footer>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/components/prism-json.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+	</body>
+</html>

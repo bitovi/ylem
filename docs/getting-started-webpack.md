@@ -11,19 +11,19 @@ npm start
 From here, you can modify `src/App.js` to use ylem and see the live-reload in the browser.
 
 ```js
-import React, { Component } from 'react';
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import ylem from 'ylem';
 
-class App extends ylem.Component { // 👀
+class App extends ylem.Component {
   constructor(props) {
     super(props);
     this.state = { count: 0 };
   }
 
   increment = () => {
-    this.state.count++; // 👀
+    this.state.count++;
   }
 
   render() {

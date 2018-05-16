@@ -3,26 +3,31 @@
 [![Build Status](https://travis-ci.org/bitovi/ylem.svg?branch=master)](https://travis-ci.org/bitovi/ylem)
 [![Greenkeeper Badge](https://badges.greenkeeper.io/bitovi/ylem.svg)](https://greenkeeper.io/)
 
-**ylem** - *noun* `ASTRONOMY` - the primordial matter of the universe, originally conceived as composed of neutrons at high temperature and density.
+> [ahy-luh m] *noun* `ASTRONOMY`
+>   
+> The primordial matter of the universe from which all matter is said to be derived, believed to be composed of neutrons at high temperature and density.
 
-Connect [CanJS](https://canjs.com/) observables to [React](https://reactjs.org/) components to create auto rendering [smart/container components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.v9i90qbq8).
+**ylem** provides fast and easy state management for your [React](https://reactjs.org) application by using [observable objects](https://canjs.com/doc/can-observe.html). Simply update your state objects whenever/however you want and your app will be re-rendered as efficiently as possible.
 
-## Table of Contents
+Read more about the benefits on the [ylem homepage](http://bitovi.github.io/ylem).
 
-* Getting Started
-    * [with Steal](./docs/getting-started-steal.md)
-    * [with Webpack](./docs/getting-started-webpack.md)
-* [Benefits](./docs/benefits.md)
-* Usage
-    * [`Observable State`](./docs/use-observable-state.md)
-    * [`Higher Order Components (HOC)`](./docs/use-higher-order-components.md)
-    * [`ViewModel Components`](./docs/use-viewmodel-components.md)
-* [Contributing](./contributing.md)
-* [License](./LICENSE.md)
+## Getting Started
 
-**ylem** provides reactive state management for your [React](https://reactjs.org) or [Preact](https://preactjs.com/) application. If you've ever just wanted to set properties and have react know to update itself without having to call `.setState` on every component correctly, ylem is for you.
+```
+npm install ylem --save
+```
 
-If you know React, you already know ylem.
+* [Configure with Webpack](./docs/getting-started-webpack.md)
+* [Configure with StealJS](./docs/getting-started-steal.md)
+
+## Usage
+
+**If you know React, you already know ylem.** There are 3 different techniques for using **ylem**, all of which are based on popular conventions used by the React community. For the sake of simplicity, all examples will use the technique of extending `ylem.Component`.
+
+* [Extend `ylem.Component` for observable state](./docs/use-observable-state.md)
+* [`@connect` presentation components to observable data](./docs/use-higher-order-components.md)
+* [Use render props with `createViewModelComponent()`](./docs/use-viewmodel-components.md)
+
 
 <table>
 <tr><th>React</th><th>ylem</th></tr>
@@ -104,16 +109,11 @@ class Clock extends ylem.Component { // 👀
 </tr>
 </table>
 
-Notice that instead of calling `.setState`, we were able to just set the `.date` property? This seemingly minor change has all sorts of benefits we will explore in the following sections:
+Notice that instead of calling `.setState`, we were able to just set the `.date` property directly? We know [React tells you not to do this](https://reactjs.org/docs/state-and-lifecycle.html#do-not-modify-state-directly), but now you _can_ update state directly with **ylem**. This seemingly minor change has all sorts of benefits - read more about it on the [ylem homepage](http://bitovi.github.io/ylem).
 
-+ Easy for developers of all skill levels to understand 💡
-+ Less boilerplate 💆
-+ Less time re-rendering 🔥
 
-Are you ready to try it? [Get Started with StealJS](./getting-started-steal.md) or [Get Started with Webpack](./getting-started-webpack.md)
+## Contributing
+Read the [contributing guides](./contributing.md)
 
-Have lingering questions, or want to know more? [Read more about ylem's benefits](./benefits.md):
-- Is easy to debug.
-- Creates unit-testable `ViewModel` types that protect state.
-- Creates unit-testable `views` with higher order components.
-- Connects to restful and real-time services.
+## License
+[MIT](./LICENSE.md) License
