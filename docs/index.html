@@ -17,11 +17,6 @@
 					<img class="logo-image" src="images/logo.svg">
 					<p class="logo">ylem</p>
 				</a>
-
-				<!--
-				<a href="getting-started-stealjs.html" class="main-nav-link">Getting Started with StealJS</a>
-				<a href="getting-started-webpack.html" class="main-nav-link">Getting Started with Webpack</a>
-				-->
 			</div>
 			<div class="main-nav_right">
 				<a href="https://github.com/bitovi/ylem" class="main-nav-link">View on Github</a>
@@ -31,38 +26,36 @@
 
 		<div class="no-columns-container">
 			<div class="page-container">
-				<div class="section-top">
+				<div class="content-section section-top">
 					<div class="section-inner">
 						<hgroup>
 							<h1 class="h1-huge h1-dark">ylem</h1>
-							<h1 class="h1-dark">Easy state management for your React application.</h1>
+							<h2 class="h1-dark">Easy state management for your React application.</h2>
 						</hgroup>
-						<p class="subheading-1-dark"><b class="code-highlight-dark">ylem</b> enables the use of simple object-oriented patterns that developers already understand.<br />There are no APIs or naming conventions to learn for updating state!</p>
-
-						<div class="code-container">
-							<div class="code-container_title">
-								<p>Simply set properties and modify arrays exactly like you would in plain JavaScript.<br/>Your app will automatically re-render when state changes:</p>
-							</div>
-							<pre><code class="language-js">
-								state.todos.push({ title: 'Dishes', complete: false });
-								state.todos[0].complete = true;
-								state.count++;
-							</code></pre>
-						</div>
+						<p class="subheading-1-dark"><code class="dark">ylem</code> enables the use of simple object-oriented patterns that developers already understand. Simply set properties and modify arrays exactly like you would in plain JavaScript. Your app will automatically re-render when state changes</p>
+						<p>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Getting Started with Webpack</a>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Getting Started with StealJS</a>
+						</p>
 					</div>
 				</div>
 
-				<div class="section-light">
-					<div class="section-inner">
-						<h2>How ylem works</h2>
-						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you should never call <span class="code-highlight-light">setState</span>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <span class="code-highlight-light">shouldComponentUpdate</span> or use <span class="code-highlight-light">PureComponent</span>. Humans can never implement <span class="code-highlight-light">shouldComponentUpdate</span> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps consistency and rendering efficiency (for free).</p>
-					</div>
+				<div class="triptych">
+					<a href="#easy-for-developers">
+						<div class="large">Easy for developers</div>
+					</a>
+					<a href="#removes-boilerplate">
+						<div class="large">Removes boilerplate</div>
+					</a>
+					<a href="#faster-rendering">
+						<div class="large">Faster rendering</div>
+					</a>
 				</div>
 
-				<div class="section-2 section-inline">
+				<div class="content-section">
 					<div class="section-inner">
 						<hgroup>
-							<h2>Easy for developers of all skill levels to understand.</h2>
+							<h2><a name="easy-for-developers">Easy for developers of all skill levels to understand.</a></h2>
 							<h3>If you know <span class="highlight">JavaScript</span>, you already know <span class="highlight">ylem</span>.</h3>
 						</hgroup>
 
@@ -70,89 +63,53 @@
 							<div class="code-container_left">
 								<div class="code-container_title">
 									<h3>React</h3>
+									<p>Call <code>setState</code> with an updated copy of the old state</p>
 								</div>
 								<pre><code class="language-js">
-								import React, { Component } from 'react';
+								// Add new todo
+								this.setState({
+								  todos: this.state.todos.concat({
+								    title: 'Dishes',
+								    complete: false
+								  })
+								});
 
-								class Clock extends Component {
-								  constructor(props) {
-								    super(props);
-								    this.state = { date: new Date() };
-								  }
-
-								  componentDidMount() {
-								    this.timerID = setInterval(() => {
-								      this.setState({ date: new Date() });
-								    }, 1000);
-								  }
-
-								  componentWillUnmount() {
-								    clearInterval(this.timerID);
-								  }
-
-								  render() {
-								    const { date } = this.state;
-								    return (
-								      &lt;h2&gt;
-								        It is {date.toLocaleTimeString()}.
-								      &lt;/h2&gt;
-								    );
-								  }
-								}
+								// Set the first todo as complete
+								const clone = this.state.todos.slice();
+								clone[0].complete = true;
+								this.setState({ todos: clone });
 								</code></pre>
 							</div>
-
 							<div class="code-container_right">
 								<div class="code-container_title">
 									<h3>ylem</h3>
+									<p>Update state just like you would any JavaScript object</p>
 								</div>
-								<pre data-line="2, 12"><code class="language-js">
-								import React from 'react';
-								import { Component } from 'ylem';
+								<pre><code class="language-js">
+									// Add new todo
+									this.state.todos.push({
+									  title: 'Dishes',
+									  complete: false
+									});
 
-								class Clock extends Component {
-								  constructor(props) {
-								    super(props);
-								    this.state = { date: new Date() };
-								  }
-
-								  componentDidMount() {
-								    this.timerID = setInterval(() => {
-								      this.state.date = new Date();
-								    }, 1000);
-								  }
-
-								  componentWillUnmount() {
-								    clearInterval(this.timerID);
-								  }
-
-								  render() {
-								    const { date } = this.state;
-								    return (
-								      &lt;h2&gt;
-								        It is {date.toLocaleTimeString()}.
-								      &lt;/h2&gt;
-								    );
-								  }
-								}
+									// Set the first todo as complete
+									this.state.todos[0].complete = true;
 								</code></pre>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="section-light">
+				<div class="content-section section-light">
 					<div class="section-inner">
-						<h2>Removes boilerplate</h2>
+						<h2><a name="removes-boilerplate">Removes boilerplate</a></h2>
 
-						<p>In the real world many components operate on the same state. With plain react you generally pass callbacks around which eventually call `setState`. With tools like Redux you use actions and reducers which introduce naming conventions and code separation in a way that feels unnatural. This distribution of state logic makes it cumbersome to setup complex lines of communication across multiple components.</p>
-
-						<h3>Simple Paginated Grid</h3>
-						<p>Let's say we have a simple paginated grid. It is immediately obvious how much less code is required with <b>ylem</b>:</p>
+						<p>Let's look at how you might implement a simple paginated grid with both React and <b>ylem</b>. In the example below, it is immediately obvious how much less code is required with <b>ylem</b>.</p>
 
 						<div class="code-container">
 							<div class="code-container_left">
 								<div class="code-container_title">
-									<h3>react</h3>
+									<h3>React</h3>
+									<p>Define callbacks to pass around so that <code>setState</code> can be called.</p>
 								</div>
 								<pre><code class="language-js">
 								class App extends React.Component {
@@ -212,8 +169,9 @@
 							<div class="code-container_right">
 								<div class="code-container_title">
 									<h3>ylem</h3>
+									<p>Pass state to child components which update state directly (no callbacks).</p>
 								</div>
-								<pre data-line="14,15"><code class="language-js">
+								<pre data-line="11,16-18"><code class="language-js">
 								class App extends ylem.Component {
 								  constructor(props) {
 								    super(props);
@@ -224,9 +182,12 @@
 								    };
 								  }
 
+								  /* No more callbacks */
+
 								  render() {
 								    return (
 								      &lt;div&gt;
+								      	/* Pass state to children */
 								        &lt;NextPrev paginate={this.state} /&gt;
 								        &lt;Grid paginate={this.state} /&gt;
 								      &lt;/div&gt;
@@ -234,6 +195,9 @@
 								  }
 								}
 								</code></pre>
+								<div style="padding: 195px 0; color: #ccc; text-align: center">
+									This whitespace represents code your team didn't have to write.
+								</div>
 								<p>Now the NextPrev component can set state directly:</p>
 								<pre data-line="4,7"><code class="language-js">
 								const NextPrev = ({ paginate }) => (
@@ -249,6 +213,15 @@
 								</code></pre>
 							</div>
 						</div>
+					</div>
+				</div>
+
+				<div class="content-section">
+					<div class="section-inner">
+						<h2><a name="faster-rendering">Faster Rendering</a></h2>
+						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you should never call <code>setState</code>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <code>shouldComponentUpdate</code> or use <code>PureComponent</code>. Humans can never implement <code>shouldComponentUpdate</code> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps consistency and rendering efficiency (for free).</p>
+
+						<p>[IMAGE OF RENDERING PERFORMANCE COMPARED TO OTHERS]</p>
 					</div>
 				</div>
 			</div>
