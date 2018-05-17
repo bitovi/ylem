@@ -14,7 +14,7 @@
 		<div class="main-nav">
 			<div class="main-nav_left">
 				<a href="index.html" class="logo-container">
-					<img class="logo-image" src="images/logo.svg">
+					<img class="logo-image" src="./images/logo.svg">
 					<p class="logo">ylem</p>
 				</a>
 			</div>
@@ -43,12 +43,15 @@
 				<div class="triptych">
 					<a href="#easy-for-developers">
 						<div class="large">Easy for developers</div>
+						<img src="./images/arrow-down.svg" />
 					</a>
 					<a href="#removes-boilerplate">
 						<div class="large">Removes boilerplate</div>
+						<img src="./images/arrow-down.svg" />
 					</a>
 					<a href="#faster-rendering">
 						<div class="large">Faster rendering</div>
+						<img src="./images/arrow-down.svg" />
 					</a>
 				</div>
 
@@ -76,7 +79,7 @@
 
 								// Set the first todo as complete
 								const clone = this.state.todos.slice();
-								clone[0].complete = true;
+								Object.assign({}, clone[0], { complete: true });
 								this.setState({ todos: clone });
 								</code></pre>
 							</div>
@@ -86,14 +89,14 @@
 									<p>Update state just like you would any JavaScript object</p>
 								</div>
 								<pre><code class="language-js">
-									// Add new todo
-									this.state.todos.push({
-									  title: 'Dishes',
-									  complete: false
-									});
+								// Add new todo
+								this.state.todos.push({
+								  title: 'Dishes',
+								  complete: false
+								});
 
-									// Set the first todo as complete
-									this.state.todos[0].complete = true;
+								// Set the first todo as complete
+								this.state.todos[0].complete = true;
 								</code></pre>
 							</div>
 						</div>
@@ -195,7 +198,7 @@
 								  }
 								}
 								</code></pre>
-								<div style="padding: 195px 0; color: #ccc; text-align: center">
+								<div style="padding: 12.2em 0; color: #ccc; text-align: center">
 									This whitespace represents code your team didn't have to write.
 								</div>
 								<p>Now the NextPrev component can set state directly:</p>

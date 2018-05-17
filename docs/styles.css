@@ -227,6 +227,13 @@ h1 {
 	background-color: #3c2d5b;
 }
 
+@media screen and (max-width: 720px) {
+	.section-top .button-inverse {
+		display: block;
+		margin-left: 0;
+	}
+}
+
 .section-light {
 	background-color: #e9f1f4;
 }
@@ -365,10 +372,16 @@ footer {
 	overflow-y: scroll;
 }
 
+.triptych:after {
+	content: ' ';
+	height: 0;
+	display: block;
+	overflow: hidden;
+	clear: both;
+}
+
 .triptych > a {
 	display: block;
-	float: left;
-	width: 33.333%;
 	text-align: center;
 	color: #ccc;
 	padding: 1em;
@@ -378,8 +391,22 @@ footer {
 	border-bottom: 1px solid black;
 }
 
-.triptych > a:hover {
-	opacity: .9;
+.triptych img {
+	margin-top: 1em;
+	position: relative;
+	top: 0;
+	transition: top .1s linear;
+}
+
+@media screen and (min-width: 840px) {
+	.triptych > a {
+		float: left;
+		width: 33.333%;
+	}
+}
+
+.triptych > a:hover img {
+	top: .5em;
 }
 
 .triptych > a:nth-child(1) {

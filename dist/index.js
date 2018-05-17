@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV === 'production') {
-	module.exports = require('./production/react-view-model.js');
+	module.exports = require('./production/ylem.js');
 }
 else {
-	module.exports = require('./development/react-view-model.js');
+	module.exports = require('./development/ylem.js');
 }
