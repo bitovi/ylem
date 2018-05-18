@@ -1,24 +1,27 @@
 import namespace from 'can-namespace';
-import { Object, Array } from 'can-observe';
+import { Object as Model, Array as ModelList} from 'can-observe';
 
 import connect from './connect';
 import Component from './component';
 import createViewModelComponent from './create-view-model-component';
 
-namespace.reactViewModel = {
+namespace.ylem = {
 	connect,
 	withViewModel: connect,
 	Component,
-	Object,
-	Array,
+	ViewModel: Model,
+	Model,
+	ModelList,
 	createViewModelComponent,
 };
 
+export default namespace.ylem;
 export {
 	connect,
 	connect as withViewModel,
 	Component,
-	Object,
-	Array,
+	Model as ViewModel,
+	Model,
+	ModelList,
 	createViewModelComponent,
 };
