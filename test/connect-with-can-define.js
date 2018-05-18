@@ -149,9 +149,8 @@ QUnit.module('@connect with can-define', () => {
 		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
 		assert.equal(divComponent.innerText, 'test hello');
-		// FIXME
-		// testInstance.viewModel.foo.bar.bam.quux = 'world';
-		// assert.equal(divComponent.innerText, 'test world');
+		testInstance.viewModel.foo.bar.bam.quux = 'world';
+		assert.equal(divComponent.innerText, 'test world');
 
 	});
 

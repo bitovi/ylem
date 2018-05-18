@@ -51,7 +51,20 @@ export function createNewComponentClass(ViewModel, transform, render) {
 	return class extends ObservableComponent {
 		static getDerivedStateFromProps(nextProps, { observer, viewModel }) {
 			observer.ignore(() => {
-				Object.assign(viewModel, transform(nextProps));
+				nextProps = { ...nextProps };
+				if (Array.isArray(nextProps.children)) {
+					// `.children` is non-extensible
+					nextProps.children = [ ...nextProps.children ];
+				}
+
+				// TODO: generic solution replacing all react components?
+				if (nextProps.children) {
+					// replace children, do not merge
+					// idea would be to merge array, but replace items
+					delete viewModel.children;
+				}
+
+				canReflect.assignDeep(viewModel, transform(nextProps));
 			});
 
 			return null;
@@ -61,8 +74,14 @@ export function createNewComponentClass(ViewModel, transform, render) {
 			super(props);
 
 			this.observer.ignore(() => {
+				props = { ...props };
+				if (Array.isArray(props.children)) {
+					// `.children` is non-extensible
+					props.children = [ ...props.children ];
+				}
+
 				this.viewModel = new ViewModel();
-				Object.assign(this.viewModel, transform(props));
+				canReflect.assignDeep(this.viewModel, transform(props));
 			});
 
 			this.state = {
