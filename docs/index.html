@@ -79,7 +79,7 @@
 
 								// Set the first todo as complete
 								const clone = this.state.todos.slice();
-								Object.assign({}, clone[0], { complete: true });
+								clone[0] = Object.assign({}, clone[0], { complete: true });
 								this.setState({ todos: clone });
 								</code></pre>
 							</div>
