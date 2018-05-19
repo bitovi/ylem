@@ -33,16 +33,19 @@
   },
   "main": "dist",
   "keywords": [
+    "react",
+    "reactjs",
+    "state-management",
+    "viewmodel",
+    "react-view-model",
+    "observables",
     "canjs",
     "canjs-plugin",
     "donejs",
-    "react",
-    "viewmodel",
     "ylem",
-    "react-view-model",
     "rvm",
     "bitovi",
-    "observables"
+    "javascript"
   ],
   "dependencies": {
     "can-namespace": "^1.0.0",

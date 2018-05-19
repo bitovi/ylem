@@ -19,7 +19,7 @@
 				</a>
 			</div>
 			<div class="main-nav_right">
-				<a href="https://github.com/bitovi/ylem" class="main-nav-link">View on Github</a>
+				<a class="github-button main-nav-link" href="https://github.com/bitovi/ylem" data-icon="octicon-star" aria-label="Star bitovi/ylem on GitHub">Fork on Gituhb</a>
 				<a href="https://www.bitovi.com/" class="main-nav-link">Bitovi</a>
 			</div>
 		</div>
@@ -33,9 +33,13 @@
 							<h2 class="h1-dark">Easy state management for your React application.</h2>
 						</hgroup>
 						<p class="subheading-1-dark"><code class="dark">ylem</code> enables the use of simple object-oriented patterns that developers already understand. Simply set properties and modify arrays exactly like you would in plain JavaScript. Your app will automatically re-render when state changes</p>
+						<pre class="install-script"><code class="language-bash">
+							npm install 'ylem' --save
+						</code></pre>
 						<p>
-							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Getting Started with Webpack</a>
-							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Getting Started with StealJS</a>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with webpack</a>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with StealJS</a>
+							<a href="https://codesandbox.io/s/z23qn7p2yp" class="button-inverse">Get started on CodeSandbox</a>
 						</p>
 					</div>
 				</div>
@@ -106,16 +110,20 @@
 					<div class="section-inner">
 						<h2><a name="removes-boilerplate">Removes boilerplate</a></h2>
 
-						<p>Let's look at how you might implement a simple paginated grid with both React and <b>ylem</b>. In the example below, it is immediately obvious how much less code is required with <b>ylem</b>.</p>
+						<p>The following implements a simple paginated grid.</p>
+
+						<p><a href="https://codesandbox.io/s/qx1nzj6r29">
+						  <img alt="Edit qx1nzj6r29" src="https://codesandbox.io/static/img/play-codesandbox.svg">
+						</a></p>
 
 						<div class="code-container">
 							<div class="code-container_left">
 								<div class="code-container_title">
 									<h3>React</h3>
-									<p>Define callbacks to pass around so that <code>setState</code> can be called.</p>
+									<p>With react you must pass around callbacks which will call <code>setState</code>.</p>
 								</div>
 								<pre><code class="language-js">
-								class App extends React.Component {
+								class PaginatedGrid extends React.Component {
 								  constructor(props) {
 								    super(props);
 								    this.state = {
@@ -160,11 +168,11 @@
 								const NextPrev = ({ limit, offset, setOffset }) => (
 								  &lt;div&gt;
 								    &lt;button onClick={() =&gt;
-								      setOffset( offset + limit );
-								    }&gt;NEXT&lt;/button&gt;
-								    &lt;button onClick={() =&gt;
 								      setOffset( offset - limit );
 								    }&gt;PREV&lt;/button&gt;
+								    &lt;button onClick={() =&gt;
+								      setOffset( offset + limit );
+								    }&gt;NEXT&lt;/button&gt;
 								  &lt;/div&gt;
 								);
 								</code></pre>
@@ -172,10 +180,10 @@
 							<div class="code-container_right">
 								<div class="code-container_title">
 									<h3>ylem</h3>
-									<p>Pass state to child components which update state directly (no callbacks).</p>
+									<p>With <b>ylem</b> you pass state to child components which update state directly.</p>
 								</div>
 								<pre data-line="11,16-18"><code class="language-js">
-								class App extends ylem.Component {
+								class PaginatedGrid extends ylem.Component {
 								  constructor(props) {
 								    super(props);
 								    this.state = {
@@ -206,10 +214,10 @@
 								const NextPrev = ({ paginate }) => (
 								  &lt;div&gt;
 								    &lt;button onClick={() =&gt;
-								      paginate.offset = ( paginate.offset + paginate.limit )
-								    }&gt;NEXT&lt;/button&gt;
+								      paginate.offset -= paginate.limit;
+								    }&gt;PREV&lt;/button&gt;
 								    &lt;button onClick={() =&gt;
-								      paginate.offset = ( paginate.offset - paginate.limit )
+								      paginate.offset += paginate.limit;
 								    }&gt;NEXT&lt;/button&gt;
 								  &lt;/div&gt;
 								);
@@ -222,9 +230,14 @@
 				<div class="content-section">
 					<div class="section-inner">
 						<h2><a name="faster-rendering">Faster Rendering</a></h2>
-						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you should never call <code>setState</code>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <code>shouldComponentUpdate</code> or use <code>PureComponent</code>. Humans can never implement <code>shouldComponentUpdate</code> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps consistency and rendering efficiency (for free).</p>
+						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you never call <code>setState</code>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <code>shouldComponentUpdate</code> or use <code>PureComponent</code>. Humans can never implement <code>shouldComponentUpdate</code> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps consistency and rendering efficiency (for free).</p>
 
 						<p>[IMAGE OF RENDERING PERFORMANCE COMPARED TO OTHERS]</p>
+						<p>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with webpack</a>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with StealJS</a>
+							<a href="https://codesandbox.io/s/z23qn7p2yp" class="button-inverse">Get started on CodeSandbox</a>
+						</p>
 					</div>
 				</div>
 			</div>
@@ -241,5 +254,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+		<!-- Place this tag in your head or just before your close body tag. -->
+		<script async defer src="https://buttons.github.io/buttons.js"></script>
 	</body>
 </html>

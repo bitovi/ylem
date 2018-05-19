@@ -227,6 +227,10 @@ h1 {
 	background-color: #3c2d5b;
 }
 
+.section-top .install-script {
+	width: 300px;
+}
+
 @media screen and (max-width: 720px) {
 	.section-top .button-inverse {
 		display: block;
