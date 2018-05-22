@@ -46,6 +46,11 @@ code.dark {
 	background-color: #4f4270;
 }
 
+pre code {
+	border: 0 transparent;
+	line-height: 1.94;
+}
+
 .link {
 	color: #98d8e1;
 	font-weight: 800;
@@ -130,7 +135,6 @@ h1 {
 
 .button-inverse {
 	display: inline-block;
-	background-color: rgba(0,0,0,0);
 	border: 1px solid #e95ea2;
 	color: #e95ea2;
 	padding: 15px 30px;
@@ -224,7 +228,21 @@ h1 {
 }
 
 .section-top {
-	background-color: #3c2d5b;
+	position: relative;
+	background-color: rgba(60, 45, 91, .9);
+	flex-wrap: wrap;
+}
+
+.section-top:after {
+	content: ' ';
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	position: absolute;
+	z-index: -1;
+	background: #3c2d5b url('./images/logo.svg') center center no-repeat;
+	background-size: cover;
 }
 
 .section-top .install-script {
@@ -329,8 +347,8 @@ pre h2 {
 }
 
 .logo-image {
-	width: 25px;
-	height: 25px;
+	width: 50px;
+	height: 50px;
 	margin-right: 7.5px;
 }
 
@@ -357,6 +375,14 @@ footer {
 	border-bottom: 2px solid white;
 }
 
+a.bitovi-link {
+	border-color: #bf393d;
+	color: #bf393d;
+	padding: .7em 1.5em;
+	font-size: 14px;
+	text-transform: uppercase;
+}
+
 .li-active {
 	border-bottom: 2px solid #141317;
 	color: #141317;
@@ -378,6 +404,11 @@ footer {
 	overflow-y: scroll;
 }
 
+.triptych{
+	flex-grow: 1;
+	margin: 5% -2% -5%;
+}
+
 .triptych:after {
 	content: ' ';
 	height: 0;
@@ -393,8 +424,6 @@ footer {
 	padding: 1em;
 	font-size: 1.5em;
 	box-sizing: border-box;
-	border-top: 1px solid black;
-	border-bottom: 1px solid black;
 }
 
 .triptych img {
@@ -416,13 +445,13 @@ footer {
 }
 
 .triptych > a:nth-child(1) {
-	background-color: #333;
+	background-color: rgba(20, 20, 20, 0.7);
 }
 
 .triptych > a:nth-child(2) {
-	background-color: #00353c;
+	background-color: rgba(0, 53, 60, 0.7);
 }
 
 .triptych > a:nth-child(3) {
-	background-color: #150633;
+	background-color: rgba(13, 4, 29, 0.7);
 }
