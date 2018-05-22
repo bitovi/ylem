@@ -255,5 +255,25 @@ const NextPrev = ({ paginate }) => (
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
 		<script async defer src="https://buttons.github.io/buttons.js"></script>
+		<script>
+			// This allows for smoother scrolling
+			document.addEventListener('DOMContentLoaded', function () {
+				debugger;
+				var body = document.body;
+				var timer;
+
+				window.addEventListener('scroll', function() {
+					console.log('scroll');
+				  clearTimeout(timer);
+				  if(!body.classList.contains('disable-pointer')) {
+				    body.classList.add('disable-pointer')
+				  }
+
+				  timer = setTimeout(function(){
+				    body.classList.remove('disable-pointer')
+				  },500);
+				}, false);
+			})
+		</script>
 	</body>
 </html>
