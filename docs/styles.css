@@ -11,7 +11,6 @@ body {
 	box-sizing: border-box;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	height: 100%;
-	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 }
@@ -67,6 +66,11 @@ pre code {
 	background-color: #171026;
 	padding: 10px 60px;
 	flex-shrink: 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1
 }
 
 .main-nav a {
@@ -98,6 +102,7 @@ pre code {
 
 .page-container {
 	padding: 0;
+	margin-top: 70px;
 }
 
 h1 {
@@ -111,6 +116,12 @@ h1 {
 .h1-huge {
 	font-size: 80px;
 	margin: 0 0 .3em;
+}
+
+.anchor {
+	display: block;
+	padding-top: 80px;
+	margin-top: -80px;
 }
 
 .highlight {
@@ -300,7 +311,6 @@ h1 {
 	flex-direction: column;
 	padding: 60px 30px;
 	background-color: #f8fcfe;
-	overflow-y: scroll;
 	flex-shrink: 0;
 }
 
