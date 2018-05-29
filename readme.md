@@ -9,8 +9,6 @@
 
 **ylem** provides fast and easy state management for your [React](https://reactjs.org) application by using [observable objects](https://canjs.com/doc/can-observe.html). Simply update your state objects whenever/however you want and your app will be re-rendered as efficiently as possible.
 
-Read more about the benefits on the [ylem homepage](http://bitovi.github.io/ylem).
-
 ## Getting Started
 
 ```
@@ -22,94 +20,64 @@ npm install ylem --save
 
 ## Usage
 
-**If you know React, you already know ylem.** There are 3 different techniques for using **ylem**, all of which are based on popular conventions used by the React community. For the sake of simplicity, all examples will use the technique of extending `ylem.Component`.
+**If you know React and JavaScript, you already know ylem.** The following is a basic example of how to update state using **ylem**. Feel free to edit this example on [CodeSandbox](https://codesandbox.io/s/qx1nzj6r29?hidenavigation=1&module=%2Fsrc%2Fylem%2Fhello-world.js&moduleview=1).
 
-* [Extend `ylem.Component` for observable state](./docs/use-observable-state.md)
-* [`@connect` presentation components to observable data](./docs/use-higher-order-components.md)
-* [Use render props with `createViewModelComponent()`](./docs/use-viewmodel-components.md)
+1. **Step 1:** Extend **ylem's** `Component` instead of `React.Component`:
 
+    ```js
+    import React from 'react';
+    import { Component } from 'ylem';
+    
+    class HelloWorld extends Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          name: 'Justin'
+        };
+      }
+      render() {
+        return (
+          <div>
+          	Hello {this.state.name}!
+          </div>
+        );
+      }
+    }
+    ```
 
-<table>
-<tr><th>React</th><th>ylem</th></tr>
-<tr>
-<td>
+2. **Step 2:** update state directly! Continuing with the last example, notice how you can update state directly:
 
-React's [state and lifecycle guide](https://reactjs.org/docs/state-and-lifecycle.html#adding-local-state-to-a-class) shows how to use `this.state` to manage state in a component like the following:
+    ```js
+    import React from 'react';
+    import { Component } from 'ylem';
+    
+    class HelloWorld extends Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          name: 'Justin'
+        };
+      }
+      
+      updateName = (ev) => {
+        // no need to call this.setState();
+        this.state.name = ev.target.value;
+      }
+      
+      render() {
+        return (
+          <div>
+          	Hello {this.state.name}!
+          	<div>
+          	  <input onChange={this.updateName} />
+          	</div>
+          </div>
+        );
+      }
+    }
+    ```
 
-</td>
-<td>
-
-With ylem you can simply change the state, any of the values within state and react will update; the example on the left now looks like:
-
-</td>
-</tr>
-<tr>
-<td>
-
-```js
-class Clock extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: new Date() };
-  }
-
-  componentDidMount() {
-    this.timerID = setInterval(() => {
-      this.setState({ date: new Date() });
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  render() {
-    const { date } = this.state;
-    return (
-      <h2>
-        It is {date.toLocaleTimeString()}.
-      </h2>
-    );
-  }
-}
-```
-
-</td>
-<td>
-
-```js
-class Clock extends ylem.Component { // 👀
-  constructor(props) {
-    super(props);
-    this.state = { date: new Date() };
-  }
-
-  componentDidMount() {
-    this.timerID = setInterval(() => {
-      this.state.date = new Date(); // 👀
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  render() {
-    const { date } = this.state;
-    return (
-      <h2>
-        It is {date.toLocaleTimeString()}.
-      </h2>
-    );
-  }
-}
-```
-
-</td>
-</tr>
-</table>
-
-Notice that instead of calling `.setState`, we were able to just set the `.date` property directly? We know [React tells you not to do this](https://reactjs.org/docs/state-and-lifecycle.html#do-not-modify-state-directly), but now you _can_ update state directly with **ylem**. This seemingly minor change has all sorts of benefits - read more about it on the [ylem homepage](http://bitovi.github.io/ylem).
+Notice that instead of calling `.setState`, we were able to just set the `.name` property directly? We know [React tells you not to do this](https://reactjs.org/docs/state-and-lifecycle.html#do-not-modify-state-directly), but now you _can_ update state directly with **ylem**. This seemingly minor change has all sorts of benefits - read more about it on the [ylem homepage](http://bitovi.github.io/ylem).
 
 
 ## Contributing

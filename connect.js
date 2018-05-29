@@ -45,6 +45,7 @@ export default function connect(ViewModel, transform = props => props) {
 			});
 		}
 		//!steal-remove-end
+
 		const UpgradedComponent = createNewComponentClass(ViewModel, transform, _vm => {
 			return React.createElement(ConnectedComponent, { _vm });
 		});

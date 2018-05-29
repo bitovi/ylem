@@ -17,6 +17,7 @@
 					<img class="logo-image" src="./images/logo.svg">
 					<p class="logo">ylem</p>
 				</a>
+				<a href="https://www.bitovi.com/" class="main-nav-link bitovi-link button-inverse">Bitovi</a>
 			</div>
 			<div class="main-nav_right">
 				<a class="github-button main-nav-link" href="https://github.com/bitovi/ylem" data-icon="octicon-star" aria-label="Star bitovi/ylem on GitHub">Fork on GitHub</a>
@@ -34,7 +35,7 @@
 						</hgroup>
 						<p class="subheading-1-dark"><code class="dark">ylem</code> enables the use of simple object-oriented patterns that developers already understand. Simply set properties and modify arrays exactly like you would in plain JavaScript. Your app will automatically re-render when state changes</p>
 						<pre class="install-script"
-							><code class="language-bash">npm install 'ylem' --save</code
+							><code class="language-bash">npm install ylem --save</code
 						></pre>
 						<p>
 							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with webpack</a>
@@ -257,13 +258,13 @@ const NextPrev = ({ paginate }) => (
 		<script async defer src="https://buttons.github.io/buttons.js"></script>
 		<script>
 			// This allows for smoother scrolling
-			document.addEventListener('DOMContentLoaded', function () {
+			/*document.addEventListener('DOMContentLoaded', function () {
 				debugger;
 				var body = document.body;
 				var timer;
 
 				window.addEventListener('scroll', function() {
-					console.log('scroll');
+
 				  clearTimeout(timer);
 				  if(!body.classList.contains('disable-pointer')) {
 				    body.classList.add('disable-pointer')
@@ -273,7 +274,7 @@ const NextPrev = ({ paginate }) => (
 				    body.classList.remove('disable-pointer')
 				  },500);
 				}, false);
-			})
+			});*/
 		</script>
 	</body>
 </html>

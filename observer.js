@@ -56,7 +56,6 @@ Observer.prototype.stopRecording = function() {
 			throw new Error('One of these things is not like the others');
 		}
 	}
-
 	this.newDependencies = this.nextDependencies;
 	recorderHelpers.updateObservations(this);
 };
@@ -71,7 +70,7 @@ Observer.prototype.teardown = function() {
 };
 
 Observer.prototype.ignore = function(fn) {
-	ObservationRecorder.ignore(fn)();
+	return ObservationRecorder.ignore(fn)();
 };
 
 //!steal-remove-start

@@ -2,19 +2,15 @@ import { Component } from 'react';
 import canReflect from 'can-reflect';
 import Observer from './observer';
 
+export const EMPTY_OBJ = {};
+
 export default class ObservableComponent extends Component {
 	constructor(props) {
 		super(props);
 
-		if (this.constructor.prototype.hasOwnProperty('shouldComponentUpdate')) {
-			this.constructor.prototype._shouldComponentUpdate = this.constructor.prototype.shouldComponentUpdate;
-			delete this.constructor.prototype.shouldComponentUpdate;
-		}
-
 		this.observer = new Observer(() => {
-			if (typeof this._shouldComponentUpdate !== 'function' || this._shouldComponentUpdate()) {
-				this.forceUpdate();
-			}
+			this.shouldUpdate = true;
+			this.setState(EMPTY_OBJ);
 		});
 
 		//!steal-remove-start
@@ -26,12 +22,21 @@ export default class ObservableComponent extends Component {
 		const oldRender = this.render;
 		this.render = function() {
 			this.observer.startRecording();
+
 			return oldRender.call(this);
 		};
 	}
 
-	shouldComponentUpdate() {
-		return false;
+	shouldComponentUpdate(props, state) {
+		if (!this.observer
+			|| (super.shouldComponentUpdate && !super.shouldComponentUpdate(props, state))
+			|| !this.shouldUpdate) {
+			return false;
+		}
+
+		this.shouldUpdate = false;
+
+		return true;
 	}
 
 	componentDidMount() {
@@ -44,6 +49,7 @@ export default class ObservableComponent extends Component {
 
 	componentWillUnmount() {
 		this.observer.teardown();
+		delete this.observer;
 	}
 }
 
@@ -90,16 +96,6 @@ export function createNewComponentClass(ViewModel, transform, render) {
 			};
 		}
 
-		shouldComponentUpdate() {
-			return !!this.viewModel;
-		}
-
-		componentWillUnmount() {
-			delete this.viewModel;
-
-			super.componentWillUnmount();
-		}
-
 		render() {
 			return render(this.viewModel, this.props);
 		}
@@ -130,37 +126,15 @@ export function getConnectedComponent(BaseComponent) {
 				;
 
 				super(proxy);
-
-				//!steal-remove-start
-				this._raw_props = true;
-				//!steal-remove-end
 			}
-
-			//!steal-remove-start
-			componentWillMount() {
-				this._raw_props = false;
-
-				if (typeof super.componentWillMount === 'function') {
-					super.componentWillMount();
-				}
-			}
-			//!steal-remove-end
 
 			set props(props) {
-				if (this._props && props === this._props._vm) {
-					return;
+				if (!this._props) {
+					this._props = props;
 				}
-
-				this._props = props;
 			}
 
 			get props() {
-				//!steal-remove-start
-				if (this._raw_props) {
-					return this._props._raw;
-				}
-				//!steal-remove-end
-
 				return this._props._vm;
 			}
 		}

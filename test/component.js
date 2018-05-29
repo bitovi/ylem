@@ -8,7 +8,7 @@ import { Component } from 'ylem';
 
 QUnit.module('Component', () => {
 	QUnit.test('throws if non objects are used for state', (assert) => {
-		const vals = ['foo', 123, true, null, undefined, [], function() {}];
+		const vals = ['foo', 123, true, null, [], function() {}];
 		assert.expect(vals.length);
 
 		class TestComponent extends Component {
@@ -18,7 +18,11 @@ QUnit.module('Component', () => {
 			}
 		}
 
-		vals.forEach(val => assert.throws(() => new TestComponent(val)));
+		vals.forEach(val =>
+			assert.throws(() =>
+				new TestComponent(val), 'throws for ' + (JSON.stringify(val) || typeof val)
+			)
+		);
 	});
 
 	QUnit.test('plain object state is made observable', (assert) => {
@@ -72,7 +76,7 @@ QUnit.module('Component', () => {
 		assert.equal(instance.state.foo, 'bar');
 	});
 
-	QUnit.test('attempts to replace state are merged onto existing state', (assert) => {
+	QUnit.test('attempts to replace state are ignored (can only set state once)', (assert) => {
 		class TestComponent extends Component {
 			constructor() {
 				super();
@@ -83,7 +87,7 @@ QUnit.module('Component', () => {
 		const instance = new TestComponent();
 		instance.state = { bam: 'quux' };
 		assert.equal(instance.state.foo, 'bar');
-		assert.equal(instance.state.bam, 'quux');
+		assert.equal(instance.state.bam, undefined);
 	});
 
 	QUnit.test('updates trigger a rerender', (assert) => {

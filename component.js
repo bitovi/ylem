@@ -18,30 +18,17 @@ const makeDerive = (ctor) => {
 	};
 };
 
+// Should .call() on the instance
+const ensureState = function() {
+	if (!this._state) {
+		this._state = observe({});
+	}
+	return this._state;
+};
+
 class Component extends ObservableComponent {
-	constructor() {
-		super();
-
-		let state = observe({});
-		Object.defineProperty(this, 'state', {
-			get() {
-				return state;
-			},
-			set(obj) {
-				if (Object.prototype.toString.call(obj) !== '[object Object]') {
-					throw new Error('You must set state to an object');
-				}
-
-				if (canReflect.isObservableLike(obj)) {
-					state = obj;
-					return;
-				}
-
-				Object.assign(state, obj);
-			},
-			enumerable: true,
-			configurable: false
-		});
+	constructor(props) {
+		super(props);
 
 		const ctor = this.constructor;
 		if (ctor.getDerivedStateFromProps && !ctor[gdsfp]) {
@@ -54,6 +41,40 @@ class Component extends ObservableComponent {
 
 			makeDerive(ctor);
 		}
+	}
+
+	get state() {
+		return this._state || ensureState.call(this);
+	}
+
+	set state(obj) {
+		// If setting to the same thing (or null), ignore
+		if (obj === this._state) {
+			return;
+		}
+
+		// Attempting to set state directly (this.state = ...) after
+		// the initial value has already been set. Ignore...
+		// This is needed b/c react internally sets the state to copies of the
+		// state during render, giving the observation recorder false updates.
+		// We can avoid this messyness by moving away from the "state" property.
+		if (this._state && !this.shouldUpdate) {
+			return;
+		}
+
+		// initial state is being set
+		if (Object.prototype.toString.call(obj) !== '[object Object]') {
+			throw new Error('You must set state to an object');
+		}
+
+		if (canReflect.isObservableLike(obj)) {
+			this._state = obj;
+			return;
+		}
+
+		ensureState.call(this);
+
+		Object.assign(this._state, obj);
 	}
 
 	//!steal-remove-start

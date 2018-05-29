@@ -175,7 +175,7 @@ QUnit.module('@connect with can-define', () => {
 			}
 		}
 
-		class WrappingComponent extends React.Component {
+		class WrappingComponent extends Component {
 			constructor() {
 				super();
 

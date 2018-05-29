@@ -9,8 +9,7 @@ import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 import { getTextFromElement, supportsFunctionName } from './utils';
 
-import { connect } from 'ylem';
-import { Object as ObserveObject } from 'can-observe';
+import { connect, ObserveObject } from 'ylem';
 
 class EmptyViewModel extends ObserveObject {}
 
@@ -123,67 +122,80 @@ QUnit.module('@connect', () => {
 	});
 
 	QUnit.test('should update parent before child', (assert) => {
-		// var expected = [ 'parent', 'child1', 'child2', 'parent', 'child1', 'child2' ];
-		var expected = [ 'parent', 'child1', 'child2', 'parent', 'parent', 'child1', 'parent', 'child2' ];
+		@connect(EmptyViewModel)
+		class GrandChild1 extends Component {
+			render() {
+				const { name } = this.props;
+				return <div>{name.first}</div>;
+			}
+		}
+
+		@connect(EmptyViewModel)
+		class GrandChild2 extends Component {
+			render() {
+				return <div>Hello fellow {this.props.name.last}. This should not re-render.</div>;
+			}
+		}
 
 		@connect(EmptyViewModel)
 		class ChildComponent1 extends Component {
-			static propTypes = {
-				name: PropTypes.shape({
-					first: PropTypes.string.isRequired,
-				}).isRequired,
-			}
-
 			render() {
-				assert.equal('child1', expected.shift(), 'child1 renderer called in the right order');
-
 				const { name } = this.props;
-				return <div>{name.first}</div>;
+				return <div>
+					{name.first}
+					<GrandChild1 name={name} />
+				</div>;
 			}
 		}
 
 		@connect(EmptyViewModel)
 		class ChildComponent2 extends Component {
-			static propTypes = {
-				name: PropTypes.shape({
-					first: PropTypes.string.isRequired,
-				}).isRequired,
-			}
-
 			render() {
-				assert.equal('child2', expected.shift(), 'child2 renderer called in the right order');
-
 				const { name } = this.props;
-				return <div>{name.first}</div>;
+				return <div>
+					{name.first}
+					<GrandChild2 name={name} />
+				</div>;
 			}
 		}
 
 		@connect(EmptyViewModel)
 		class ParentComponent extends Component {
-			static propTypes = {
-				name: PropTypes.shape({
-					first: PropTypes.string.isRequired,
-				}).isRequired,
-			}
-
 			render() {
-				assert.equal('parent', expected.shift(), 'parent renderer called in the right order');
-
 				const { name } = this.props;
 				return (
 					<div>
-						{name.first}
-						<ChildComponent1 name={name} />
-						<ChildComponent2 name={name} />
+						{name && name.first}
+						{name ?
+							<ChildComponent1 name={name} />
+							: null}
+						{name ?
+							<ChildComponent2 name={name} />
+							: null}
 					</div>
 				);
 			}
 		}
 
-		const viewModel = ReactTestUtils.renderIntoDocument( <ParentComponent name={{ first: 'Yetti' }} /> ).viewModel;
-		viewModel.name.first = 'Christopher';
+		let renderCount = 0;
+		[ParentComponent, ChildComponent1, ChildComponent2, GrandChild1, GrandChild2].forEach(Comp => {
+			const oldRender = Comp.prototype.render;
+			Comp.prototype.render = function() {
+				renderCount++;
+				return oldRender.call(this);
+			};
+		});
 
-		assert.equal(expected.length, 0, 'all expectations were run');
+		const testInstance = ReactTestUtils.renderIntoDocument( <ParentComponent name={{ first: 'Yetti', last: 'Snowman' }} /> );
+		const divComponent = ReactTestUtils.scryRenderedDOMComponentsWithTag( testInstance, 'div' );
+		const viewModel = testInstance.viewModel;
+
+		// the first divComponent will contain all elements
+		assert.ok(divComponent[0].innerHTML.indexOf('Yetti') > -1, 'found sasquach');
+		assert.equal(renderCount, 5, 'every component rendered initially');
+		viewModel.name = null;
+		assert.ok(divComponent[0].innerHTML.indexOf('Yetti') === -1, 'but now it is gone again');
+		assert.equal(renderCount, 6, 'only the parent component rendered the second time');
 	});
 
 	QUnit.test('should unmount properly', (assert) => {
