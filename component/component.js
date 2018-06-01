@@ -1,8 +1,10 @@
 import observe from 'can-observe';
 import canReflect from 'can-reflect';
-import ObservableComponent from './observable-component';
+import ObservableComponent from '../observable-component';
 
+//!steal-remove-start
 import ReactDOM from 'react-dom';
+//!steal-remove-end
 
 const gdsfp = Symbol.for('ylem.component.gdsfp');
 

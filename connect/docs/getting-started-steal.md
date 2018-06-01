@@ -46,29 +46,26 @@ From here, you need only create your `index.js`, run `npm run develop`, and open
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ylem from 'ylem';
+import ylem, { ObserveObject } from 'ylem';
 
-class Counter extends ylem.Component {
-  constructor(props) {
-    super(props);
-    this.state = { count: 0 };
-  }
-
-  increment = () => {
-    this.state.count++;
-  }
-
-  render() {
-    return (
-      <div>
-        Count: {this.state.count}<br />
-        <button onClick={this.increment}>+1</button>
-      </div>
-    )
-  }
+class AppState extends ObserveObject {
+    user = null
+    
+    login = () => {
+        this.user = { name: 'yetti' };
+    }
 }
 
-ReactDOM.render(<Counter />, document.getElementById('app'));
+const App = ylem(AppState, (props) => (
+    <div>
+    	<button onClick={props.login}>Login</button>
+    	{props.user && 
+    		<div>Welcome {props.user.name}!</div>
+    	}
+    </div>
+));
+
+ReactDOM.render(<App />, document.getElementById('app'));
 ```
 
 Want to learn more about StealJS? [Check out the docs!](https://stealjs.com/docs/)

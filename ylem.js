@@ -1,8 +1,8 @@
 import namespace from 'can-namespace';
 import { Object as ObserveObject, Array as ObserveArray} from 'can-observe';
 
-import connect from './connect';
-import Component from './component';
+import connect from './connect/connect';
+import Component from './component/component';
 import createViewModelComponent from './create-view-model-component';
 
 namespace.ylem = {

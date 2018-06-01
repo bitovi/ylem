@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import canReflect from 'can-reflect';
-import { createNewComponentClass, getConnectedComponent } from './observable-component';
+import { createNewComponentClass, getConnectedComponent } from '../observable-component';
 
 //!steal-remove-start
 (function(version) {

@@ -26,32 +26,24 @@ From here, you can modify `src/App.js` to use the **ylem** `Component` and see t
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Component } from 'ylem';
+import ylem, { ObserveObject } from 'ylem';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { count: 0 };
-  }
-
-  increment = () => {
-    this.state.count++;
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Count: {this.state.count}
-          </p>
-          <a className="App-link" onClick={this.increment}>+1</a>
-        </header>
-      </div>
-    );
-  }
+class AppState extends ObserveObject {
+    user = null
+    
+    login = () => {
+        this.user = { name: 'yetti' };
+    }
 }
+
+const App = ylem(AppState, (props) => (
+    <div>
+    	<button onClick={props.login}>Login</button>
+    	{props.user && 
+    		<div>Welcome {props.user.name}!</div>
+    	}
+    </div>
+));
 
 export default App;
 ```

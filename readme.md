@@ -4,84 +4,15 @@
 [![Greenkeeper Badge](https://badges.greenkeeper.io/bitovi/ylem.svg)](https://greenkeeper.io/)
 
 > [ahy-luh m] *noun* `ASTRONOMY`
->   
+>
 > The primordial matter of the universe from which all matter is said to be derived, believed to be composed of neutrons at high temperature and density.
 
-**ylem** provides fast and easy state management for your [React](https://reactjs.org) application by using [observable objects](https://canjs.com/doc/can-observe.html). Simply update your state objects whenever/however you want and your app will be re-rendered as efficiently as possible.
+## QA mode
 
-## Getting Started
+**ylem** uses observable objects to determine when to re-render components. We are currently considering two APIs - each has its own README and docs:
 
-```
-npm install ylem --save
-```
-
-* [Configure with Webpack](./docs/getting-started-webpack.md)
-* [Configure with StealJS](./docs/getting-started-steal.md)
-
-## Usage
-
-**If you know React and JavaScript, you already know ylem.** The following is a basic example of how to update state using **ylem**. Feel free to edit this example on [CodeSandbox](https://codesandbox.io/s/qx1nzj6r29?hidenavigation=1&module=%2Fsrc%2Fylem%2Fhello-world.js&moduleview=1).
-
-1. **Step 1:** Extend **ylem's** `Component` instead of `React.Component`:
-
-    ```js
-    import React from 'react';
-    import { Component } from 'ylem';
+1. Extend ylem's **`Component`** - `this.state` is observable, no more `.setState()`.  
+    [Read more here](./component).
     
-    class HelloWorld extends Component {
-      constructor(props) {
-        super(props);
-        this.state = {
-          name: 'Justin'
-        };
-      }
-      render() {
-        return (
-          <div>
-          	Hello {this.state.name}!
-          </div>
-        );
-      }
-    }
-    ```
-
-2. **Step 2:** update state directly! Continuing with the last example, notice how you can update state directly:
-
-    ```js
-    import React from 'react';
-    import { Component } from 'ylem';
-    
-    class HelloWorld extends Component {
-      constructor(props) {
-        super(props);
-        this.state = {
-          name: 'Justin'
-        };
-      }
-      
-      updateName = (ev) => {
-        // no need to call this.setState();
-        this.state.name = ev.target.value;
-      }
-      
-      render() {
-        return (
-          <div>
-          	Hello {this.state.name}!
-          	<div>
-          	  <input onChange={this.updateName} />
-          	</div>
-          </div>
-        );
-      }
-    }
-    ```
-
-Notice that instead of calling `.setState`, we were able to just set the `.name` property directly? We know [React tells you not to do this](https://reactjs.org/docs/state-and-lifecycle.html#do-not-modify-state-directly), but now you _can_ update state directly with **ylem**. This seemingly minor change has all sorts of benefits - read more about it on the [ylem homepage](http://bitovi.github.io/ylem).
-
-
-## Contributing
-Read the [contributing guides](./contributing.md)
-
-## License
-[MIT](./LICENSE.md) License
+2. **`connect()`** - connect an observable object to a presentation (aka. "dumb") component (similar to redux).  
+    [Read more here](./connect).
