@@ -48,29 +48,28 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Component } from 'ylem';
 
-class App extends Component {
+class Counter extends Component { // (◕‿◕ )
   constructor(props) {
     super(props);
-    this.state = { user: null };
+    this.state = { count: 0 };
   }
 
-  login = () => {
-    this.state.user = { name: 'yetti' };
+  increment = () => {
+    this.state.count++; // (◕‿◕ )
   }
 
   render() {
     return (
       <div>
-        <button onClick={this.login}>Login</button>
-        {this.state.user && 
-          <div>Welcome {this.state.user.name}!</div>
-        }
+        Count: {this.state.count}<br />
+        <button onClick={this.increment}>+1</Button>
       </div>
     )
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+const container = document.getElementById('#app');
+ReactDOM.render(<Counter />, container);
 ```
 
 Want to learn more about StealJS? [Check out the docs!](https://stealjs.com/docs/)
