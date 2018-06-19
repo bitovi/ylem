@@ -2,7 +2,6 @@ import './connect';
 import './component';
 import './create-component';
 import './with-can-define';
-import './nested-render-observe-array-bug';
 
 import QUnit from 'steal-qunit';
 import React, { Component } from 'react';
