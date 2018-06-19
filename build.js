@@ -10,7 +10,7 @@ stealTools.export({
 			dest: `${__dirname}/dist/development`,
 		},
 		'production+cjs': {
-			removeDevelopmentCode: false,
+			removeDevelopmentCode: true,
 			dest: `${__dirname}/dist/production`,
 		},
 	}
@@ -18,6 +18,6 @@ stealTools.export({
 
 	setTimeout(function(){
 		throw e;
-	},1);
+	}, 1);
 
 });

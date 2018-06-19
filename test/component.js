@@ -7,97 +7,65 @@ import observe, { Object as ObserveObject } from 'can-observe';
 import { Component } from 'ylem';
 
 QUnit.module('Component', () => {
-	QUnit.test('throws if non objects are used for state', (assert) => {
-		const vals = ['foo', 123, true, null, [], function() {}];
-		assert.expect(vals.length);
 
-		class TestComponent extends Component {
-			constructor(props) {
-				super();
-				this.state = props;
-			}
-		}
-
-		vals.forEach(val =>
-			assert.throws(() =>
-				new TestComponent(val), 'throws for ' + (JSON.stringify(val) || typeof val)
-			)
-		);
-	});
-
-	QUnit.test('plain object state is made observable', (assert) => {
-		const initialState = {
-			foo: 'bar'
-		};
+	QUnit.test('plain object store is made observable', (assert) => {
 
 		class TestComponent extends Component {
 			constructor() {
 				super();
-				this.state = initialState;
+				this.store = {
+					foo: 'bar'
+				};
 			}
 		}
 
 		const instance = new TestComponent();
-		assert.ok(reflect.isObservableLike(instance.state), 'state is an observe');
-		assert.equal(instance.state.foo, 'bar');
+		assert.ok(reflect.isObservableLike(instance.store), 'store is an observe');
+		assert.equal(instance.store.foo, 'bar');
 	});
 
-	QUnit.test('existing observes are used for state', (assert) => {
-		const initialState = observe({
+	QUnit.test('existing observes are used for store', (assert) => {
+		const initialStore = observe({
 			foo: 'bar'
 		});
 
 		class TestComponent extends Component {
 			constructor() {
 				super();
-				this.state = initialState;
+				this.store = initialStore;
 			}
 		}
 
 		const instance = new TestComponent();
-		assert.ok(instance.state === initialState, 'Existing observe was used');
-		assert.equal(instance.state.foo, 'bar');
+		assert.ok(instance.store === initialStore, 'Existing observe was used');
+		assert.equal(instance.store.foo, 'bar');
 	});
 
-	QUnit.test('existing observe.Objects are used for state', (assert) => {
-		const initialState = new ObserveObject({
+	QUnit.test('existing observe.Objects are used for store', (assert) => {
+		const initialStore = new ObserveObject({
 			foo: 'bar'
 		});
 
 		class TestComponent extends Component {
 			constructor() {
 				super();
-				this.state = initialState;
+				this.store = initialStore;
 			}
 		}
 
 		const instance = new TestComponent();
-		assert.ok(instance.state === initialState, 'Existing observe.Object was used');
-		assert.equal(instance.state.foo, 'bar');
-	});
-
-	QUnit.test('attempts to replace state are ignored (can only set state once)', (assert) => {
-		class TestComponent extends Component {
-			constructor() {
-				super();
-				this.state = { foo: 'bar' };
-			}
-		}
-
-		const instance = new TestComponent();
-		instance.state = { bam: 'quux' };
-		assert.equal(instance.state.foo, 'bar');
-		assert.equal(instance.state.bam, undefined);
+		assert.ok(instance.store === initialStore, 'Existing observe.Object was used');
+		assert.equal(instance.store.foo, 'bar');
 	});
 
 	QUnit.test('updates trigger a rerender', (assert) => {
 		class TestComponent extends Component {
 			constructor() {
 				super();
-				this.state = { foo: 'bar' };
+				this.store = { foo: 'bar' };
 			}
 			render() {
-				const { foo } = this.state;
+				const { foo } = this.store;
 				return <div>{foo}</div>;
 			}
 		}
@@ -106,47 +74,44 @@ QUnit.module('Component', () => {
 		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
 
 		assert.equal(divComponent.innerText, 'bar');
-		testInstance.state.foo = 'baz';
+		testInstance.store.foo = 'baz';
 		assert.equal(divComponent.innerText, 'baz');
 	});
 
-	QUnit.test('works with getDerivedStateFromProps', (assert) => {
+	QUnit.test('can work with getDerivedStateFromProps', (assert) => {
 		class TestComponent extends Component {
-			static getDerivedStateFromProps(props, state) {
-				state.foo = props.bar;
+			static getDerivedStateFromProps(props, { store }) {
+				store.foo = props.foo;
+				return null;
+			}
+			constructor(props) {
+				super(props);
+				this.store = {};
+				this.state = { store: this.store };
 			}
 			render() {
-				const { foo } = this.state;
+				const { foo } = this.store;
 				return <div>{foo}</div>;
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
-		assert.equal(testInstance.state.foo, 'bar');
-	});
-
-	QUnit.test('warns if getDerivedStateFromProps returns anything', (assert) => {
-		/* eslint-disable no-console */
-		const vals = [undefined, null, {}];
-		const oldWarn = console.warn;
-		console.warn = () => assert.ok(true);
-
-		// one of the vals is 'undefined', which should not warn
-		assert.expect(vals.length - 1);
-
-		vals.forEach(val => {
-			class TestComponent extends Component {
-				static getDerivedStateFromProps() {
-					return val;
-				}
-				render() {
-					return <div />;
-				}
+		class Wrapper extends Component {
+			constructor() {
+				super();
+				this.state = { val: 'foo' };
 			}
+			updateState() {
+				this.setState({ val: 'bar' });
+			}
+			render() {
+				return <TestComponent foo={ this.state.val } />;
+			}
+		}
 
-			ReactTestUtils.renderIntoDocument( <TestComponent /> );
-		});
-
-		console.warn = oldWarn;
+		const wrapperInstance = ReactTestUtils.renderIntoDocument( <Wrapper /> );
+		const testInstance = ReactTestUtils.findRenderedComponentWithType(wrapperInstance, TestComponent);
+		assert.equal(testInstance.store.foo, 'foo');
+		wrapperInstance.updateState();
+		assert.equal(testInstance.store.foo, 'bar');
 	});
 });

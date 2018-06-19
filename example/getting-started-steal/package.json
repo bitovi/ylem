@@ -14,9 +14,6 @@
     }
   },
   "dependencies": {
-    "can-debug": "^1.0.3",
-    "can-view-model": "^4.0.1",
-    "done-serve": "^2.2.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "steal": "^1.11.6",

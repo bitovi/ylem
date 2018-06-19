@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
 
 import { Object as ObserveObject } from 'can-observe';
-import { createViewModelComponent } from 'ylem';
+import { createComponent } from 'ylem';
 
-QUnit.module('`createViewModelComponent` with can-observe', () => {
+QUnit.module('`createComponent` with can-observe', () => {
 
 	QUnit.test('basic rendering with function child', (assert) => {
 		class ViewModel extends ObserveObject {
@@ -21,7 +21,7 @@ QUnit.module('`createViewModelComponent` with can-observe', () => {
 			}
 		}
 
-		const ViewModelComponent = createViewModelComponent(ViewModel);
+		const ViewModelComponent = createComponent(ViewModel);
 
 		class TestComponent extends Component {
 			render() {
@@ -52,7 +52,7 @@ QUnit.module('`createViewModelComponent` with can-observe', () => {
 			}
 		}
 
-		const ViewModelComponent = createViewModelComponent(ViewModel);
+		const ViewModelComponent = createComponent(ViewModel);
 
 		class TestComponent extends Component {
 			render() {
@@ -81,7 +81,7 @@ QUnit.module('`createViewModelComponent` with can-observe', () => {
 			}
 		}
 
-		const ViewModelComponent = createViewModelComponent(ViewModel);
+		const ViewModelComponent = createComponent(ViewModel);
 
 		class RenderComponent extends Component {
 			render() {
@@ -115,7 +115,7 @@ QUnit.module('`createViewModelComponent` with can-observe', () => {
 			}
 		}
 
-		const InnerViewModelComponent = createViewModelComponent(InnerViewModel);
+		const InnerViewModelComponent = createComponent(InnerViewModel);
 
 		class OuterViewModel extends ObserveObject {
 			constructor(props) {
@@ -123,7 +123,7 @@ QUnit.module('`createViewModelComponent` with can-observe', () => {
 			}
 		}
 
-		const OuterViewModelComponent = createViewModelComponent(OuterViewModel);
+		const OuterViewModelComponent = createComponent(OuterViewModel);
 
 		class TestComponent extends Component {
 			render() {

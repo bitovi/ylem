@@ -1,6 +1,6 @@
 ## Getting Started with NPM and StealJS
 
-To use **ylem** with NPM and StealJS, simply install the steal suite, react, and ylem.
+To use **ylem** ad React with NPM and StealJS, simply install the steal suite, react, and ylem.
 
 ```sh
 npm install steal steal-tools done-serve --save-dev
@@ -41,31 +41,26 @@ You will also need an `index.html` to load in the browser.
 </html>
 ```
 
-From here, you need only create your `index.js`, run `npm run develop`, and open it in your browser (http://localhost:8080).
+Now, create an `index.js`
 
 ```js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import ylem, { ObserveObject } from 'ylem';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
 
-class AppState extends ObserveObject {
-    user = null
-    
-    login = () => {
-        this.user = { name: 'yetti' };
-    }
-}
-
-const App = ylem(AppState, (props) => (
-    <div>
-    	<button onClick={props.login}>Login</button>
-    	{props.user && 
-    		<div>Welcome {props.user.name}!</div>
-    	}
-    </div>
-));
-
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById("root"));
 ```
+
+...and a simple `App.js` to get started.
+
+```js
+import React from "react";
+
+const App = () => <h1>Hello React with StealJS!</h1>;
+
+export default App;
+```
+
+From here, you need only run `npm run develop` in your terminal, and open your browser to (http://localhost:8080).
 
 Want to learn more about StealJS? [Check out the docs!](https://stealjs.com/docs/)
