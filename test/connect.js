@@ -266,9 +266,8 @@ QUnit.module('@connect with ObserveObject', () => {
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 	});
 
-	QUnit.skip('should update parent before child', (assert) => {
-		// var expected = [ 'parent', 'child1', 'child2', 'parent', 'child1', 'child2' ];
-		var expected = [ 'parent', 'child1', 'child2', 'parent', 'parent', 'child1', 'parent', 'child2' ];
+	QUnit.test('should update parent before child', (assert) => {
+		let parent = false;
 
 		@connect(EmptyViewModel)
 		class ChildComponent1 extends Component {
@@ -279,7 +278,7 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 
 			render() {
-				assert.equal('child1', expected.shift(), 'child1 renderer called in the right order');
+				assert.equal(parent, true, 'parent rendered before child1');
 
 				const { name } = this.props;
 				return <div>{name.first}</div>;
@@ -295,7 +294,7 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 
 			render() {
-				assert.equal('child2', expected.shift(), 'child2 renderer called in the right order');
+				assert.equal(parent, true, 'parent rendered before child2');
 
 				const { name } = this.props;
 				return <div>{name.first}</div>;
@@ -311,7 +310,7 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 
 			render() {
-				assert.equal('parent', expected.shift(), 'parent renderer called in the right order');
+				parent = true;
 
 				const { name } = this.props;
 				return (
@@ -325,9 +324,9 @@ QUnit.module('@connect with ObserveObject', () => {
 		}
 
 		const observable = ReactTestUtils.renderIntoDocument( <ParentComponent name={{ first: 'Yetti' }} /> ).observable;
-		observable.name.first = 'Christopher';
 
-		assert.equal(expected.length, 0, 'all expectations were run');
+		parent = false;
+		observable.name.first = 'Christopher';
 	});
 
 	QUnit.test('should change props on the correct children - deep tree', (assert) => {

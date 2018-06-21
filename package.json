@@ -68,15 +68,15 @@
     "eslint": "^4.19.1",
     "eslint-plugin-react": "^7.8.0",
     "prop-types": "^15.6.1",
-    "react": "~16.3.2",
-    "react-dom": "~16.3.2",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "steal": "^1.11.6",
     "steal-qunit": "^1.0.1",
     "steal-tools": "^1.11.8",
     "testee": "^0.8.0"
   },
   "peerDependencies": {
-    "react": "~16.3.2"
+    "react": "^16.3.2"
   },
   "steal": {
     "main": "index",
