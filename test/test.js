@@ -77,7 +77,7 @@ QUnit.module('@yelm', () => {
 		@ylem
 		class TestComponent extends Component {}
 		if (process.env.NODE_ENV !== 'test-prod') {
-			supportsFunctionName && assert.equal(TestComponent.name, 'YlemObserver(TestComponent)', 'returned component is properly named');
+			supportsFunctionName && assert.equal(TestComponent.name, 'YlemObserved(TestComponent)', 'returned component is properly named');
 		}
 
 		function TestFunctionComponent() {
@@ -85,7 +85,7 @@ QUnit.module('@yelm', () => {
 		}
 		const ObserverComponent = ylem(TestFunctionComponent);
 		if (process.env.NODE_ENV !== 'test-prod') {
-			supportsFunctionName && assert.equal(ObserverComponent.name, 'YlemObserver(TestFunctionComponent)', 'returned component is properly named');
+			supportsFunctionName && assert.equal(ObserverComponent.name, 'YlemObserved(TestFunctionComponent)', 'returned component is properly named');
 		}
 
 		if (process.env.NODE_ENV === 'test-prod') {
