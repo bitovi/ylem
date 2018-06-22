@@ -22,12 +22,13 @@ QUnit.module('@yelm', () => {
 
 		@ylem
 		class MyComponent extends Component {
+			static propTypes = {
+				bar: PropTypes.string.isRequired,
+			}
+
 			constructor() {
 				super();
 				this.store = instance = new ViewModel();
-			}
-			static propTypes = {
-				bar: PropTypes.string.isRequired,
 			}
 
 			render() {
@@ -36,8 +37,8 @@ QUnit.module('@yelm', () => {
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <MyComponent bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<MyComponent bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 
@@ -62,8 +63,8 @@ QUnit.module('@yelm', () => {
 
 		const TestComponent = ylem(MyComponent);
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 
@@ -79,7 +80,9 @@ QUnit.module('@yelm', () => {
 			supportsFunctionName && assert.equal(TestComponent.name, 'YlemObserver(TestComponent)', 'returned component is properly named');
 		}
 
-		function TestFunctionComponent() { return null; }
+		function TestFunctionComponent() {
+			return null;
+		}
 		const ObserverComponent = ylem(TestFunctionComponent);
 		if (process.env.NODE_ENV !== 'test-prod') {
 			supportsFunctionName && assert.equal(ObserverComponent.name, 'YlemObserver(TestFunctionComponent)', 'returned component is properly named');
@@ -105,13 +108,13 @@ QUnit.module('@yelm', () => {
 
 			render() {
 				const { showChild } = this.store;
-				return <div>{ showChild ? <ChildComponent/> : <span/> }</div>;
+				return <div>{ showChild ? <ChildComponent /> : <span /> }</div>;
 			}
 		}
 		class ChildObservable extends ObserveObject {
 			prop = 'foo';
 		}
-		let childInstance = new ChildObservable();
+		const childInstance = new ChildObservable();
 
 		@ylem
 		class ChildComponent extends Component {
@@ -120,30 +123,34 @@ QUnit.module('@yelm', () => {
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <ParentComponent/> );
-		var pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<ParentComponent />);
+		let pComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'p');
 		assert.ok(pComponent, 'there is a p tag');
 
 		instance.showChild = false;
 
 		try {
-			pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
+			pComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'p');
 			assert.ok(false, 'there is a p tag but there should not be');
-		} catch (e) {
+		}
+		catch (e) {
 			assert.ok(true, 'was unable to find a `p` within DOM');
 		}
 
 		/*eslint no-console: 0 */
 		const oldError = console.error;
-		console.error = function(error){ throw Error(error); };
+		console.error = function(error) {
+			throw Error(error);
+		};
 		try {
 			childInstance.prop = 'CHANGE SOMETHING ON CHILD';
-		} catch (e) {
+		}
+		catch (e) {
 			assert.ok(false, 'error was thrown, child component was not properly unmounted');
 		}
 		console.error = oldError;
 
-		var spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'span' );
+		const spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'span');
 		assert.ok(spanComponent, 'span inserted');
 	});
 
@@ -154,15 +161,15 @@ QUnit.module('@yelm', () => {
 
 		@ylem
 		class MyComponent extends Component {
-			static getDerivedStateFromProps(props, state) {
-				Object.assign(state.store, props);
-				return null;
-			}
-
 			constructor() {
 				super();
 				this.store = new ViewModel();
-				this.state = { store: this.store };
+				this.state = { store: this.store }; // eslint-disable-line react/no-unused-state
+			}
+
+			static getDerivedStateFromProps(props, state) {
+				Object.assign(state.store, props);
+				return null;
 			}
 
 			render() {
@@ -176,7 +183,7 @@ QUnit.module('@yelm', () => {
 				super();
 
 				this.state = {
-					foo: 'Initial Prop Value'
+					foo: 'Initial Prop Value',
 				};
 			}
 
@@ -185,13 +192,13 @@ QUnit.module('@yelm', () => {
 			}
 
 			render() {
-				return <MyComponent foo={ this.state.foo } />;
+				return <MyComponent foo={this.state.foo} />;
 			}
 		}
 
-		const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
-		const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, MyComponent )[0];
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const wrappingInstance = ReactTestUtils.renderIntoDocument(<WrappingComponent />);
+		const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, MyComponent)[0];
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(testInstance.props.foo, 'Initial Prop Value');
 		assert.equal(divComponent.innerText, 'test Initial Prop Value');
@@ -228,7 +235,7 @@ QUnit.module('@yelm', () => {
 				super();
 
 				this.state = {
-					foo: 'Initial Prop Value'
+					foo: 'Initial Prop Value',
 				};
 			}
 
@@ -241,9 +248,9 @@ QUnit.module('@yelm', () => {
 			}
 		}
 
-		const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
-		const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, MyComponent )[0];
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const wrappingInstance = ReactTestUtils.renderIntoDocument(<WrappingComponent />);
+		const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, MyComponent)[0];
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(testInstance.props.foo, 'Initial Prop Value');
 		assert.equal(divComponent.innerText, 'test Initial Prop Value');

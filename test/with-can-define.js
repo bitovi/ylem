@@ -11,20 +11,21 @@ QUnit.module('ylem with can-define', () => {
 		const ViewModel = DefineMap.extend('ViewModel', {
 			foo: {
 				type: 'string',
-				default: 'foo'
-			}
+				default: 'foo',
+			},
 		});
 
 		let instance;
 
 		@ylem
 		class MyComponent extends Component {
+			static propTypes = {
+				bar: PropTypes.string.isRequired,
+			}
+
 			constructor() {
 				super();
 				this.store = instance = new ViewModel();
-			}
-			static propTypes = {
-				bar: PropTypes.string.isRequired,
 			}
 
 			render() {
@@ -33,8 +34,8 @@ QUnit.module('ylem with can-define', () => {
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <MyComponent bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<MyComponent bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 
@@ -46,8 +47,8 @@ QUnit.module('ylem with can-define', () => {
 		const Observable = DefineMap.extend('Observable', {
 			foo: {
 				type: 'string',
-				default: 'foo'
-			}
+				default: 'foo',
+			},
 		});
 		const instance = new Observable();
 
@@ -62,8 +63,8 @@ QUnit.module('ylem with can-define', () => {
 
 		const TestComponent = ylem(MyComponent);
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 
@@ -75,8 +76,8 @@ QUnit.module('ylem with can-define', () => {
 		const Observable = DefineMap.extend('Observable', {
 			showChild: {
 				type: 'boolean',
-				default: true
-			}
+				default: true,
+			},
 		});
 		let instance;
 
@@ -89,16 +90,16 @@ QUnit.module('ylem with can-define', () => {
 
 			render() {
 				const { showChild } = this.store;
-				return <div>{ showChild ? <ChildComponent/> : <span/> }</div>;
+				return <div>{ showChild ? <ChildComponent /> : <span /> }</div>;
 			}
 		}
 		const ChildObservable = DefineMap.extend('ChildObservable', {
 			prop: {
 				type: 'string',
-				default: 'foo'
-			}
+				default: 'foo',
+			},
 		});
-		let childInstance = new ChildObservable();
+		const childInstance = new ChildObservable();
 
 		@ylem
 		class ChildComponent extends Component {
@@ -107,30 +108,34 @@ QUnit.module('ylem with can-define', () => {
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <ParentComponent/> );
-		var pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<ParentComponent />);
+		let pComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'p');
 		assert.ok(pComponent, 'there is a p tag');
 
 		instance.showChild = false;
 
 		try {
-			pComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'p' );
+			pComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'p');
 			assert.ok(false, 'there is a p tag but there should not be');
-		} catch (e) {
+		}
+		catch (e) {
 			assert.ok(true, 'was unable to find a `p` within DOM');
 		}
 
 		/*eslint no-console: 0 */
 		const oldError = console.error;
-		console.error = function(error){ throw Error(error); };
+		console.error = function(error) {
+			throw Error(error);
+		};
 		try {
 			childInstance.prop = 'CHANGE SOMETHING ON CHILD';
-		} catch (e) {
+		}
+		catch (e) {
 			assert.ok(false, 'error was thrown, child component was not properly unmounted');
 		}
 		console.error = oldError;
 
-		var spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'span' );
+		const spanComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'span');
 		assert.ok(spanComponent, 'span inserted');
 	});
 
@@ -176,8 +181,8 @@ QUnit.module('ylem with can-define', () => {
 				}
 			}
 
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+			const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent bar="bar" />);
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 			assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 
@@ -207,8 +212,8 @@ QUnit.module('ylem with can-define', () => {
 				}
 			}
 
-			const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent foo="foo" bar="bar" /> );
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+			const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent foo="foo" bar="bar" />);
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 			assert.equal(divComponent.innerText, 'testfoobar');
 			testInstance.observable.foo = 'MMM';
@@ -229,6 +234,7 @@ QUnit.module('ylem with can-define', () => {
 			class TestComponent extends Component {
 				static propTypes = {
 					foo: PropTypes.string.isRequired,
+					test: PropTypes.string.isRequired,
 				}
 
 				render() {
@@ -242,7 +248,7 @@ QUnit.module('ylem with can-define', () => {
 					super();
 
 					this.state = {
-						foo: 'Initial Prop Value'
+						foo: 'Initial Prop Value',
 					};
 				}
 
@@ -255,9 +261,9 @@ QUnit.module('ylem with can-define', () => {
 				}
 			}
 
-			const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
-			const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, TestComponent )[0];
-			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+			const wrappingInstance = ReactTestUtils.renderIntoDocument(<WrappingComponent />);
+			const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
+			const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 			assert.equal(testInstance.props.foo, 'Initial Prop Value');
 			assert.equal(divComponent.innerText, 'test Initial Prop Value');

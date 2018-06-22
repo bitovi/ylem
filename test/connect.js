@@ -57,8 +57,8 @@ QUnit.module('@connect with ObserveObject', () => {
 			assert.equal(TestComponent.propTypes, ViewModel.propTypes, 'connected component has the correct propTypes');
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 
@@ -87,8 +87,8 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent foo="foo" bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent foo="foo" bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'testfoobar');
 		testInstance.observable.foo = 'MMM';
@@ -137,7 +137,7 @@ QUnit.module('@connect with ObserveObject', () => {
 						bam: PropTypes.shape({
 							quux: PropTypes.string.isRequired,
 						}).isRequired,
-					}).isRequired
+					}).isRequired,
 				}).isRequired,
 			}
 
@@ -147,8 +147,8 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <OuterComponent foo={{ bar: { bam: { quux: 'hello' } } }} /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<OuterComponent foo={{ bar: { bam: { quux: 'hello' } } }} />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'test hello');
 		testInstance.observable.foo.bar.bam.quux = 'world';
@@ -182,7 +182,7 @@ QUnit.module('@connect with ObserveObject', () => {
 				super();
 
 				this.state = {
-					foo: 'Initial Prop Value'
+					foo: 'Initial Prop Value',
 				};
 			}
 
@@ -195,9 +195,9 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 		}
 
-		const wrappingInstance = ReactTestUtils.renderIntoDocument( <WrappingComponent /> );
-		const testInstance = ReactTestUtils.scryRenderedComponentsWithType( wrappingInstance, TestComponent )[0];
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const wrappingInstance = ReactTestUtils.renderIntoDocument(<WrappingComponent />);
+		const testInstance = ReactTestUtils.scryRenderedComponentsWithType(wrappingInstance, TestComponent)[0];
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(testInstance.props.foo, 'Initial Prop Value');
 		assert.equal(divComponent.innerText, 'test Initial Prop Value');
@@ -231,8 +231,8 @@ QUnit.module('@connect with ObserveObject', () => {
 			supportsFunctionName && assert.equal(TestComponent.name, 'YlemConnected(TestComponent)', 'returned component is properly named');
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 	});
@@ -260,8 +260,8 @@ QUnit.module('@connect with ObserveObject', () => {
 			supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'YlemConnected(TestComponent)', 'returned component is properly named');
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <ConnectedTestComponent bar="bar" /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<ConnectedTestComponent bar="bar" />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
 	});
@@ -323,7 +323,7 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 		}
 
-		const observable = ReactTestUtils.renderIntoDocument( <ParentComponent name={{ first: 'Yetti' }} /> ).observable;
+		const observable = ReactTestUtils.renderIntoDocument(<ParentComponent name={{ first: 'Yetti' }} />).observable;
 
 		parent = false;
 		observable.name.first = 'Christopher';
@@ -331,21 +331,21 @@ QUnit.module('@connect with ObserveObject', () => {
 
 	QUnit.test('should change props on the correct children - deep tree', (assert) => {
 
-		var render = (props) => {
+		const render = (props) => {
 			return <span>{props.value}{props.children}</span>;
 		};
 
-		var Child0 = connect(EmptyViewModel)(render);
-		var Child00 = connect(EmptyViewModel)(render);
-		var Child000 = connect(EmptyViewModel)(render);
-		var Child01 = connect(EmptyViewModel)(render);
-		var Child1 = connect(EmptyViewModel)(render);
-		var Child10 = connect(EmptyViewModel)(render);
-		var Child100 = connect(EmptyViewModel)(render);
-		var Child1000 = connect(EmptyViewModel)(render);
-		var Child11 = connect(EmptyViewModel)(render);
+		const Child0 = connect(EmptyViewModel)(render);
+		const Child00 = connect(EmptyViewModel)(render);
+		const Child000 = connect(EmptyViewModel)(render);
+		const Child01 = connect(EmptyViewModel)(render);
+		const Child1 = connect(EmptyViewModel)(render);
+		const Child10 = connect(EmptyViewModel)(render);
+		const Child100 = connect(EmptyViewModel)(render);
+		const Child1000 = connect(EmptyViewModel)(render);
+		const Child11 = connect(EmptyViewModel)(render);
 
-		var Parent = connect(EmptyViewModel)((props) => {
+		const Parent = connect(EmptyViewModel)((props) => {
 			return (
 				<div>
 					<Child0 value="0">
@@ -369,19 +369,19 @@ QUnit.module('@connect with ObserveObject', () => {
 			);
 		});
 
-		const parentInstance = ReactTestUtils.renderIntoDocument( <Parent prop0="!" prop1="@" prop2="#" /> );
+		const parentInstance = ReactTestUtils.renderIntoDocument(<Parent prop0="!" prop1="@" prop2="#" />);
 		const parentViewModel = parentInstance.observable;
-		const parentDiv = ReactTestUtils.findRenderedDOMComponentWithTag( parentInstance, 'div' );
+		const parentDiv = ReactTestUtils.findRenderedDOMComponentWithTag(parentInstance, 'div');
 
-		const child0ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child0 ).observable;
-		const child00ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child00 ).observable;
-		const child000ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child000 ).observable;
-		const child01ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child01 ).observable;
-		const child1ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child1 ).observable;
-		const child10ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child10 ).observable;
-		const child100ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child100 ).observable;
-		const child1000ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child1000 ).observable;
-		const child11ViewModel = ReactTestUtils.findRenderedComponentWithType( parentInstance, Child11 ).observable;
+		const child0ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child0).observable;
+		const child00ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child00).observable;
+		const child000ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child000).observable;
+		const child01ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child01).observable;
+		const child1ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child1).observable;
+		const child10ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child10).observable;
+		const child100ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child100).observable;
+		const child1000ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child1000).observable;
+		const child11ViewModel = ReactTestUtils.findRenderedComponentWithType(parentInstance, Child11).observable;
 
 		assert.equal(getTextFromElement(parentDiv), '01!23@4#5678', '01!23@4#5678');
 		child0ViewModel.value = 'a';

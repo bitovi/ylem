@@ -1,11 +1,11 @@
 import React from 'react';
 import namespace from 'can-namespace';
-import { Object as ObserveObject, Array as ObserveArray} from 'can-observe';
+import { Object as ObserveObject, Array as ObserveArray } from 'can-observe';
 
 import ylem from './lib/ylem';
 import { connect } from './lib/connected-component';
 import { createComponent } from './lib/observable-component';
-import ObserverComponent, { Component, observer } from './lib/observer-component';
+import { Component, observer } from './lib/observer-component';
 import * as propertyDecorators from './property-decorators';
 
 //!steal-remove-start
@@ -18,28 +18,28 @@ import * as propertyDecorators from './property-decorators';
 //!steal-remove-end
 
 Object.assign(ylem, {
+	observer,
 	connect,
 	withViewModel: connect,
-	observer,
+	createComponent,
+	Component,
+
 	ObserveObject,
 	ObserveArray,
-	createComponent,
 	propertyDecorators,
-	ObserverComponent,
-	Component,
 });
 
 namespace.ylem = ylem;
 
 export default namespace.ylem;
 export {
+	observer,
 	connect,
 	connect as withViewModel,
-	observer,
+	createComponent,
+	Component,
+
 	ObserveObject,
 	ObserveArray,
-	createComponent,
 	propertyDecorators,
-	ObserverComponent,
-	Component
 };

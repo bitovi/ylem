@@ -14,7 +14,7 @@ QUnit.module('Component', () => {
 			constructor() {
 				super();
 				this.store = {
-					foo: 'bar'
+					foo: 'bar',
 				};
 			}
 		}
@@ -26,7 +26,7 @@ QUnit.module('Component', () => {
 
 	QUnit.test('existing observes are used for store', (assert) => {
 		const initialStore = observe({
-			foo: 'bar'
+			foo: 'bar',
 		});
 
 		class TestComponent extends Component {
@@ -43,7 +43,7 @@ QUnit.module('Component', () => {
 
 	QUnit.test('existing observe.Objects are used for store', (assert) => {
 		const initialStore = new ObserveObject({
-			foo: 'bar'
+			foo: 'bar',
 		});
 
 		class TestComponent extends Component {
@@ -70,8 +70,8 @@ QUnit.module('Component', () => {
 			}
 		}
 
-		const testInstance = ReactTestUtils.renderIntoDocument( <TestComponent /> );
-		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag( testInstance, 'div' );
+		const testInstance = ReactTestUtils.renderIntoDocument(<TestComponent />);
+		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'bar');
 		testInstance.store.foo = 'baz';
@@ -80,15 +80,17 @@ QUnit.module('Component', () => {
 
 	QUnit.test('can work with getDerivedStateFromProps', (assert) => {
 		class TestComponent extends Component {
+			constructor(props) {
+				super(props);
+				this.store = {};
+				this.state = { store: this.store }; // eslint-disable-line react/no-unused-state
+			}
+
 			static getDerivedStateFromProps(props, { store }) {
 				store.foo = props.foo;
 				return null;
 			}
-			constructor(props) {
-				super(props);
-				this.store = {};
-				this.state = { store: this.store };
-			}
+
 			render() {
 				const { foo } = this.store;
 				return <div>{foo}</div>;
@@ -104,11 +106,11 @@ QUnit.module('Component', () => {
 				this.setState({ val: 'bar' });
 			}
 			render() {
-				return <TestComponent foo={ this.state.val } />;
+				return <TestComponent foo={this.state.val} />;
 			}
 		}
 
-		const wrapperInstance = ReactTestUtils.renderIntoDocument( <Wrapper /> );
+		const wrapperInstance = ReactTestUtils.renderIntoDocument(<Wrapper />);
 		const testInstance = ReactTestUtils.findRenderedComponentWithType(wrapperInstance, TestComponent);
 		assert.equal(testInstance.store.foo, 'foo');
 		wrapperInstance.updateState();

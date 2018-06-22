@@ -2,7 +2,7 @@ const stealTools = require('steal-tools');
 
 stealTools.export({
 	steal: {
-		config: `${__dirname}/package.json!npm`
+		config: `${__dirname}/package.json!npm`,
 	},
 	outputs: {
 		'development+cjs': {
@@ -13,10 +13,10 @@ stealTools.export({
 			removeDevelopmentCode: true,
 			dest: `${__dirname}/dist/production`,
 		},
-	}
-}).catch(function(e){
+	},
+}).catch((e) => {
 
-	setTimeout(function(){
+	setTimeout(() => {
 		throw e;
 	}, 1);
 

@@ -1,4 +1,2 @@
 node_modules
-dist/
-doc/
-example/getting-started-steal/node_modules
+dist

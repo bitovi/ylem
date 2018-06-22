@@ -1,10 +1,11 @@
 function getTextFromElement(node) {
-	var txt = '';
+	let txt = '';
 	node = node.firstChild;
-	while(node) {
-		if(node.nodeType === 3) {
+	while (node) {
+		if (node.nodeType === 3) {
 			txt += node.nodeValue;
-		} else {
+		}
+		else {
 			txt += getTextFromElement(node);
 		}
 		node = node.nextSibling;
@@ -13,7 +14,7 @@ function getTextFromElement(node) {
 }
 
 const supportsFunctionName = (function() {
-	function foo(){}
+	function foo() {}
 	return foo.name === 'foo';
 })();
 
