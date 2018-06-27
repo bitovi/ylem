@@ -167,13 +167,16 @@ QUnit.module('@connect with ObserveObject', () => {
 		@connect(ViewModel)
 		class TestComponent extends Component {
 			static propTypes = {
-				foo: PropTypes.string.isRequired,
 				test: PropTypes.string.isRequired,
+				foo: PropTypes.string.isRequired,
+				bar: PropTypes.shape({
+					bam: PropTypes.number.isRequired,
+				}).isRequired,
 			}
 
 			render() {
-				const { test, foo } = this.props;
-				return <div>{test} {foo}</div>;
+				const { test, foo, bar: { bam } } = this.props;
+				return <div>{test} {foo} {bam}</div>;
 			}
 		}
 
@@ -183,15 +186,19 @@ QUnit.module('@connect with ObserveObject', () => {
 
 				this.state = {
 					foo: 'Initial Prop Value',
+					bar: { bam: 1 },
 				};
 			}
 
 			changeState() {
-				this.setState({ foo: 'New Prop Value' });
+				this.setState({
+					foo: 'New Prop Value',
+					bar: { bam: 2 },
+				});
 			}
 
 			render() {
-				return <TestComponent foo={this.state.foo} />;
+				return <TestComponent foo={this.state.foo} bar={this.state.bar} />;
 			}
 		}
 
@@ -200,11 +207,11 @@ QUnit.module('@connect with ObserveObject', () => {
 		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(testInstance.props.foo, 'Initial Prop Value');
-		assert.equal(divComponent.innerText, 'test Initial Prop Value');
+		assert.equal(divComponent.innerText, 'test Initial Prop Value 1');
 		wrappingInstance.changeState();
 
 		assert.equal(testInstance.props.foo, 'New Prop Value');
-		assert.equal(divComponent.innerText, 'test New Prop Value');
+		assert.equal(divComponent.innerText, 'test New Prop Value 2');
 	});
 
 	QUnit.test('rendering with Component and transformed props', (assert) => {
