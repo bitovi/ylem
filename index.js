@@ -1,4 +1,3 @@
-import React from 'react';
 import namespace from 'can-namespace';
 import { Object as ObserveObject, Array as ObserveArray } from 'can-observe';
 
@@ -9,6 +8,8 @@ import { Component, observer } from './lib/observer-component';
 import * as propertyDecorators from './property-decorators';
 
 //!steal-remove-start
+import React from 'react';
+
 if (process.env.NODE_ENV !== 'production') {
 	(function(version) {
 		const [ major, minor ] = version.split('.').map(v => +v);
