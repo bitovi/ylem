@@ -75,7 +75,7 @@
     "steal": "^1.11.6",
     "steal-qunit": "^1.0.1",
     "steal-tools": "^1.11.8",
-    "testee": "^0.8.0"
+    "testee": "^0.8.1"
   },
   "peerDependencies": {
     "react": "^16.3.0"
