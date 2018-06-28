@@ -219,7 +219,7 @@ QUnit.module('@connect with ObserveObject', () => {
 			foo = 'foo'
 		}
 
-		@connect(ViewModel, { mapProps: props => ({ props }) })
+		@connect(ViewModel, { deriveUpdates: props => ({ props }) })
 		class TestComponent extends Component {
 			static propTypes = {
 				foo: PropTypes.string.isRequired,
@@ -261,7 +261,7 @@ QUnit.module('@connect with ObserveObject', () => {
 			}).isRequired,
 		};
 
-		const ConnectedTestComponent = connect(ViewModel, { mapProps: props => ({ props }) })(TestComponent);
+		const ConnectedTestComponent = connect(ViewModel, { deriveUpdates: props => ({ props }) })(TestComponent);
 
 		if (process.env.NODE_ENV !== 'test-prod') {
 			supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'YlemConnected(TestComponent)', 'returned component is properly named');
@@ -410,14 +410,12 @@ QUnit.module('@connect with ObserveObject', () => {
 		child11ViewModel.value = 'i';
 		assert.equal(getTextFromElement(parentDiv), 'ab!cd@e#fghi', 'ab!cd@e#fghi');
 
-		// Note: because parent re-rendered, child props overwrite change values in observable instance
-
 		parentViewModel.prop0 = 'A';
-		assert.equal(getTextFromElement(parentDiv), '01A23@4#5678', '01A23@4#5678');
+		assert.equal(getTextFromElement(parentDiv), 'abAcd@e#fghi', 'abAcd@e#fghi');
 		parentViewModel.prop1 = 'B';
-		assert.equal(getTextFromElement(parentDiv), '01A23B4#5678', '01A23B4#5678');
+		assert.equal(getTextFromElement(parentDiv), 'abAcdBe#fghi', 'abAcdBe#fghi');
 		parentViewModel.prop2 = 'C';
-		assert.equal(getTextFromElement(parentDiv), '01A23B4C5678', '01A23B4C5678');
+		assert.equal(getTextFromElement(parentDiv), 'abAcdBeCfghi', 'abAcdBeCfghi');
 
 	});
 });
