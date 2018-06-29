@@ -1,4 +1,3 @@
-import React from 'react';
 import namespace from 'can-namespace';
 import { Object as ObserveObject, Array as ObserveArray } from 'can-observe';
 
@@ -9,12 +8,16 @@ import { Component, observer } from './lib/observer-component';
 import * as propertyDecorators from './property-decorators';
 
 //!steal-remove-start
-(function(version) {
-	const [ major, minor ] = version.split('.').map(v => +v);
-	if (major < 16 || (major === 16 && minor < 3)) {
-		throw new Error(`ylem requires at least React v16.3. Currently ${version}`);
-	}
-})(React.version);
+import React from 'react';
+
+if (process.env.NODE_ENV !== 'production') {
+	(function(version) {
+		const [ major, minor ] = version.split('.').map(v => +v);
+		if (major < 16 || (major === 16 && minor < 3)) {
+			throw new Error(`ylem requires at least React v16.3. Currently ${version}`);
+		}
+	})(React.version);
+}
 //!steal-remove-end
 
 Object.assign(ylem, {
