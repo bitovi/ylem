@@ -2,131 +2,256 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>ylem - reactive state management for React</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<title>ylem - Easy state management for React</title>
+		<base href="https://bitovi.github.io/ylem/" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3" />
 		<link rel="stylesheet" href="styles.css" />
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/components/prism-json.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism-coy.min.css" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-highlight/prism-line-highlight.min.css" />
+		<!-- scripts imported at the bottom -->
+
+		<link rel='shortcut icon' type='image/x-icon' href='./icons/favicon.ico' />
+		<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
+		<link rel="manifest" href="./site.webmanifest">
+		<link rel="mask-icon" href="./icons/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#c15ba3">
+		<meta name="theme-color" content="#3c2f5a">
 	</head>
 	<body>
 		<div class="main-nav">
 			<div class="main-nav_left">
 				<a href="index.html" class="logo-container">
-					<img class="logo-image" src="images/logo.svg">
+					<img class="logo-image" src="./images/logo.svg" />
 					<p class="logo">ylem</p>
 				</a>
-
-				<a href="getting-started-stealjs.html" class="main-nav-link">Getting Started with StealJS</a>
-				<a href="getting-started-webpack.html" class="main-nav-link">Getting Started with Webpack</a>
-				<a href="benefits.html" class="main-nav-link">Benefits</a>
+				<a href="https://github.com/bitovi/ylem" class="main-nav-link">API Docs</a>
 			</div>
 			<div class="main-nav_right">
-				<a class="main-nav-link">Bitovi</a>
+				<a class="github-button main-nav-link" href="https://github.com/bitovi/ylem" data-icon="octicon-star" aria-label="Star bitovi/ylem on GitHub">Fork on GitHub</a>
+				<a href="https://www.bitovi.com/" class="main-nav-link bitovi-link button-inverse">Bitovi</a>
 			</div>
 		</div>
 
 		<div class="no-columns-container">
 			<div class="page-container">
-				<div class="section-top">
+				<div class="content-section section-top">
 					<div class="section-inner">
-						<h1 class="h1-dark">If you know <span class="highlight">React</span>, you already know <span class="highlight">ylem</span>.</h1>
-						<p class="subheading-1-dark"><strong>ylem</strong> provides reactive state management for your React application. Set properties and React will update without the need to call <span class="code-highlight-dark">setState</span> on every component.</p>
-						<a class="button-inverse" href="getting-started-stealjs.html">Get Started with StealJS</a>
-						<a class="button-inverse" href="getting-started-webpack.html">Get Started with Webpack</a>
+						<hgroup>
+							<h1 class="h1-huge h1-dark">ylem</h1>
+							<h2 class="h1-dark">Easy state management for your React application.</h2>
+						</hgroup>
+						<p class="subheading-1-dark"><code class="dark">ylem</code> enables the use of simple object-oriented patterns that developers already understand. Simply set properties and modify arrays exactly like you would in plain JavaScript. Your app will automatically re-render when state changes</p>
+						<pre class="install-script"
+							><code class="language-bash">npm install ylem --save</code
+						></pre>
+						<p>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with webpack</a>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-steal.md" class="button-inverse">Get Started with StealJS</a>
+							<a href="https://codesandbox.io/s/z23qn7p2yp" class="button-inverse">Get started on CodeSandbox</a>
+						</p>
+					</div>
+
+					<div class="triptych">
+						<a href="#easy-for-developers">
+							<div class="large">Easy for developers</div>
+							<img src="./images/arrow-down.svg" />
+						</a>
+						<a href="#removes-boilerplate">
+							<div class="large">Removes boilerplate</div>
+							<img src="./images/arrow-down.svg" />
+						</a>
+						<a href="#faster-rendering">
+							<div class="large">Faster rendering</div>
+							<img src="./images/arrow-down.svg" />
+						</a>
 					</div>
 				</div>
 
-				<div class="section-2 section-inline">
+				<div class="content-section">
 					<div class="section-inner">
-						<h2>React with ylem</h2>
-						<p class="subheading-3">Instead of calling <span class="code-highlight-light">setState</span>, we can simply set the <span class="code-highlight-light">.date</span> property.</p>
+						<hgroup>
+							<h2><a class="anchor" name="easy-for-developers">Easy for developers of all skill levels to understand.</a></h2>
+							<h3>If you know <span class="highlight">JavaScript</span>, you already know <span class="highlight">ylem</span>.</h3>
+						</hgroup>
 
 						<div class="code-container">
 							<div class="code-container_left">
 								<div class="code-container_title">
 									<h3>React</h3>
-									<p>React's <a href="https://reactjs.org/docs/state-and-lifecycle.html#adding-local-state-to-a-class" target="_blank">state and lifecycle guide</a> shows how to use <span class="code-highlight-light">this.state</span> to manage state in a component like the following:</p>
+									<p>Call <code>setState</code> with an updated copy of the old state</p>
 								</div>
-<pre><code class="language-js">
-class Clock extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: new Date() };
-  }
+								<pre><code class="language-js">
+// Add new todo
+this.setState({
+  todos: this.state.todos.concat({
+    title: 'Dishes',
+    complete: false
+  })
+});
 
-  componentDidMount() {
-    this.timerID = setInterval(() => {
-      this.setState({ date: new Date() });
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  render() {
-    const { date } = this.state;
-    return (
-      <h2>
-        It is {date.toLocaleTimeString()}.
-      </h2>
-    );
-  }
-}
-</code></pre>
+// Set the first todo as complete
+const clone = this.state.todos.slice();
+clone[0] = Object.assign({}, clone[0], { complete: true });
+this.setState({ todos: clone });
+								</code></pre>
 							</div>
-
 							<div class="code-container_right">
 								<div class="code-container_title">
 									<h3>ylem</h3>
-									<p>With ylem, you can simply change the state and any of the values within state and react will update. With ylem, the example on the left now looks like:</p>
+									<p>Update state just like you would any JavaScript object</p>
 								</div>
-<pre><code class="language-js">
-class Clock extends ylem.Component { // 👀
+								<pre><code class="language-js">
+// Add new todo
+this.state.todos.push({
+  title: 'Dishes',
+  complete: false
+});
+
+// Set the first todo as complete
+this.state.todos[0].complete = true;
+								</code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="content-section section-light">
+					<div class="section-inner">
+						<h2><a class="anchor" name="removes-boilerplate">Removes boilerplate</a></h2>
+
+						<p>The following implements a simple paginated grid with both React and <b>ylem</b>.</p>
+
+						<p><a href="https://codesandbox.io/s/qx1nzj6r29">
+						  <img alt="Edit qx1nzj6r29" src="https://codesandbox.io/static/img/play-codesandbox.svg" />
+						</a></p>
+
+						<div class="code-container">
+							<div class="code-container_left">
+								<div class="code-container_title">
+									<h3>React</h3>
+									<p>With react you must pass around callbacks which will call <code>setState</code>.</p>
+								</div>
+								<pre><code class="language-js">
+class PaginatedGrid extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { date: new Date() };
+    this.state = {
+      limit: 10,
+      offset: 20,
+      count: 300
+    };
   }
 
-  componentDidMount() {
-    this.timerID = setInterval(() => {
-      this.state.date = new Date(); // 👀
-    }, 1000);
+  setLimit = (limit) => {
+    this.setState({ limit });
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timerID);
+  setOffset = (offset) => {
+    this.setState({ offset });
   }
 
   render() {
-    const { date } = this.state;
+    const { limit, offset, count } = this.state;
+
     return (
-      <h2>
-        It is {date.toLocaleTimeString()}.
-      </h2>
+      &lt;div&gt;
+        &lt;NextPrev
+          limit={limit}
+          offset={offset}
+          count={count}
+          setOffset={this.setOffset}
+        /&gt;
+        &lt;Grid
+          limit={limit}
+          offset={offset}
+          count={count}
+          setLimit={this.setLimit}
+        /&gt;
+      &lt;/div&gt;
     );
   }
 }
-</code></pre>
+								</code></pre>
+								<p>The NextPrev component might look like this:</p>
+								<pre><code class="language-js">
+const NextPrev = ({ limit, offset, setOffset }) => (
+  &lt;div&gt;
+    &lt;button onClick={() =&gt;
+      setOffset( offset - limit );
+    }&gt;PREV&lt;/button&gt;
+    &lt;button onClick={() =&gt;
+      setOffset( offset + limit );
+    }&gt;NEXT&lt;/button&gt;
+  &lt;/div&gt;
+);
+								</code></pre>
+							</div>
+							<div class="code-container_right">
+								<div class="code-container_title">
+									<h3>ylem</h3>
+									<p>With <b>ylem</b> you pass state to child components which update state directly.</p>
+								</div>
+								<pre data-line="11,16-18"><code class="language-js">
+class PaginatedGrid extends ylem.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      limit: 10,
+      offset: 20,
+      count: 300
+    };
+  }
+
+  /* No more callbacks */
+
+  render() {
+    return (
+      &lt;div&gt;
+      	/* Pass state to children */
+        &lt;NextPrev paginate={this.state} /&gt;
+        &lt;Grid paginate={this.state} /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+								</code></pre>
+								<div style="padding: 12.2em 0; color: #ccc; text-align: center">
+									This whitespace represents code your team didn't have to write.
+								</div>
+								<p>Now the NextPrev component can set state directly:</p>
+								<pre data-line="4,7"><code class="language-js">
+const NextPrev = ({ paginate }) => (
+  &lt;div&gt;
+    &lt;button onClick={() =&gt;
+      paginate.offset -= paginate.limit;
+    }&gt;PREV&lt;/button&gt;
+    &lt;button onClick={() =&gt;
+      paginate.offset += paginate.limit;
+    }&gt;NEXT&lt;/button&gt;
+  &lt;/div&gt;
+);
+								</code></pre>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="section-light">
+				<div class="content-section">
 					<div class="section-inner">
-						<h2>Title</h2>
-						<p>A few more sentences that explain ylem a little more. Could be one line of text, could be a few, not sure. Adding anothe sentence just to show what looks like. Call to action below.</p>
-						<button class="button-inverse">Learn more</button>
+						<h2><a class="anchor" name="faster-rendering">Faster Rendering</a></h2>
+						<p><b>yelm</b> is "observing" your state and will automatically re-render your components when anything changes - you never call <code>setState</code>. More importantly, <b>ylem</b> only re-renders your components when something <i>actually</i> changes. This means you never have to implement <code>shouldComponentUpdate</code> or use <code>PureComponent</code>. Humans can never implement <code>shouldComponentUpdate</code> across an entire app as efficiently as a code solution like <b>ylem</b>. This alone will save your team hours of time while increasing your apps consistency and rendering efficiency (for free).</p>
+
+						<p>[IMAGE OF RENDERING PERFORMANCE COMPARED TO OTHERS]</p>
+						<p>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with webpack</a>
+							<a href="https://github.com/bitovi/ylem/blob/master/docs/getting-started-webpack.md" class="button-inverse">Get Started with StealJS</a>
+							<a href="https://codesandbox.io/s/z23qn7p2yp" class="button-inverse">Get started on CodeSandbox</a>
+						</p>
 					</div>
 				</div>
 			</div>
-
 			<footer>
 				<div class="footer-links">
 					<p class="p-title">License</p>
@@ -134,5 +259,31 @@ class Clock extends ylem.Component { // 👀
 				</div>
 			</footer>
 		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/components/prism-json.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+		<script async defer src="https://buttons.github.io/buttons.js"></script>
+		<script>
+			// This allows for smoother scrolling
+			/*document.addEventListener('DOMContentLoaded', function () {
+				var body = document.body;
+				var timer;
+
+				window.addEventListener('scroll', function() {
+
+				  clearTimeout(timer);
+				  if(!body.classList.contains('disable-pointer')) {
+				    body.classList.add('disable-pointer')
+				  }
+
+				  timer = setTimeout(function(){
+				    body.classList.remove('disable-pointer')
+				  },500);
+				}, false);
+			});*/
+		</script>
 	</body>
 </html>
