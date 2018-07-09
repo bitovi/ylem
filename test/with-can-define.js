@@ -166,15 +166,15 @@ QUnit.module('ylem with can-define', () => {
 					assert.ok(typeof props.bar !== 'undefined', 'props has bar');
 
 					super(props);
-					assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
+					assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel in constructor');
 				}
 
 				UNSAGE_componentWillMount() {
-					assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
+					assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel in componentWillMount');
 				}
 
 				render() {
-					assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
+					assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel in render');
 
 					const { foo, bar } = this.props;
 					return <div>{foo}{bar}</div>;

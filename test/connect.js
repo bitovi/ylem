@@ -36,15 +36,15 @@ QUnit.module('@connect with ObserveObject', () => {
 				assert.ok(typeof props.bar !== 'undefined', 'props has bar');
 
 				super(props);
-				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
+				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel in constructor');
 			}
 
 			UNSAFE_componentWillMount() {
-				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
+				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel in componentWillMount');
 			}
 
 			render() {
-				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel');
+				assert.ok(this.props instanceof ViewModel, 'props is an instance of ViewModel in render');
 
 				const { foo, bar } = this.props;
 				return <div>{foo}{bar}</div>;
@@ -61,7 +61,6 @@ QUnit.module('@connect with ObserveObject', () => {
 		const divComponent = ReactTestUtils.findRenderedDOMComponentWithTag(testInstance, 'div');
 
 		assert.equal(divComponent.innerText, 'foobar', 'rendered component has the correct contents');
-
 	});
 
 	QUnit.test('should update whenever any observable property on the observable instance changes', (assert) => {
