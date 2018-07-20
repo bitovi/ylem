@@ -13,7 +13,7 @@ When your state updates, your components automatically re-render, allowing you t
 ```js
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import ylem, { ObserveObject } from "ylem";
+import { connect, ObserveObject } from "ylem";
 
 class Store extends ObserveObject {
   count = 0
@@ -29,7 +29,8 @@ class Store extends ObserveObject {
 
 class MyComponent extends Component {
     render() {
-      const { count, increment, decrement } = props;
+      const { count, increment, decrement } = this.props;
+
       return (
           <div>
             <button onClick={decrement}>-</button>
@@ -40,7 +41,7 @@ class MyComponent extends Component {
     }
 }
 
-const App =  ylem(Store, MyComponent);
+const App =  connect(Store)(MyComponent);
 
 ReactDOM.render(<App />, document.getElementById("root"));
 ```
@@ -78,8 +79,8 @@ npm install ylem
 Once **ylem** is installed, modify `src/App.js` to match the example below _(copy and paste)_. Feel free to look over what is going on here, but we'll take each part in turn.
 
 ```js
-import React from "react";
 import "./App.css";
+import React from "react";
 import ylem, { ObserveObject } from "ylem";
 
 var store = new ObserveObject({
@@ -170,7 +171,7 @@ const Counter = props => (
   </div>
 );
 
-// Use ylem to connect your Store to your Component
+// connect your Store to your Component
 export default ylem(Store, Counter);
 ```
 
@@ -196,6 +197,7 @@ This `appstate` will be an observable object instance, representing our top leve
 ```js
 // appstate.js
 import { ObserveObject } from "ylem";
+
 class AppState extends ObserveObject {
   user = null
 
@@ -212,8 +214,8 @@ Authentication in a real app is much more complicated than what we show here. Th
 Now, back in our `App.js` component, let's import the `appstate` instance and use the `user` property and `login` method to show how you can split your stores into independent entities, but still keep the reactive nature for your auto-rendering UI components.
 
 ```js
-import React from "react";
 import "./App.css";
+import React from "react";
 import ylem, { ObserveObject } from "ylem";
 import appstate from "./appstate";
 

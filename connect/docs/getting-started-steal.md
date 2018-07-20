@@ -35,7 +35,7 @@ You will also need an `index.html` to load in the browser.
     <title>ylem Demo</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="root"></div>
     <script src="node_modules/steal/steal.js"></script>
   </body>
 </html>

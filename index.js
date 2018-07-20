@@ -23,7 +23,7 @@ if (process.env.NODE_ENV !== 'production') {
 Object.assign(ylem, {
 	observer,
 	connect,
-	withViewModel: connect,
+	withStore: connect,
 	createComponent,
 	Component,
 
@@ -38,7 +38,7 @@ export default namespace.ylem;
 export {
 	observer,
 	connect,
-	connect as withViewModel,
+	connect as withStore,
 	createComponent,
 	Component,
 

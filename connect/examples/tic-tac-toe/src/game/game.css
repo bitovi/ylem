@@ -1,0 +1,9 @@
+.game-board {
+	display: flex;
+	flex-direction: row;
+}
+
+.game-reset {
+	margin-top: 1em;
+	font-size: 125%;
+}

@@ -1,0 +1,14 @@
+.board {
+
+}
+
+.board-status {
+	margin-bottom: 1em;
+	font-size: 125%;
+}
+
+.board-row:after {
+	clear: both;
+	content: "";
+	display: table;
+}
