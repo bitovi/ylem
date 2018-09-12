@@ -2,7 +2,7 @@ import QUnit from 'steal-qunit';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
-import { connect, ObserveObject } from 'ylem';
+import { connect, ObserveObject, ObserveArray } from 'ylem';
 import { getTextFromElement, supportsFunctionName } from './utils';
 
 QUnit.module('@connect with ObserveObject', () => {
@@ -416,5 +416,41 @@ QUnit.module('@connect with ObserveObject', () => {
 		parentViewModel.prop2 = 'C';
 		assert.equal(getTextFromElement(parentDiv), 'abAcdBeCfghi', 'abAcdBeCfghi');
 
+	});
+
+	QUnit.asyncTest('should only use splice on arrays passed into children not objects', (assert) => {
+		class FooList extends ObserveArray {
+			constructor(initialValue, bar) {
+				super(initialValue);
+				this.bar = bar;
+			}
+		}
+		
+		function makeFooArray(bar) {
+			const fooArray = [ 1, 2, 3 ];
+			fooArray.bar = bar;
+			return fooArray;
+		}
+
+		class ParentStore extends ObserveObject {
+			constructor(props) {
+				super(props);
+				setTimeout((value) => {
+					this.fooObject = new FooList([{ foo0: 'foo0' }], 'bam');
+					this.fooArray = makeFooArray('bam');
+					assert.equal(getTextFromElement(parentDiv), 'bambar', 'bambar');
+					QUnit.start();
+				}, 10);
+			}
+			fooObject = new FooList([{ foo0: 'foo0' }, { foo1: 'foo1' }], 'bar');
+			fooArray = makeFooArray('bar');
+		}
+
+		const Parent = connect(ParentStore)(({ fooObject, fooArray }) => (<Child fooObject={fooObject} fooArray={fooArray} />));
+		const Child = connect(EmptyViewModel)(({ fooObject, fooArray }) => (<div>{fooObject.bar}{fooArray.bar}</div>));
+
+		const parentInstance = ReactTestUtils.renderIntoDocument(<Parent />);
+		const parentDiv = ReactTestUtils.findRenderedDOMComponentWithTag(parentInstance, 'div');
+		assert.equal(getTextFromElement(parentDiv), 'barbar', 'barbar');
 	});
 });
