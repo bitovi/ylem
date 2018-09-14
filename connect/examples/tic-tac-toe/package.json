@@ -1,22 +1,22 @@
 {
-  "name": "ylem-tic-tac-toe",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "dependencies": {
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-scripts": "1.1.4",
-    "ylem": "^2.1.0"
-  },
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "react-test-renderer": "^16.4.1"
-  }
+    "name": "ylem-tic-tac-toe",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    },
+    "dependencies": {
+        "prop-types": "^15.6.2",
+        "react": "^16.4.1",
+        "react-dom": "^16.4.1",
+        "react-scripts": "^1.1.5",
+        "ylem": "^2.1.0"
+    },
+    "devDependencies": {
+        "chai": "^4.1.2",
+        "react-test-renderer": "^16.4.1"
+    }
 }
