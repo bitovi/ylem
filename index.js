@@ -6,18 +6,6 @@ import useStore from './lib/use-store';
 import ModelProvider, { useModel } from './lib/model-provider';
 import * as decorators from './decorators';
 
-//!steal-remove-start
-// eslint-disable-next-line import/order
-import React from 'react';
-
-if (process.env.NODE_ENV !== 'production') {
-  const [ major, minor ] = React.version.split('.').map(v => +v);
-  if (major < 16 || (major === 16 && minor < 8)) {
-    throw new Error(`ylem requires at least React v16.8.0; currently ${React.version}`);
-  }
-}
-//!steal-remove-end
-
 namespace.ylem = {
   useObserver,
   useStore,

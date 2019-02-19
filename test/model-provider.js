@@ -3,7 +3,7 @@ import React from 'react';
 import { render, cleanup } from 'react-testing-library';
 import { extractText } from './utils';
 
-import { ModelProvider, useModel, ObserveObject } from '~/index';
+import { ModelProvider, useModel, ObserveObject } from '..';
 
 QUnit.module('ModelProvider and useModel', (hooks) => {
   hooks.afterEach(cleanup);
@@ -12,14 +12,18 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
-    function TestComponent(props) {
+    function TestComponent() {
       const Foo = useModel('Foo');
       const Bar = useModel('Bar');
 
       assert.ok(typeof Foo === 'function', 'provides Foo');
       assert.ok(typeof Bar === 'function', 'provides Bar');
 
-      return <div data-testid="foo">{Foo.name} {Bar.name}</div>;
+      return (
+        <div data-testid="foo">
+          {Foo.name} {Bar.name}
+        </div>
+      );
     }
 
     const { getByTestId } = render((
@@ -35,13 +39,17 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
-    function TestComponent(props) {
-      const [ Foo, Bar ] = useModel([ 'Foo', 'Bar' ]);
+    function TestComponent() {
+      const [Foo, Bar] = useModel(['Foo', 'Bar']);
 
       assert.ok(typeof Foo === 'function', 'provides Foo');
       assert.ok(typeof Bar === 'function', 'provides Bar');
 
-      return <div data-testid="foo">{Foo.name} {Bar.name}</div>;
+      return (
+        <div data-testid="foo">
+          {Foo.name} {Bar.name}
+        </div>
+      );
     }
 
     const { getByTestId } = render((
@@ -57,13 +65,17 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
-    function TestComponent(props) {
+    function TestComponent() {
       const { Fooo: Foo, Barr: Bar } = useModel({ Foo: 'Fooo', Bar: 'Barr' });
 
       assert.ok(typeof Foo === 'function', 'provides Foo');
       assert.ok(typeof Bar === 'function', 'provides Bar');
 
-      return <div data-testid="foo">{Foo.name} {Bar.name}</div>;
+      return (
+        <div data-testid="foo">
+          {Foo.name} {Bar.name}
+        </div>
+      );
     }
 
     const { getByTestId } = render((
@@ -79,14 +91,18 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
-    function TestComponent(props) {
+    function TestComponent() {
       const Foo = useModel('Foo');
       const Bar = useModel('Bar');
 
       assert.ok(typeof Foo === 'function', 'provides Foo');
       assert.ok(typeof Bar === 'function', 'provides Bar');
 
-      return <div data-testid="foo">{Foo.name} {Bar.name}</div>;
+      return (
+        <div data-testid="foo">
+          {Foo.name} {Bar.name}
+        </div>
+      );
     }
 
     const { getByTestId } = render((

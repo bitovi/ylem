@@ -18,4 +18,5 @@ function extractText(node) {
   return txt;
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export { extractText };

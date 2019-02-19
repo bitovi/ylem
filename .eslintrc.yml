@@ -9,58 +9,11 @@ env:
   browser: true
   jest: true
 rules:
-  arrow-parens: off
-  class-methods-use-this: off
-  function-paren-newline: off
-  guard-for-in: off
-  implicit-arrow-linebreak: off
-  max-len: off
-  no-continue: off
-  no-plusplus: off
-  no-restricted-syntax: off
-  no-shadow: off
-  no-underscore-dangle: off
-  no-use-before-define: off
-  import/prefer-default-export: off
+  react-hooks/rules-of-hooks:
+    - error
   react/jsx-filename-extension: off
   react/jsx-one-expression-per-line: off
-  react/require-default-props: off
-  jsx-a11y/click-events-have-key-events: off
-  jsx-a11y/no-static-element-interactions: off
-
-  array-bracket-spacing:
-    - error
-    - always
+  no-use-before-define: off
   brace-style:
     - error
     - stroustrup
-  import/no-unresolved:
-    - error
-    -
-      commonjs: true
-      caseSensitive: true
-      ignore: [^~]
-  no-param-reassign:
-    - error
-    -
-      props: false
-  no-unused-vars:
-    - error
-    -
-      args: none
-  object-curly-newline:
-    - error
-    -
-      multiline: true
-      consistent: true
-  react/default-props-match-prop-types:
-    - error
-    -
-      allowRequiredDefaults: true
-  react-hooks/rules-of-hooks:
-    - error
-  spaced-comment:
-    - error
-    - always
-    -
-      exceptions: [ "!steal-remove-start", "!steal-remove-end" ]

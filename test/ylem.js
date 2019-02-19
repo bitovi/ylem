@@ -8,7 +8,7 @@ import ylem, {
   ObserveObject,
   ObserveArray,
   decorators,
-} from '~/index';
+} from '..';
 
 QUnit.module('yelm', () => {
   QUnit.test('has default export', (assert) => {

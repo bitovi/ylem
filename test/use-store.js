@@ -3,7 +3,7 @@ import React from 'react';
 import { render, fireEvent, cleanup } from 'react-testing-library';
 import { extractText } from './utils';
 
-import { useStore, ObserveObject } from '~/index';
+import { useStore, ObserveObject } from '..';
 
 QUnit.module('useStore', (hooks) => {
   hooks.afterEach(cleanup);
@@ -24,7 +24,12 @@ QUnit.module('useStore', (hooks) => {
       assert.ok(typeof foo !== 'undefined', 'store has foo');
       assert.ok(typeof bar !== 'undefined', 'store has bar');
 
-      return <div data-testid="foobar">{foo}{bar}</div>;
+      return (
+        <div data-testid="foobar">
+          {foo}
+          {bar}
+        </div>
+      );
     }
 
     const { getByTestId } = render(<TestComponent bar="bar" />);
@@ -54,8 +59,13 @@ QUnit.module('useStore', (hooks) => {
 
       return (
         <div>
+          {/* eslint-disable-next-line max-len */}
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
           <div data-testid="button" onClick={handleClick}>change</div>
-          <div data-testid="foobar">{foo}{bar}</div>
+          <div data-testid="foobar">
+            {foo}
+            {bar}
+          </div>
         </div>
       );
     }
