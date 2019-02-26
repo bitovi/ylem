@@ -1,19 +1,8 @@
 ---
 root: true
 parser: babel-eslint
-extends:
-  - eslint-config-airbnb
 plugins:
-  - react-hooks
-env:
-  browser: true
-  jest: true
+  - prettier
+  - react
 rules:
-  react-hooks/rules-of-hooks:
-    - error
-  react/jsx-filename-extension: off
-  react/jsx-one-expression-per-line: off
-  no-use-before-define: off
-  brace-style:
-    - error
-    - stroustrup
+  prettier/prettier: error

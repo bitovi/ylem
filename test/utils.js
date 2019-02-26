@@ -7,8 +7,7 @@ function extractText(node) {
   while (node) {
     if (node.nodeType === 3) {
       txt += node.nodeValue;
-    }
-    else {
+    } else {
       txt += extractText(node);
     }
 

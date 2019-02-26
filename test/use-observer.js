@@ -21,7 +21,9 @@ function makeComponent(name) {
 
     if (children) {
       return (
-        <div>{name}[ {children} ] </div>
+        <div>
+          {name}[ {children} ]
+        </div>
       );
     }
 
@@ -33,10 +35,10 @@ function makeComponent(name) {
   return Component;
 }
 
-QUnit.module('useObserver', (hooks) => {
+QUnit.module('useObserver', hooks => {
   hooks.afterEach(cleanup);
 
-  QUnit.test('basic rendering', (assert) => {
+  QUnit.test('basic rendering', assert => {
     const A = makeComponent('A');
     const B1 = makeComponent('B1');
     const B2 = makeComponent('B2');
@@ -45,7 +47,7 @@ QUnit.module('useObserver', (hooks) => {
     const C21 = makeComponent('C21');
     const C22 = makeComponent('C22');
 
-    const { container } = render((
+    const { container } = render(
       <A>
         <B1>
           <C11 />
@@ -56,12 +58,12 @@ QUnit.module('useObserver', (hooks) => {
           <C22 />
         </B2>
       </A>
-    ));
+    );
 
-    assert.equal(extractText(container), 'A[ B1[ C11C12 ] B2[ C21C22 ]  ] ');
+    assert.equal(extractText(container), 'A[ B1[ C11C12 ]B2[ C21C22 ] ]');
   });
 
-  QUnit.test('ugly rendering', (assert) => {
+  QUnit.test('ugly rendering', assert => {
     function A({ thing }) {
       useObserver();
 
@@ -88,16 +90,10 @@ QUnit.module('useObserver', (hooks) => {
     function C({ thing }) {
       useObserver();
 
-      return (
-        <div>
-          C{store[thing]}
-        </div>
-      );
+      return <div>C{store[thing]}</div>;
     }
 
-    const { container } = render((
-      <A thing={1} />
-    ));
+    const { container } = render(<A thing={1} />);
 
     assert.equal(extractText(container), 'A1B2C3B4C5');
     store[5] = 0;

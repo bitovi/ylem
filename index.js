@@ -19,14 +19,4 @@ namespace.ylem = {
 };
 
 export default namespace.ylem;
-export {
-  useObserver,
-  useStore,
-
-  ModelProvider,
-  useModel,
-
-  ObserveObject,
-  ObserveArray,
-  decorators,
-};
+export { useObserver, useStore, ModelProvider, useModel, ObserveObject, ObserveArray, decorators };

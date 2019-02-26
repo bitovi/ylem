@@ -5,10 +5,10 @@ import { extractText } from './utils';
 
 import { ModelProvider, useModel, ObserveObject } from '..';
 
-QUnit.module('ModelProvider and useModel', (hooks) => {
+QUnit.module('ModelProvider and useModel', hooks => {
   hooks.afterEach(cleanup);
 
-  QUnit.test('basic usage', (assert) => {
+  QUnit.test('basic usage', assert => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
@@ -26,16 +26,16 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
       );
     }
 
-    const { getByTestId } = render((
+    const { getByTestId } = render(
       <ModelProvider Foo={Fooo} Bar={Barr}>
         <TestComponent />
       </ModelProvider>
-    ));
+    );
 
     assert.equal(extractText(getByTestId('foo')), 'Fooo Barr');
   });
 
-  QUnit.test('complex usage with array', (assert) => {
+  QUnit.test('complex usage with array', assert => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
@@ -52,16 +52,16 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
       );
     }
 
-    const { getByTestId } = render((
+    const { getByTestId } = render(
       <ModelProvider Foo={Fooo} Bar={Barr}>
         <TestComponent />
       </ModelProvider>
-    ));
+    );
 
     assert.equal(extractText(getByTestId('foo')), 'Fooo Barr');
   });
 
-  QUnit.test('complex usage with object', (assert) => {
+  QUnit.test('complex usage with object', assert => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
@@ -78,16 +78,16 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
       );
     }
 
-    const { getByTestId } = render((
+    const { getByTestId } = render(
       <ModelProvider Foo={Fooo} Bar={Barr}>
         <TestComponent />
       </ModelProvider>
-    ));
+    );
 
     assert.equal(extractText(getByTestId('foo')), 'Fooo Barr');
   });
 
-  QUnit.test('nested usage', (assert) => {
+  QUnit.test('nested usage', assert => {
     class Fooo extends ObserveObject {}
     class Barr extends ObserveObject {}
 
@@ -105,13 +105,13 @@ QUnit.module('ModelProvider and useModel', (hooks) => {
       );
     }
 
-    const { getByTestId } = render((
+    const { getByTestId } = render(
       <ModelProvider Foo={Fooo}>
         <ModelProvider Bar={Barr}>
           <TestComponent />
         </ModelProvider>
       </ModelProvider>
-    ));
+    );
 
     assert.equal(extractText(getByTestId('foo')), 'Fooo Barr');
   });

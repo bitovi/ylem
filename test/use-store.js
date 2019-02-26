@@ -5,10 +5,10 @@ import { extractText } from './utils';
 
 import { useStore, ObserveObject } from '..';
 
-QUnit.module('useStore', (hooks) => {
+QUnit.module('useStore', hooks => {
   hooks.afterEach(cleanup);
 
-  QUnit.test('basic rendering', (assert) => {
+  QUnit.test('basic rendering', assert => {
     class Store extends ObserveObject {
       constructor() {
         super();
@@ -37,7 +37,7 @@ QUnit.module('useStore', (hooks) => {
     assert.equal(extractText(getByTestId('foobar')), 'foobar');
   });
 
-  QUnit.test('should update whenever the store changes', (assert) => {
+  QUnit.test('should update whenever the store changes', assert => {
     class Store extends ObserveObject {
       constructor() {
         super();
@@ -48,7 +48,7 @@ QUnit.module('useStore', (hooks) => {
 
       handleClick = () => {
         this.bar = 'bam';
-      }
+      };
     }
 
     function TestComponent(props) {
@@ -61,7 +61,9 @@ QUnit.module('useStore', (hooks) => {
         <div>
           {/* eslint-disable-next-line max-len */}
           {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-          <div data-testid="button" onClick={handleClick}>change</div>
+          <div data-testid="button" onClick={handleClick}>
+            change
+          </div>
           <div data-testid="foobar">
             {foo}
             {bar}
@@ -79,7 +81,7 @@ QUnit.module('useStore', (hooks) => {
       new MouseEvent('click', {
         bubbles: true,
         cancelable: true,
-      }),
+      })
     );
 
     assert.equal(extractText(getByTestId('foobar')), 'foobam', 'updates to the correct value');
