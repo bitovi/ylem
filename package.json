@@ -52,19 +52,19 @@
     "javascript"
   ],
   "dependencies": {
-    "can-diff": "^1.0.4",
-    "can-key": "^0.5.0",
-    "can-namespace": "^1.0.0",
-    "can-observation": "^4.0.1",
-    "can-observation-recorder": "^1.0.2",
-    "can-observe": "^2.1.0",
-    "can-queues": "^1.1.0",
-    "can-reflect": "^1.16.1",
+    "can-diff": "^1.5.0",
+    "can-key": "^1.2.1",
+    "can-namespace": "1.0.0",
+    "can-observation": "^4.2.0",
+    "can-observation-recorder": "^1.3.1",
+    "can-observe": "^2.3.2",
+    "can-queues": "^1.3.1",
+    "can-reflect": "^1.18.0",
     "hoist-non-react-statics": "^2.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
-    "can-define": "^2.3.1",
+    "can-define": "^2.8.0",
     "detect-cyclic-packages": "^1.1.1",
     "done-serve": "^2.2.0",
     "eslint": "^4.19.1",
