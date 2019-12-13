@@ -1,4 +1,5 @@
 import QUnit from 'steal-qunit';
+import steal from '@loader';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
@@ -53,7 +54,7 @@ QUnit.module('@connect with ObserveObject', () => {
 
 		const TestComponent = connect(ViewModel)(MyComponent);
 
-		if (process.env.NODE_ENV !== 'test-prod') {
+		if (steal.env !== 'test-prod') {
 			assert.equal(TestComponent.propTypes, ViewModel.propTypes, 'connected component has the correct propTypes');
 		}
 
@@ -233,7 +234,7 @@ QUnit.module('@connect with ObserveObject', () => {
 			}
 		}
 
-		if (process.env.NODE_ENV !== 'test-prod') {
+		if (steal.env !== 'test-prod') {
 			supportsFunctionName && assert.equal(TestComponent.name, 'YlemConnected(TestComponent)', 'returned component is properly named');
 		}
 
@@ -262,7 +263,7 @@ QUnit.module('@connect with ObserveObject', () => {
 
 		const ConnectedTestComponent = connect(ViewModel, { deriveUpdates: props => ({ props }) })(TestComponent);
 
-		if (process.env.NODE_ENV !== 'test-prod') {
+		if (steal.env !== 'test-prod') {
 			supportsFunctionName && assert.equal(ConnectedTestComponent.name, 'YlemConnected(TestComponent)', 'returned component is properly named');
 		}
 

@@ -5,6 +5,7 @@ import './with-can-define';
 import './nested-render-observe-array-bug';
 
 import QUnit from 'steal-qunit';
+import steal from '@loader';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTestUtils from 'react-dom/test-utils';
@@ -77,7 +78,7 @@ QUnit.module('@yelm', () => {
 		// https://reactjs.org/docs/higher-order-components.html#convention-wrap-the-display-name-for-easy-debugging
 		@ylem
 		class TestComponent extends Component {}
-		if (process.env.NODE_ENV !== 'test-prod') {
+		if (steal.env !== 'test-prod') {
 			supportsFunctionName && assert.equal(TestComponent.name, 'YlemObserved(TestComponent)', 'returned component is properly named');
 		}
 
@@ -85,11 +86,11 @@ QUnit.module('@yelm', () => {
 			return null;
 		}
 		const ObserverComponent = ylem(TestFunctionComponent);
-		if (process.env.NODE_ENV !== 'test-prod') {
+		if (steal.env !== 'test-prod') {
 			supportsFunctionName && assert.equal(ObserverComponent.name, 'YlemObserved(TestFunctionComponent)', 'returned component is properly named');
 		}
 
-		if (process.env.NODE_ENV === 'test-prod') {
+		if (steal.env === 'test-prod') {
 			assert.expect(0);
 		}
 	});
