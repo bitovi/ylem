@@ -1,6 +1,6 @@
 {
   "name": "ylem",
-  "version": "2.1.4",
+  "version": "3.0.0-pre.0",
   "description": "Add Observable View-Models to React Components",
   "homepage": "http://canjs.com",
   "license": "MIT",
